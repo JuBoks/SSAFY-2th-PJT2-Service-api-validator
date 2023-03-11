@@ -13,4 +13,11 @@ router.get("/api/get/nodejs-api", function (req, res) {
   });
 });
 
+// POST방식
+router.post("/api/post/nodejs-api", function (req, res) {
+  res.status(200).json({
+    message: "hello post api nodejs-api",
+  });
+});
+
 module.exports = router;
