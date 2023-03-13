@@ -9,7 +9,7 @@ const PORT = 3000; //서버 포트 번호
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/api", validatorRouter);
+app.use("/validator", validatorRouter);
 
 app.listen(PORT, () => {
   console.log(`API is listening on port ${PORT}`);
