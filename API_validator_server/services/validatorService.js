@@ -9,6 +9,8 @@ const inferSchema = (data, isArray) => {
       const value = data[key];
       if (value === null) {
         schema[key] = "null";
+      } else if (Array.isArray(value)) {
+        schema[key] = inferSchema(value.slice(0, 1), true);
       } else if (typeof value === "object") {
         schema[key] = inferSchema(value, Array.isArray(value)); // Recursively infer nested schema
       } else if (typeof value === "string") {
