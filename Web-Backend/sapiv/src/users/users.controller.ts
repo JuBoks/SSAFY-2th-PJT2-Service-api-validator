@@ -15,11 +15,12 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+    
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('/duplicate/:email')
+  findOne(@Param('email') email: string) {
+    return this.usersService.findOne(+email);
   }
 
   @Patch(':id')
