@@ -10,7 +10,7 @@ import styles from "@/styles/login.module.css";
 const SignUp = () => {
   const [type, setType] = useState(0);
 
-  const handleChange = (props) => setType(props);
+  const handleTypeChange = (props) => setType(props.target.value);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -92,7 +92,7 @@ const SignUp = () => {
                 name="type"
                 value={type}
                 label="Type"
-                onChange={handleChange}
+                onChange={handleTypeChange}
               >
                 <MenuItem value={0}>Client Developer</MenuItem>
                 <MenuItem value={1}>Server Developer</MenuItem>
