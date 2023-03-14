@@ -6,20 +6,35 @@ import { Select, MenuItem, FormControl } from "@mui/material";
 import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
+import axios from "axios";
 
 const SignUp = () => {
+  const url = "http://70.12.246.220:3000";
+  const [email, setEmail] = useState("");
   const [type, setType] = useState(0);
 
+  const handleEmailChange = (props) => setEmail(props.target.value);
   const handleTypeChange = (props) => setType(props.target.value);
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const reqData = {
+      name: data.get("username"),
       email: data.get("email"),
       password: data.get("password"),
-      username: data.get("username"),
-      type: data.get("type"),
-    });
+      type: parseInt(data.get("type")),
+    };
+
+    await axios
+      .post(url + "/users", reqData)
+      .then((res) => {
+        console.log(res);
+        alert("Sign up Success");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Sign up Fail\n" + error.response.data.message);
+      });
   };
 
   return (
@@ -71,6 +86,7 @@ const SignUp = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              helperText="6자 이상 입력해주세요."
             />
 
             <TextField

@@ -4,15 +4,27 @@ import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
 import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
+import axios from "axios";
 
 export default function Home() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log({
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const reqData = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+
+    await axios
+      .post(url + "/users/login", reqData)
+      .then((res) => {
+        console.log(res);
+        alert("Sign up Success");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Sign up Fail\n" + error.response.data.message);
+      });
   };
 
   return (
