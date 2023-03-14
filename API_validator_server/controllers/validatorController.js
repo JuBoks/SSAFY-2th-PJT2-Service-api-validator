@@ -27,7 +27,22 @@ const getInferredSchema = (req, res) => {
   }
 };
 
+const apiRequest = (req, res) => {
+  res.send("API Request");
+};
+
+const apiSave = (req, res) => {
+  res.send("API Save");
+};
+
+const apiDiff = (req, res) => {
+  res.send("API Diff");
+};
+
 module.exports = {
   helloWorld,
   getInferredSchema,
+  apiRequest,
+  apiSave,
+  apiDiff,
 };

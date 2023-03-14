@@ -10,6 +10,10 @@ router.get("/", validatorController.helloWorld);
 
 router.post("/response", validatorController.getInferredSchema);
 
-router.get("/db", databaseTestController.dataConnect);
+router.get("/api-request", validatorController.apiRequest);
+
+router.post("/api-save", validatorController.apiSave);
+
+router.get("/diff", validatorController.apiDiff);
 
 module.exports = router;
