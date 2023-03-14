@@ -19,8 +19,13 @@ export class UsersController {
   }
 
   @Get('/duplicate/:email')
-  findOne(@Param('email') email: string) {
-    return this.usersService.findOne(+email);
+  async DuplicationCheck(@Param('email') email: string) {
+    if(await this.usersService.findByEmail(email)){
+      return "Available";
+    }
+    else{
+      return "Not Available";
+    }
   }
 
   @Patch(':id')

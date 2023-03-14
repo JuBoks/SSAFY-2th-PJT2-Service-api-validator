@@ -79,8 +79,17 @@ state: 0, type: createUserDto.type
     return await userInfo;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByEmail(email: string) {
+    const auth = getAuth(this.firebase);
+    let duplicateInfo = await auth.getUserByEmail(email)
+    .then((userRecord) => {
+      return userRecord;
+    })
+    .catch((error) => {
+      return error.code;
+    })
+    if(duplicateInfo === 'auth/user-not-found') return true;
+    else return false;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
