@@ -7,14 +7,14 @@ router.get("/", function (req, res, next) {
 });
 
 // GET방식
-router.get("/api/get/nodejs-api", function (req, res) {
+router.get("/api/nodejs-api", function (req, res) {
   res.status(200).json({
     message: "hello get api nodejs-api",
   });
 });
 
 // POST방식
-router.post("/api/post/nodejs-api", function (req, res) {
+router.post("/api/nodejs-api", function (req, res) {
   res.status(200).json({
     message: "hello post api nodejs-api",
   });
