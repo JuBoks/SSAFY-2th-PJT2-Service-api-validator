@@ -37,12 +37,12 @@ const createApiTestResult = async (req, res) => {
   // console.log(meta_id);
 
   try {
-    const result_id = await validatorService.createApiTestResult(
+    const data = await validatorService.createApiTestResult(
       meta_id,
       action_id,
       response
     );
-    res.status(200).send({ result_id: result_id });
+    res.status(200).send(data);
   } catch (error) {
     console.log(error);
     res
