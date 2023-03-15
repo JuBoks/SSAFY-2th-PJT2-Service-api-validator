@@ -7,6 +7,7 @@ import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
 import axios from "axios";
+import IndexLogo from "@/components/IndexLogo.js";
 
 const SignUp = () => {
   const url = "http://70.12.246.220:3000";
@@ -40,13 +41,7 @@ const SignUp = () => {
   return (
     <Grid container>
       <Grid item xs={7}>
-        <Box className={styles["left-box"]}>
-          <Image
-            src={logo}
-            style={{ width: "60%", height: "20%" }}
-            alt="logo"
-          />
-        </Box>
+        <IndexLogo />
       </Grid>
       <Grid item xs={5}>
         <Box className={styles["right-box"]}>

@@ -1,12 +1,11 @@
 import Head from "next/head";
-import Image from "next/image";
+import router from "next/router";
 import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
-import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../util/auth";
-import firebaseApp from "../util/firebaseApp";
+import IndexLogo from "@/components/IndexLogo.js";
 
 export default function Home() {
   const handleSubmit = async (event) => {
@@ -15,14 +14,15 @@ export default function Home() {
 
     signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         console.log(userCredential);
-        // ...
+        alert("Login Success");
+        router.push("/main");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        alert("Login Fail\n" + errorMessage);
         console.log(error);
       });
 
@@ -42,13 +42,7 @@ export default function Home() {
 
       <Grid container>
         <Grid item xs={7}>
-          <Box className={styles["left-box"]}>
-            <Image
-              src={logo}
-              style={{ width: "60%", height: "20%" }}
-              alt="logo"
-            />
-          </Box>
+          <IndexLogo />
         </Grid>
         <Grid item xs={5}>
           <Box className={styles["right-box"]}>
