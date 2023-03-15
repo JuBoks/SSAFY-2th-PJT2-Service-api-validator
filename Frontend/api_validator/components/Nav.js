@@ -1,5 +1,5 @@
 import * as React from "react";
-import PropTypes from "prop-types";
+import router from "next/router";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -32,7 +32,7 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => router.push("/home")}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
@@ -67,7 +67,7 @@ function ResponsiveDrawer(props) {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => router.push("/admin/users")}>
             <ListItemIcon>
               <AdminPanelSettingsIcon />
             </ListItemIcon>
