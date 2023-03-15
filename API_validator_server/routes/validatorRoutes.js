@@ -10,9 +10,9 @@ router.get("/", validatorController.helloWorld);
 
 router.post("/response", validatorController.getInferredSchema);
 
-router.get("/api-list", validatorController.getApiList);
+router.get("/api", validatorController.getApiList);
 
-router.post("/api-test", validatorController.createApiTest);
+router.post("/api/test", validatorController.createApiTestResult);
 
 router.get("/diff", validatorController.getApiDiff);
 

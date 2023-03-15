@@ -31,13 +31,13 @@ const getApiList = (req, res) => {
   res.send("API List");
 };
 
-const createApiTest = (req, res) => {
+const createApiTestResult = async (req, res) => {
   const { body } = req;
   const { meta_id, action_id, response } = body;
   // console.log(meta_id);
 
   try {
-    const result_id = validatorService.createApiTest(
+    const result_id = await validatorService.createApiTestResult(
       meta_id,
       action_id,
       response
@@ -59,6 +59,6 @@ module.exports = {
   helloWorld,
   getInferredSchema,
   getApiList,
-  createApiTest,
+  createApiTestResult,
   getApiDiff,
 };
