@@ -67,6 +67,7 @@ export class UsersService {
       return {
         uid: UserRecord.uid,
         state: UserRecord.customClaims.state,
+        type: UserRecord.customClaims.type,
       }
     })
     .catch(() => {
