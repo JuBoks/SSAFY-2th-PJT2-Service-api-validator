@@ -29,10 +29,22 @@ const getInferredSchema = (req, res) => {
 
 const apiRequest = (req, res) => {
   res.send("API Request");
+  
 };
 
 const apiSave = (req, res) => {
-  res.send("API Save");
+  const {body} = req;
+  const {meta_id, action_id, response} = body;
+
+  try {
+    const result_id = validatorService.saveResult(meta_id, action_id, response);
+    res.status(200).send({ result_id: result_id });
+  }
+  catch (error) {
+    res
+      .status(error?.status || 500)
+      .send({ status: "FAILED", data: { error: error?.message || error } });
+  }
 };
 
 const apiDiff = (req, res) => {
