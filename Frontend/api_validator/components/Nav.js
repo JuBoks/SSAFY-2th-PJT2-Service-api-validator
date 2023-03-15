@@ -75,7 +75,7 @@ function ResponsiveDrawer(props) {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => router.push("/")}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

@@ -16,8 +16,8 @@ export default function Main() {
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
             <Grid item xs={12}>
               <Typography
-                variant="h5"
-                component="h5"
+                variant="h4"
+                component="h4"
                 m={(0, 5)}
                 sx={{ color: "blue" }}
               >
@@ -32,8 +32,8 @@ export default function Main() {
             </Grid>
             <Grid item xs={12}>
               <Typography
-                variant="h5"
-                component="h5"
+                variant="h4"
+                component="h4"
                 m={(0, 5)}
                 sx={{ color: "blue" }}
               >

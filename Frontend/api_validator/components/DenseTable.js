@@ -25,8 +25,8 @@ export default function DenseTable() {
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
             <TableCell align="center">Result</TableCell>
+            <TableCell align="center">Name</TableCell>
             <TableCell align="center">Category</TableCell>
             <TableCell align="center">Service</TableCell>
             <TableCell align="center">Path</TableCell>
@@ -39,10 +39,10 @@ export default function DenseTable() {
               key={row.name}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
-                {row.name}
+              <TableCell component="th" scope="row" align="center">
+                {row.result}
               </TableCell>
-              <TableCell align="center">{row.result}</TableCell>
+              <TableCell align="center">{row.name}</TableCell>
               <TableCell align="center">{row.category}</TableCell>
               <TableCell align="center">{row.service}</TableCell>
               <TableCell align="center">{row.path}</TableCell>
