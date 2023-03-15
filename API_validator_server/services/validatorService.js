@@ -26,51 +26,49 @@ const inferSchema = (data, isArray) => {
 };
 
 //transaction 처리 필요. conn 을 service에서 가져오게?
-const saveResult = (meta_id, action_id, response) => {
+const createApiTest = async (meta_id, action_id, response) => {
   //response 자료형 추론하기
   const schema = inferSchema(response, Array.isArray(response));
+  // console.log(schema);
 
-  
   //meta id 에 현재 기대 response 값이 있는지 확인한다.
-  const expect_response = Validator.getResponseByMetaId(meta_id);
+  const expect_response = await Validator.getResponseByMetaId(meta_id);
+  // console.log(expect_response.data_id);
 
-  var result = false;
+  let result = false;
 
   //자료형 추론 결과 저장
-  var data_id=null;
+  let data_id = null;
 
   //기대하는 값이 있으면, 정답지와 diff 비교, pass/fail 판단
-  if(expect_response !== null) {
+  if (expect_response !== null) {
     //메소드 호출
 
     //만약 pass면,expect_response의 data_id 저장
-    if(result){
+    if (result) {
       data_id = expect_response.data_id;
     }
 
     //fail 이면 자료형 추론 결과 저장
     else {
-      data_id = validator.saveAnalyzedData(schema);
+      // data_id = Validator.saveAnalyzedData(schema);
     }
-  }
-  else {
-    data_id = validator.saveAnalyzedData(schema); 
+  } else {
+    // data_id = Validator.saveAnalyzedData(schema);
   }
 
   const data = [
-    meta_id, 
-    data_id, 
-    action_id, 
-    expect_response.response_id, 
-    response, 
-    result
+    meta_id,
+    data_id,
+    action_id,
+    expect_response.response_id,
+    response,
+    result,
   ];
 
-  
   //테스트 테이블에 저장
-  const result_id = validator.saveTestResult(data);
+  const result_id = Validator.saveTestResult(data);
   return result_id;
 };
 
-
-module.exports = { inferSchema, saveResult };
+module.exports = { inferSchema, createApiTest };

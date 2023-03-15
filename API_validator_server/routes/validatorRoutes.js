@@ -10,10 +10,10 @@ router.get("/", validatorController.helloWorld);
 
 router.post("/response", validatorController.getInferredSchema);
 
-router.get("/api-request", validatorController.apiRequest);
+router.get("/api-list", validatorController.getApiList);
 
-router.post("/api-save", validatorController.apiSave);
+router.post("/api-test", validatorController.createApiTest);
 
-router.get("/diff", validatorController.apiDiff);
+router.get("/diff", validatorController.getApiDiff);
 
 module.exports = router;

@@ -27,34 +27,38 @@ const getInferredSchema = (req, res) => {
   }
 };
 
-const apiRequest = (req, res) => {
-  res.send("API Request");
-  
+const getApiList = (req, res) => {
+  res.send("API List");
 };
 
-const apiSave = (req, res) => {
-  const {body} = req;
-  const {meta_id, action_id, response} = body;
+const createApiTest = (req, res) => {
+  const { body } = req;
+  const { meta_id, action_id, response } = body;
+  // console.log(meta_id);
 
   try {
-    const result_id = validatorService.saveResult(meta_id, action_id, response);
+    const result_id = validatorService.createApiTest(
+      meta_id,
+      action_id,
+      response
+    );
     res.status(200).send({ result_id: result_id });
-  }
-  catch (error) {
+  } catch (error) {
+    console.log(error);
     res
       .status(error?.status || 500)
       .send({ status: "FAILED", data: { error: error?.message || error } });
   }
 };
 
-const apiDiff = (req, res) => {
-  res.send("API Diff");
+const getApiDiff = (req, res) => {
+  res.send("Get API Diff");
 };
 
 module.exports = {
   helloWorld,
   getInferredSchema,
-  apiRequest,
-  apiSave,
-  apiDiff,
+  getApiList,
+  createApiTest,
+  getApiDiff,
 };
