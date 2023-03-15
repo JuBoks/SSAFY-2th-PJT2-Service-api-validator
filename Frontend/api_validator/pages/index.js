@@ -4,27 +4,31 @@ import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
 import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
-import axios from "axios";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import auth from "../util/auth";
+import firebaseApp from "../util/firebaseApp";
 
 export default function Home() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const reqData = {
-      email: data.get("email"),
-      password: data.get("password"),
-    };
 
-    await axios
-      .post(url + "/users/login", reqData)
-      .then((res) => {
-        console.log(res);
-        alert("Sign up Success");
+    signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(userCredential);
+        // ...
       })
       .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
         console.log(error);
-        alert("Sign up Fail\n" + error.response.data.message);
       });
+
+    auth.currentUser.getIdTokenResult().then((idTokenResult) => {
+      console.log(idTokenResult);
+    });
   };
 
   return (
