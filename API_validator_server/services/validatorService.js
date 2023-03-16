@@ -105,4 +105,25 @@ const createApiTestResult = async (meta_id, action_id, response) => {
   return { result_id: result_id, result: result };
 };
 
-module.exports = { inferSchema, createApiTestResult };
+const getApiList = async () => {
+  try {
+    const allApis = await Validator.getApiList();
+    const result = allApis.reduce((acc, cur, idx) => {
+      acc.push({
+        method: cur.method,
+        url: cur.domain + cur.resources,
+        info: {
+          header: cur.header,
+          params: cur.params,
+          body: cur.body,
+        },
+      });
+      return acc;
+    }, []);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { getApiList, createApiTestResult };
