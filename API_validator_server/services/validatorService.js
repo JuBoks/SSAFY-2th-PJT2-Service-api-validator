@@ -100,9 +100,31 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     JSON.stringify(response),
     result,
   ];
+  await Validator.updateMetaRequestTime(meta_id);
   //테스트 테이블에 저장
   const result_id = await Validator.createTestResult(data);
   return { result_id: result_id, result: result };
 };
 
-module.exports = { inferSchema, createApiTestResult };
+const getApiList = async () => {
+  try {
+    const allApis = await Validator.getApiList();
+    const result = allApis.reduce((acc, cur, idx) => {
+      acc.push({
+        method: cur.method,
+        url: cur.domain + cur.resources,
+        info: {
+          header: cur.header,
+          params: cur.params,
+          body: cur.body,
+        },
+      });
+      return acc;
+    }, []);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { getApiList, createApiTestResult };
