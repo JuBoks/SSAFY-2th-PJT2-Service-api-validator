@@ -199,3 +199,8 @@ node_modules
 *.sublime*
 .scannerwork/*
 .idea
+
+psd
+thumb
+sketch
+
