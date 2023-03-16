@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+              dir('Web-Backend/sapiv') {
+                sh 'docker-compose build'
+              }
+            }
+        }
+        stage('Deploy') {
+            steps {
+              dir('Web-Backend/sapiv') {
+                sh 'docker-compose up -d'
+              }
+            }
+        }
+    }
+}
