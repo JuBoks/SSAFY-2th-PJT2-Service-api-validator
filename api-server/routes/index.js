@@ -21,7 +21,7 @@ router.post("/api/nodejs-api", function (req, res) {
 });
 
 // GET방식
-router.get("/api/get/example-v1", function (req, res) {
+router.get("/api/example-v1", function (req, res) {
   res.status(200).json({
     rsp: {
       stat: "ok",
