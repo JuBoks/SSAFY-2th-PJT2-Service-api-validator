@@ -111,13 +111,12 @@ const getApiList = async () => {
     const allApis = await Validator.getApiList();
     const result = allApis.reduce((acc, cur, idx) => {
       acc.push({
+        meta_id: cur.meta_id,
         method: cur.method,
         url: cur.domain + cur.resources,
-        info: {
-          header: cur.header,
-          params: cur.params,
-          body: cur.body,
-        },
+        header: cur.header,
+        params: cur.params,
+        body: cur.body,
       });
       return acc;
     }, []);
