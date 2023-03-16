@@ -6,8 +6,19 @@ import styles from "@/styles/login.module.css";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../util/auth";
 import IndexLogo from "@/components/IndexLogo.js";
+import axios from "axios";
 
 export default function Home() {
+  const url = "http://70.12.246.220:3000";
+
+  const GetUsers = async (userUid) => {
+    const res = await axios.get(url + "/users", {
+      headers: {
+        uid: userUid,
+      },
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -15,7 +26,9 @@ export default function Home() {
     signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(userCredential);
+        const userUid = userCredential.user.uid;
+        const userData = GetUsers(userUid);
+        console.log(userData);
         alert("Login Success");
         router.push("/home");
       })
@@ -25,10 +38,6 @@ export default function Home() {
         alert("Login Fail\n" + errorMessage);
         console.log(error);
       });
-
-    auth.currentUser.getIdTokenResult().then((idTokenResult) => {
-      console.log(idTokenResult);
-    });
   };
 
   return (
