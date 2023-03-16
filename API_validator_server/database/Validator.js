@@ -74,7 +74,21 @@ const getApiList = async () => {
       WHERE TIMESTAMPDIFF(HOUR, meta.last_req_time, now()) > meta.cycle_time or meta.last_req_time is null
       and meta.state = 0 and api.state = 0 and domain.state = 0`;
     const [rows, fields] = await pool.query(sql);
-    console.log(rows);
+    // console.log(rows);
+    return rows;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const updateMetaRequestTime = async (meta_id) => {
+  try {
+    let sql =
+      "UPDATE tbl_metadata SET last_req_time = NOW() WHERE (meta_id = ?);";
+    let params = [meta_id];
+    const [rows, fields] = await pool.query(sql, params);
+    // console.log(rows);
     return rows;
   } catch (error) {
     console.log(error);
@@ -88,4 +102,5 @@ module.exports = {
   createTestResult,
   createAnalyzedData,
   getApiList,
+  updateMetaRequestTime,
 };

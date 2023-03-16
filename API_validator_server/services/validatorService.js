@@ -100,6 +100,7 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     JSON.stringify(response),
     result,
   ];
+  await Validator.updateMetaRequestTime(meta_id);
   //테스트 테이블에 저장
   const result_id = await Validator.createTestResult(data);
   return { result_id: result_id, result: result };
