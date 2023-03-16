@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { CaslModule } from './casl/casl.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PoliciesGuard } from './common/guard/policies-guard';
+import { ApisModule } from './apis/apis.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule.forRoot(), CaslModule],
+  imports: [UsersModule, ConfigModule.forRoot(), CaslModule, ApisModule],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
