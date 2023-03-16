@@ -1,16 +1,19 @@
+require('dotenv').config()
 const mysql = require("mysql2/promise");
 
 //연결 설정
 const pool = mysql.createPool({
   // Host IP
-  host: "j8s002.p.ssafy.io",
-  port: 3305,
+  host: process.env.DB_HOST,
+  // Host Port
+  port: process.env.DB_PORT, 
   // mysql username
-  user: "...",
+  user: process.env.DB_USER,
   // mysql user password
-  password: "...",
+  password: process.env.DB_PASSWORD,
   // db name
-  database: "sapiv",
+  database: process.env.DB_DATABASE,
+  waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
