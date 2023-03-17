@@ -1,10 +1,16 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import { Button, TextField, Autocomplete } from "@mui/material";
+import DenseTable from "@/components/DenseTable.js";
 
 export default function Main() {
+  const optionList = [
+    { label: "Name", id: 1 },
+    { label: "Email", id: 2 },
+  ];
+
   return (
     <>
       <Header />
@@ -32,14 +38,17 @@ export default function Main() {
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={({ label: "Name", id: 1 }, { label: "email", id: 2 })}
-                sx={{ width: 300 }}
+                options={optionList}
+                sx={{ width: 150 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Movie" />
+                  <TextField label="option" {...params} />
                 )}
               />
               <TextField id="searchBar" variant="outlined" />
               <Button variant="contained">Search</Button>
+            </Grid>
+            <Grid item xs={12}>
+              <DenseTable />
             </Grid>
           </Grid>
         </Box>

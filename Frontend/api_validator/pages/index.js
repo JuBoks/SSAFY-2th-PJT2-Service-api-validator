@@ -39,6 +39,23 @@ export default function Home() {
         console.log(error);
       });
   };
+  axios
+    .post(
+      url + "/apis/test",
+      {
+        url: "http://j8s002.p.ssafy.io:8088/api/example-v1",
+        method: "GET",
+      },
+      {
+        headers: {
+          uid: "YFONccXiUTRaXCAHEziRdfvzO8A3",
+        },
+      }
+    )
+    .then((res) => {
+      console.log("get");
+      console.log(res);
+    });
 
   return (
     <>
