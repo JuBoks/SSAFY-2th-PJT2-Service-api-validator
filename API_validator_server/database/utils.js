@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const mysql = require("mysql2/promise");
 
 //연결 설정
@@ -6,7 +6,7 @@ const pool = mysql.createPool({
   // Host IP
   host: process.env.DB_HOST,
   // Host Port
-  port: process.env.DB_PORT, 
+  port: process.env.DB_PORT,
   // mysql username
   user: process.env.DB_USER,
   // mysql user password
