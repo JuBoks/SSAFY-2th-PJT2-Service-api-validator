@@ -1,19 +1,61 @@
 import Head from "next/head";
-import Image from "next/image";
+import router from "next/router";
 import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
-import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
 import styles from "@/styles/login.module.css";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import auth from "../util/auth";
+import IndexLogo from "@/components/IndexLogo.js";
+import axios from "axios";
 
 export default function Home() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const url = "http://70.12.246.220:3000";
+
+  const GetUsers = async (userUid) => {
+    const res = await axios.get(url + "/users", {
+      headers: {
+        uid: userUid,
+      },
     });
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userUid = userCredential.user.uid;
+        const userData = GetUsers(userUid);
+        console.log(userData);
+        alert("Login Success");
+        router.push("/home");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert("Login Fail\n" + errorMessage);
+        console.log(error);
+      });
+  };
+  axios
+    .post(
+      url + "/apis/test",
+      {
+        url: "http://j8s002.p.ssafy.io:8088/api/example-v1",
+        method: "GET",
+      },
+      {
+        headers: {
+          uid: "YFONccXiUTRaXCAHEziRdfvzO8A3",
+        },
+      }
+    )
+    .then((res) => {
+      console.log("get");
+      console.log(res);
+    });
 
   return (
     <>
@@ -26,13 +68,7 @@ export default function Home() {
 
       <Grid container>
         <Grid item xs={7}>
-          <Box className={styles["left-box"]}>
-            <Image
-              src={logo}
-              style={{ width: "60%", height: "20%" }}
-              alt="logo"
-            />
-          </Box>
+          <IndexLogo />
         </Grid>
         <Grid item xs={5}>
           <Box className={styles["right-box"]}>
