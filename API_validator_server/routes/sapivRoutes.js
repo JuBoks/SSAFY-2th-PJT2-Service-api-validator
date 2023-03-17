@@ -1,27 +1,27 @@
 const express = require("express");
 
-const sapivController = require("../controllers/sapivController");
+const categoryController = require("../controllers/categoryController");
+const domainController = require("../controllers/domainController");
+const apiController = require("../controllers/apiController");
 
 const router = express.Router();
 
-router.post("/categories", sapivController.createNewCategory);
+router.post("/categories", categoryController.createNewCategory);
+router.get("/categories", categoryController.getAllCategories);
+router.get("/categories/:categoryId", categoryController.getOneCategory);
+router.patch("/categories/:categoryId", categoryController.updateOneCategory);
+router.delete("/categories/:categoryId", categoryController.deleteOneCategory);
 
-router.get("/categories", sapivController.getAllCategories);
+router.post("/domains", domainController.createNewDomain);
+router.get("/domains", domainController.getAllDomains);
+router.get("/domains/:domainId", domainController.getOneDomain);
+router.patch("/domains/:domainId", domainController.updateOneDomain);
+router.delete("/domains/:domainId", domainController.deleteOneDomain);
 
-router.get("/categories/:categoryId", sapivController.getOneCategory);
-
-router.patch("/categories/:categoryId", sapivController.updateOneCategory);
-
-router.delete("/categories/:categoryId", sapivController.deleteOneCategory);
-
-router.post("/domains", sapivController.createNewDomain);
-
-router.get("/domains", sapivController.getAllDomains);
-
-router.get("/domains/:domainId", sapivController.getOneDomain);
-
-router.patch("/domains/:domainId", sapivController.updateOneDomain);
-
-router.delete("/domains/:domainId", sapivController.deleteOneDomain);
+router.post("/apis", apiController.createNewApi);
+router.get("/apis", apiController.getAllApis);
+router.get("/apis/:apiId", apiController.getOneApi);
+router.patch("/apis/:apiId", apiController.updateOneApi);
+router.delete("/apis/:apiId", apiController.deleteOneApi);
 
 module.exports = router;
