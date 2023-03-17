@@ -29,7 +29,7 @@ pipeline {
                 }
               }
 
-                sh 'docker run --privileged=true --name sapiv-api-validator -d -p 80:3000 sapiv/sapiv-api-validator-image'
+                sh 'docker run --privileged=true --name sapiv-api-validator -d -p 80:3000 sapiv/api-validator-image'
             }
 
             post {
