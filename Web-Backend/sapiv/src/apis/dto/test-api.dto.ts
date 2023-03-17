@@ -1,9 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { AxiosRequestConfig, Method } from "axios";
-
+import { ApiProperty } from '@nestjs/swagger';
+import { AxiosRequestConfig } from 'axios';
 export class TestApiDto implements AxiosRequestConfig{
     @ApiProperty()
-    url?: string;
-    method?: Method | string;
-    baseURL?: string;
+    url: string;
+
+    @ApiProperty()
+    method: string;
 }

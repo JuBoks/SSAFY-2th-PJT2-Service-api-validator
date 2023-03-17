@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { ApiHeader } from '@nestjs/swagger';
-import { AxiosError, AxiosRequestConfig, RawAxiosRequestConfig } from 'axios';
 import { ApisService } from './apis.service';
 import { CreateApiDto } from './dto/create-api.dto';
 import { TestApiDto } from './dto/test-api.dto';
@@ -20,9 +19,10 @@ export class ApisController {
   }
 
   @Post('test')
-  async test(@Body() testApiDto: TestApiDto) {
+  async test(@Body() testApiDto: TestApiDto, @Res({ passthrough: true }) res: Response) {
     
     let result =  await this.apisService.test(testApiDto);
+    
     return result;
   }
 
