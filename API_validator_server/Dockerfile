@@ -13,4 +13,4 @@ RUN npm install
 COPY . .
 
 # 시작 명령어 설정
-CMD ["npm", "start"]
+CMD ["node", "app"]
