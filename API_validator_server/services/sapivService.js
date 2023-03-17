@@ -1,46 +1,43 @@
-const Category = require("../database/Category");
+const Domain = require("../database/Domain");
 
-const getAllCategories = async () => {
+const getAllDomains = async (category_id) => {
   try {
-    const allCategories = await Category.getAllCategories();
-    return allCategories;
+    const allDomains = await Domain.getAllDomains(category_id);
+    return allDomains;
   } catch (error) {
     throw error;
   }
 };
 
-const createNewCategory = async (newCategory) => {
+const createNewDomain = async (newDomain) => {
   try {
-    const createdWorkout = await Category.createNewCategory(newCategory);
-    return createdWorkout;
+    const createdDomain = await Domain.createNewDomain(newDomain);
+    return createdDomain;
   } catch (error) {
     throw error;
   }
 };
 
-const updateOneCategory = async (categoryId, changes) => {
+const updateOneDomain = async (domainId, changes) => {
   try {
-    const updatedCategory = await Category.updateOneCategory(
-      categoryId,
-      changes
-    );
-    return updatedCategory;
+    const updatedDomain = await Domain.updateOneDomain(domainId, changes);
+    return updatedDomain;
   } catch (error) {
     throw error;
   }
 };
 
-const deleteOneCategory = async (categoryId) => {
+const deleteOneDomain = async (domainId) => {
   try {
-    await Category.deleteOneCategory(categoryId);
+    await Domain.deleteOneDomain(domainId);
   } catch (error) {
     throw error;
   }
 };
 
 module.exports = {
-  getAllCategories,
-  createNewCategory,
-  updateOneCategory,
-  deleteOneCategory,
+  getAllDomains,
+  createNewDomain,
+  updateOneDomain,
+  deleteOneDomain,
 };
