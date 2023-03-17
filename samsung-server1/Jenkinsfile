@@ -29,7 +29,7 @@ pipeline {
                 }
               }
 
-                sh 'docker run --privileged=true --name sapiv-samsung-server1 -d -p 80:3000 sapiv/samsung-server1-image'
+                sh 'docker run --privileged=true --name sapiv-samsung-server1 -d -p 1001:3000 sapiv/samsung-server1-image'
             }
 
             post {
