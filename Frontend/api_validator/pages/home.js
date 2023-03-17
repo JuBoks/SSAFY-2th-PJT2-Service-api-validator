@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import BarChart from "@/components/BarChart.js";
@@ -12,6 +12,7 @@ import router from "next/router";
 
 export default function Main() {
   const url = "http://70.12.246.220:3000";
+  const [isAuthorize, setIsAuthorize] = useState(false);
 
   const GetUsers = async (userUid) => {
     const res = await axios.get(url + "/users", {
@@ -20,8 +21,9 @@ export default function Main() {
       },
     });
 
+    setIsAuthorize(true);
     console.log(res.data);
-    if (res.data.state === 0) {
+    if (res.data.state !== 0) {
       router.push("/");
     }
   };
@@ -36,7 +38,7 @@ export default function Main() {
     }
   });
 
-  return (
+  return isAuthorize ? (
     <>
       <Header />
       <Box sx={{ display: "flex" }}>
@@ -77,5 +79,7 @@ export default function Main() {
         </Box>
       </Box>
     </>
+  ) : (
+    <></>
   );
 }
