@@ -5,7 +5,7 @@ services:
     image: mysql:8.0.20
     restart: always
     volumes: 
-      - ~/.dbdata:/var/lib/mysql
+      - /home/ubuntu/.dbdata:/var/lib/mysql
     environment:
       # 임시
       MYSQL_DATABASE: 'db'
