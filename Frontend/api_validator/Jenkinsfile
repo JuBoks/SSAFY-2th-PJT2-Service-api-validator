@@ -1,18 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                sh "/home/ubuntu/app/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-            }
-        }
-
         stage('dockerizing'){
             steps{
                 dir('Frontend/api_validator') {
