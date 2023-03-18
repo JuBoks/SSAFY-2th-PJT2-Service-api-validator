@@ -9,7 +9,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                sh "\$SONAR_SCANNER_HOME/bin/sonar-scanner"
+                sh "/home/ubuntu/app/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
             }
         }
 
