@@ -1,12 +1,7 @@
 pipeline {
     agent any
-
-    tools {
-        sonarQube 'SonarScanner'
-    }
-
     stages {
-        stage('SCM') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
@@ -14,9 +9,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv() {
-                    sh 'sonar-scanner'
-                }
+                sh "/home/ubuntu/app/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
             }
         }
 
