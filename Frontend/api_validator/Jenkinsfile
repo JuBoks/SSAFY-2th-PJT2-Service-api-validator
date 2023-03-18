@@ -1,6 +1,25 @@
 pipeline {
     agent any
+
+    tools {
+        sonarQube 'SonarScanner'
+    }
+
     stages {
+        stage('SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv() {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+
         stage('dockerizing'){
             steps{
                 dir('Frontend/api_validator') {
