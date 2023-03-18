@@ -9,7 +9,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                sh "$SONAR_SCANNER_HOME/bin/sonar-scanner"
+                sh "\$SONAR_SCANNER_HOME/bin/sonar-scanner"
             }
         }
 
