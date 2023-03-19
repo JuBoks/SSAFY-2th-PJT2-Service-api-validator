@@ -1,17 +1,12 @@
 pipeline { 
   agent any
+  
   environment {
-    MASTER = 'feat/op/92'
+    MASTER = 'master'
     DEVELOP = 'develop'
   }
+
   stages {
-
-    stage('Hello') {
-      steps {
-        echo "${env.gitlabBranch} Hello ${env.MASTER}"
-      }
-    }
-
     stage('Remove') {
       steps {
         script {
