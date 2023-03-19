@@ -2,12 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage('Hello') {
-      steps {
-        echo "${env.gitlabBranch} ${env.BRANCH_NAME} ${env.GIT_BRANCH}"
-      }
-    }
-    
     stage('SCM') {
       steps {
         checkout scm
