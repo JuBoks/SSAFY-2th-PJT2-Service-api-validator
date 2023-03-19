@@ -2,14 +2,14 @@ version: "1.0"
 
 services:
   samsung-server1:
-    build: ../samsung-server1
+    build: samsung-server1
     container_name: sapiv-samsung-server1-prod
     restart: always
     ports:
       - "3004:3000"
 
   api-validator:
-    build: ../API_validator_server
+    build: API_validator_server
     container_name: sapiv-api-validator-prod
     depends_on:
       - samsung-server1
