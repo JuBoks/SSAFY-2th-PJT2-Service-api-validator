@@ -2,7 +2,7 @@ pipeline {
   agent any
   
   environment {
-    MASTER = 'master'
+    MASTER = 'feat/op/92'
     DEVELOP = 'develop'
   }
 
@@ -50,10 +50,10 @@ pipeline {
         script {
           if (env.gitlabBranch == env.MASTER) {
             // 운영서버
-            sh 'docker-compose -f docker-compose-prod.yml build'
+            sh 'docker-compose -f docker-compose-prod.yml build --no-cache'
           } else if (env.gitlabBranch == env.DEVELOP) {
             // 개발서버
-            sh 'docker-compose -f docker-compose-dev.yml build'
+            sh 'docker-compose -f docker-compose-dev.yml build --no-cache'
           }
         }
       }
