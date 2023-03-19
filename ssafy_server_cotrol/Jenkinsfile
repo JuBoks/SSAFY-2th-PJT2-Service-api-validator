@@ -33,35 +33,68 @@ pipeline {
           }
         }
       }
-    }
+      post {
+        success {
+          echo 'Remove Success'
+        }
 
-    stage('Build') {
-      steps {
-        script {
-          // 운영 서버
-          if (env.gitlabBranch == env.MASTER) {
-            sh 'docker-compose -f docker-compose-prod.yml build'
-          } 
-          // 개발 서버
-          else if (env.gitlabBranch == env.DEVELOP) {
-            sh 'docker-compose -f docker-compose-dev.yml build'
-          }
+        failure {
+          echo 'Remove Failed'
         }
       }
     }
 
-    stage('Deploy') {
-      steps {
-        script {
-          // 운영 서버
-          if (env.gitlabBranch == env.MASTER) {
-            sh 'docker-compose -f docker-compose-prod.yml up -d'
-          }
-          // 개발 서버
-          else if (env.gitlabBranch == env.DEVELOP) {
-            sh 'docker-compose -f docker-compose-dev.yml up -d'
-          }
+  stage('Build') {
+    steps {
+      script {
+        // 운영 서버
+        if (env.gitlabBranch == env.MASTER) {
+          sh 'docker-compose -f docker-compose-prod.yml build'
+        } 
+        // 개발 서버
+        else if (env.gitlabBranch == env.DEVELOP) {
+          sh 'docker-compose -f docker-compose-dev.yml build'
         }
+      }
+    } 
+    post {
+      success {
+          echo 'Build Success'
+      }
+
+          echo 'Build Failed'
+          script {
+            def buildLog = sh(returnStdout: true, script: 'docker-compose -f docker-compose-dev.yml build')
+            echo buildLog
+          }
+      }
+    }
+  }
+
+  stage('Deploy') {
+    steps {
+      script {
+        // 운영 서버
+        if (env.gitlabBranch == env.MASTER) {
+          sh 'docker-compose -f docker-compose-prod.yml up -d'
+        }
+        // 개발 서버
+        else if (env.gitlabBranch == env.DEVELOP) {
+          sh 'docker-compose -f docker-compose-dev.yml up -d'
+        }
+      }
+    }
+    post {
+      success {
+          echo 'Deploy Success'
+      }
+
+      failure {
+          echo 'Deploy Failed'
+          script {
+            def deployLog = sh(returnStdout: true, script: 'docker-compose -f docker-compose-dev.yml up -d')
+            echo deployLog
+          }
       }
     }
   }
