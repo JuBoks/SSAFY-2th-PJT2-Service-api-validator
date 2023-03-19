@@ -4,14 +4,10 @@ services:
   db-prod:
     image: mysql:8.0.20
     container_name: sapiv-db-prod
+    env_file: .env.dbprod
     restart: always
     volumes: 
       - /home/ubuntu/.dbdata-prod:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: 'db'
-      MYSQL_USER: 'sapiv'
-      MYSQL_PASSWORD: 'P@ssw0rd'
-      MYSQL_ROOT_PASSWORD: 'P@ssw0rd!'
     ports:
       - '3306:3306'
     networks:

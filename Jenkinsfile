@@ -45,6 +45,21 @@ pipeline {
       }
     }
 
+    stage('Config') {
+      steps {
+        script {
+          if (env.gitlabBranch == env.MASTER) {
+            // 운영서버
+            sh 'docker-compose -f docker-compose-prod.yml --env-file .env.dbprod config'
+          } else if (env.gitlabBranch == env.DEVELOP) {
+            // 개발서버
+            sh 'ls -al'
+            sh 'docker-compose -f docker-compose-dev.yml --env-file .env.dbdev config'
+          }
+        }
+      }
+    }
+
     stage('Build') {
       steps {
         script {
@@ -75,9 +90,4 @@ pipeline {
 
   }
 
-  post {
-    always { 
-      cleanWs(excludePatterns: ['/.env'])
-    } 
-  } 
 }
