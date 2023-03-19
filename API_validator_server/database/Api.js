@@ -46,9 +46,21 @@ const deleteOneApi = async (apiId) => {
   }
 };
 
+const getApi = async (api_id) => {
+  try {
+    let sql = "SELECT * FROM tbl_api WHERE api_id = ?";
+    let params = [api_id];
+    let [rows, fields] = await pool.query(sql, params);
+    return rows[0];
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAllApis,
   createNewApi,
   updateOneApi,
   deleteOneApi,
+  getApi
 };

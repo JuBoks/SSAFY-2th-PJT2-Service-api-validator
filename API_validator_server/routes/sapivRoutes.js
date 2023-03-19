@@ -3,6 +3,7 @@ const express = require("express");
 const categoryController = require("../controllers/categoryController");
 const domainController = require("../controllers/domainController");
 const apiController = require("../controllers/apiController");
+const metadataController = require("../controllers/metadataController");
 
 const router = express.Router();
 
@@ -23,5 +24,7 @@ router.get("/apis", apiController.getAllApis);
 router.get("/apis/:apiId", apiController.getOneApi);
 router.patch("/apis/:apiId", apiController.updateOneApi);
 router.delete("/apis/:apiId", apiController.deleteOneApi);
+
+router.post("/metadatas/:metaId/test",metadataController.testMetadata);
 
 module.exports = router;
