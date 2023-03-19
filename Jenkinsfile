@@ -25,12 +25,10 @@ pipeline {
           stage('Build') {
               steps {
                 script {
-                  sh "echo ${env.gitlabBranch}"
-                  sh "echo ${env.gitlabSourceBranch}"
-                  if (env.gitlabBranch == 'feat/be/92') {
+                  if (env.gitlabBranch == 'feat/op/92') {
                     // 운영서버
                     sh 'docker-compose -f docker-compose-prod.yml build'
-                  } else if (env.gitlabBranch == 'feat/op/92') {
+                  } else if (env.gitlabBranch == 'feat/be/92') {
                     // 개발서버
                     sh 'docker-compose -f docker-compose-dev.yml build'
                   }
@@ -41,10 +39,10 @@ pipeline {
           stage('Deploy') {
               steps {
                 script {
-                  if (env.gitlabBranch == 'feat/be/92') {
+                  if (env.gitlabBranch == 'feat/op/92') {
                     // 운영서버
                     sh 'docker-compose -f docker-compose-prod.yml up -d'
-                  } else if (env.gitlabBranch == 'feat/op/92') {
+                  } else if (env.gitlabBranch == 'feat/be/92') {
                     // 개발서버
                     sh 'docker-compose -f docker-compose-dev.yml up -d'
                   }
