@@ -2,6 +2,11 @@ pipeline {
   agent any
 
   stages {
+
+    stage('Hello') {
+      echo "${env.gitlabBranch} Hello "
+    }
+
     stage('Build') {
         steps {
           script {
