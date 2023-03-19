@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
   agent any
   environment {
     MASTER = 'feat/op/92'
