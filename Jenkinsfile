@@ -17,33 +17,33 @@ pipeline {
         script {
           if (env.gitlabBranch == env.MASTER) {
             // 운영용 컨테이너 삭제
-            def sapiv-webfe-prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-prod')
-            def sapiv-webbe-prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-prod')
-            def sapiv-db-prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-prod')
+            def sapiv_webfe_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-prod')
+            def sapiv_webbe_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-prod')
+            def sapiv_db_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-prod')
 
-            if (sapiv-webfe-prod.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-webfe-prod)
+            if (sapiv_webfe_prod.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webfe_prod)
             }
-            if (sapiv-webbe-prod.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-webbe-prod)
+            if (sapiv_webbe_prod.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webbe_prod)
             }
-            if (sapiv-db-prod.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-db-prod)
+            if (sapiv_db_prod.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_db_prod)
             }
           } else if (env.gitlabBranch == env.DEVELOP) {
             // 개발용 컨테이너 삭제
-            def sapiv-webfe-dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-dev')
-            def sapiv-webbe-dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-dev')
-            def sapiv-db-dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-dev')
+            def sapiv_webfe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-dev')
+            def sapiv_webbe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-dev')
+            def sapiv_db_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-dev')
 
-            if (sapiv-webfe-dev.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-webfe-dev)
+            if (sapiv_webfe_dev.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webfe_dev)
             }
-            if (sapiv-webbe-dev.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-webbe-dev)
+            if (sapiv_webbe_dev.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webbe_dev)
             }
-            if (sapiv-db-dev.length() > 0) {
-              sh(returnStdout: false, script: 'docker rm -f ' + sapiv-db-dev)
+            if (sapiv_db_dev.length() > 0) {
+              sh(returnStdout: false, script: 'docker rm -f ' + sapiv_db_dev)
             }
           }
         }
