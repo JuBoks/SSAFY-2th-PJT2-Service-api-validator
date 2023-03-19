@@ -1,8 +1,8 @@
 pipeline { 
   agent any
   environment {
-    MASTER = 'master'
-    DEVELOP = 'feat/op/92'
+    MASTER = 'feat/op/92'
+    DEVELOP = 'develop'
   }
   stages {
 
