@@ -10,7 +10,7 @@ pipeline {
     stage('Build') {
         steps {
           script {
-            if (env.gitlabBranch == 'master' or env.gitlabBranch == 'feat/op/92') {
+            if (env.gitlabBranch == 'feat/op/92') {
               // 운영서버
               sh 'docker-compose -f docker-compose-prod.yml build'
             } else if (env.gitlabBranch == 'develop') {
@@ -24,7 +24,7 @@ pipeline {
     stage('Deploy') {
         steps {
           script {
-            if (env.gitlabBranch == 'master' or env.gitlabBranch == 'feat/op/92') {
+            if (env.gitlabBranch == 'feat/op/92') {
               // 운영서버
               sh 'docker-compose -f docker-compose-prod.yml up -d'
             } else if (env.gitlabBranch == 'develop') {
