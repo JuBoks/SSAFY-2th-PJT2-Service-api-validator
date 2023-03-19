@@ -25,6 +25,7 @@ pipeline {
           stage('Build') {
               steps {
                 script {
+                  sh 'echo ' + env.BRANCH_NAME + ' ' + env.GIT_BRANCH 
                   if (env.BRANCH_NAME == 'feat/be/92') {
                     // 운영서버
                     sh 'docker-compose -f docker-compose-prod.yml build'
