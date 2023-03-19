@@ -3,12 +3,6 @@ pipeline {
 
   stages {
 
-    stage('SCM') {
-      steps {
-        checkout scm
-      }
-    }
-
     stage('Hello') {
       echo "${env.gitlabBranch} Hello "
     }
