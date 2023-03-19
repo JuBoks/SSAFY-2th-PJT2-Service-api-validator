@@ -2,23 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage('SCM') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('SonarQube Analysis') { 
-      steps {
-        script {
-          def scannerHome = tool 'SonarScanner';
-          withSonarQubeEnv() {
-            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sapiv-dev -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.ssafy.com -Dsonar.login=61bb570be7bb84c1e2b1f1f15ab4fcbe58f0a765" 
-          } 
-        }
-      }
-    }
-
     stage('Build') {
         steps {
           script {
