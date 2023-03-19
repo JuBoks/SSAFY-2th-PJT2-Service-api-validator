@@ -51,7 +51,7 @@ pipeline {
 
   post {
     always { 
-       cleanWs(excludePatterns: ['/.env'])
-     } 
-   } 
+      cleanWs(excludePatterns: ['/.env'])
+    } 
+  } 
 }
