@@ -36,7 +36,8 @@ pipeline {
 
   post {
     always { 
-      cleanWs(excludePatterns: ['/.env'])
+      cleanWs(patterns{pattern:type('EXCLUDE')
+                    pattern('/.env') })
     } 
   } 
 }
