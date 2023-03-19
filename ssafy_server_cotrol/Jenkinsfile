@@ -35,46 +35,34 @@ pipeline {
       }
     }
 
-  stages {
     stage('Build') {
-        steps {
-          script {
-            // 운영 서버
-            if (env.gitlabBranch == 'master') {
-              sh 'docker-compose -f docker-compose-prod.yml build'
-            } 
-            // 개발 서버
-            else if (env.gitlabBranch == 'develop') {
-              sh 'docker-compose -f docker-compose-dev.yml build'
-            }
+      steps {
+        script {
+          // 운영 서버
+          if (env.gitlabBranch == env.MASTER) {
+            sh 'docker-compose -f docker-compose-prod.yml build'
+          } 
+          // 개발 서버
+          else if (env.gitlabBranch == env.DEVELOP) {
+            sh 'docker-compose -f docker-compose-dev.yml build'
           }
         }
+      }
     }
 
     stage('Deploy') {
-        steps {
-          script {
-            // 운영 서버
-            if (env.gitlabBranch == 'master') {
-              sh 'docker-compose -f docker-compose-prod.yml up -d'
-            }
-            // 개발 서버
-            else if (env.gitlabBranch == 'develop') {
-              sh 'docker-compose -f docker-compose-dev.yml up -d'
-            }
+      steps {
+        script {
+          // 운영 서버
+          if (env.gitlabBranch == env.MASTER) {
+            sh 'docker-compose -f docker-compose-prod.yml up -d'
+          }
+          // 개발 서버
+          else if (env.gitlabBranch == env.DEVELOP) {
+            sh 'docker-compose -f docker-compose-dev.yml up -d'
           }
         }
+      }
     }
   }
-
-  post {
-    success {
-        echo 'Deploy Success'
-    }
-
-    failure {
-        echo 'Deploy Failed'
-    }
-  }
-}
 }
