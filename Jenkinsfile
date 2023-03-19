@@ -19,7 +19,7 @@ pipeline {
     stage('Deploy') {
         steps {
           script {
-            if (env.gitlabBranch == 'master') {
+            if (env.gitlabBranch == 'master' || env.gitlabBranch == 'feat/op/92') {
               // 운영서버
               sh 'docker-compose -f docker-compose-prod.yml up -d'
             } else if (env.gitlabBranch == 'develop') {

@@ -8,13 +8,10 @@ services:
     volumes: 
       - /home/ubuntu/.dbdata-prod:/var/lib/mysql
     environment:
-      # 임시
       MYSQL_DATABASE: 'db'
-      # 임시
       MYSQL_USER: 'sapiv'
-      # 임시
-      MYSQL_PASSWORD: 'sapiv'
-      MYSQL_ROOT_PASSWORD: 'P@ssw0rd'
+      MYSQL_PASSWORD: 'P@ssw0rd'
+      MYSQL_ROOT_PASSWORD: 'P@ssw0rd!'
     ports:
       - '3306:3306'
     networks:
