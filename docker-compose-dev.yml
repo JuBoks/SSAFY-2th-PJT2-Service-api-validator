@@ -8,17 +8,14 @@ services:
     volumes: 
       - /home/ubuntu/.dbdata-dev:/var/lib/mysql
     environment:
-      # 임시
       MYSQL_DATABASE: 'db'
-      # 임시
       MYSQL_USER: 'sapiv'
-      # 임시
       MYSQL_PASSWORD: 'sapiv'
       MYSQL_ROOT_PASSWORD: 'P@ssw0rd'
     ports:
       - '3307:3306'
     networks:
-      - db
+      - dbdev
   
   web-be:
     build: Web-Backend/sapiv
@@ -29,8 +26,8 @@ services:
     ports:
       - '8001:3000'
     networks:
-      - db
-      - frontend
+      - dbdev
+      - frontdev
 
   web-fe:
     build: Frontend/api_validator
@@ -41,8 +38,8 @@ services:
     ports:
       - '3001:3000'
     networks:
-      - frontend
+      - frontdev
 
 networks:
-  db:
-  frontend:
+  dbdev:
+  frontdev:
