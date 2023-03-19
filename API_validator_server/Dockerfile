@@ -1,5 +1,5 @@
 # 베이스 이미지 선택
-FROM node:18.12.1
+FROM sonarqube-test-api-validator 
 
 # 환경 설정 명령어 실행
 RUN apt-get update && apt-get install -y curl sudo
