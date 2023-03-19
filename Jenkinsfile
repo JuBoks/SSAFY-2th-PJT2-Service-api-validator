@@ -1,12 +1,40 @@
-node {
-  stage('SCM') {
-    checkout scm
+pipeline {
+  agent any
+
+  stages {
+    stage('Build') {
+        steps {
+          script {
+            if (env.gitlabBranch == 'master') {
+              // 운영서버
+              sh 'docker-compose -f docker-compose-prod.yml build'
+            } else if (env.gitlabBranch == 'develop') {
+              // 개발서버
+              sh 'docker-compose -f docker-compose-dev.yml build'
+            }
+          }
+        }
+    }
+
+    stage('Deploy') {
+        steps {
+          script {
+            if (env.gitlabBranch == 'master') {
+              // 운영서버
+              sh 'docker-compose -f docker-compose-prod.yml up -d'
+            } else if (env.gitlabBranch == 'develop') {
+              // 개발서버
+              sh 'docker-compose -f docker-compose-dev.yml up -d'
+            }
+          }
+        }
+    }
+
   }
 
-  stage('SonarQube Analysis') { 
-    def scannerHome = tool 'SonarScanner';
-    withSonarQubeEnv() {
-      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sapiv-dev -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.ssafy.com -Dsonar.login=61bb570be7bb84c1e2b1f1f15ab4fcbe58f0a765" 
+  post {
+    always { 
+      cleanWs(excludePatterns: ['/.env'])
     } 
-  }
+  } 
 }

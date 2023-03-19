@@ -1,0 +1,48 @@
+version: "1.0"
+
+services:
+  db:
+    image: mysql:8.0.20
+    container_name: sapiv-db-dev
+    restart: always
+    volumes: 
+      - /home/ubuntu/.dbdata-dev:/var/lib/mysql
+    environment:
+      # 임시
+      MYSQL_DATABASE: 'db'
+      # 임시
+      MYSQL_USER: 'sapiv'
+      # 임시
+      MYSQL_PASSWORD: 'sapiv'
+      MYSQL_ROOT_PASSWORD: 'P@ssw0rd'
+    ports:
+      - '3307:3306'
+    networks:
+      - db
+  
+  web-be:
+    build: Web-Backend/sapiv
+    container_name: sapiv-webbe-dev
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - '8001:3000'
+    networks:
+      - db
+      - frontend
+
+  web-fe:
+    build: Frontend/api_validator
+    container_name: sapiv-webfe-dev
+    depends_on:
+      - web-be
+    restart: always
+    ports:
+      - '3001:3000'
+    networks:
+      - frontend
+
+networks:
+  db:
+  frontend:
