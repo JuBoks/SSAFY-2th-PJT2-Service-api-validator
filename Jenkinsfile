@@ -1,8 +1,8 @@
 pipeline { 
   agent any
   environment {
-    MASTER = 'feat/op/92'
-    DEVELOP = 'develop'
+    MASTER = 'master'
+    DEVELOP = 'feat/op/92'
   }
   stages {
 
@@ -69,10 +69,10 @@ pipeline {
         script {
           if (env.gitlabBranch == env.MASTER) {
             // 운영서버
-            sh 'docker-compose -f docker-compose-prod.yml up -d --no-recreate'
+            sh 'docker-compose -f docker-compose-prod.yml up -d'
           } else if (env.gitlabBranch == env.DEVELOP) {
             // 개발서버
-            sh 'docker-compose -f docker-compose-dev.yml up -d --no-recreate'
+            sh 'docker-compose -f docker-compose-dev.yml up -d'
           }
         }
       }

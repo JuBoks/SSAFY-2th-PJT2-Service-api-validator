@@ -1,7 +1,7 @@
 version: "1.0"
 
 services:
-  db:
+  db-prod:
     image: mysql:8.0.20
     container_name: sapiv-db-prod
     restart: always
@@ -15,31 +15,31 @@ services:
     ports:
       - '3306:3306'
     networks:
-      - db
+      - dbprod
   
-  web-be:
+  web-be-prod:
     build: Web-Backend/sapiv
     container_name: sapiv-webbe-prod
     depends_on:
-      - db
+      - db-prod
     restart: always
     ports:
       - '8000:3000'
     networks:
-      - db
-      - frontend
+      - dbprod
+      - frontprod
 
-  web-fe:
+  web-fe-prod:
     build: Frontend/api_validator
     container_name: sapiv-webfe-prod
     depends_on:
-      - web-be
+      - web-be-prod
     restart: always
     ports:
       - '3000:3000'
     networks:
-      - frontend
+      - frontprod
 
 networks:
-  db:
-  frontend:
+  dbprod:
+  frontprod:
