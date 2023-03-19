@@ -1,5 +1,5 @@
 # 베이스 이미지 선택
-FROM sonarqube-test-samsung-server1 
+FROM deploy_dev_prod_by_docekr_compose-samsung-server1
 
 # 환경 설정 명령어 실행
 RUN apt-get update && apt-get install -y curl sudo
