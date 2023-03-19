@@ -5,7 +5,7 @@ pipeline {
     stage('Build') {
         steps {
           script {
-            if (env.gitlabBranch == 'master') {
+            if (env.gitlabBranch == 'master' || env.gitlabBranch == 'feat/op/92') {
               // 운영서버
               sh 'docker-compose -f docker-compose-prod.yml build'
             } else if (env.gitlabBranch == 'develop') {
