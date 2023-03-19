@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Hello') {
       steps {
-        sh "echo Hello1 ${env.gitlabBranch} ${env.BRANCH_NAME} ${env.GIT_BRANCH}"
+        echo "${env.gitlabBranch} ${env.BRANCH_NAME} ${env.GIT_BRANCH}"
       }
     }
     
