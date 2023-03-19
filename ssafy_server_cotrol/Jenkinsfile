@@ -44,43 +44,53 @@ pipeline {
       }
     }
 
-    stage('Build') {
-      steps {
-        script {
-          // 운영 서버
-          if (env.gitlabBranch == env.MASTER) {
-            sh 'docker-compose -f docker-compose-prod.yml build'
-          } 
-          // 개발 서버
-          else if (env.gitlabBranch == env.DEVELOP) {
-            sh 'docker-compose -f docker-compose-dev.yml build'
-          }
-        }
+stage('Build') {
+  steps {
+    script {
+      // 운영 서버
+      if (env.gitlabBranch == env.MASTER) {
+        sh 'docker-compose -f docker-compose-prod.yml build'
       } 
-      post {
-          success {
-              echo 'Build Success'
-          }
-
-          failure {
-              echo 'Build Failed'
-          }
+      // 개발 서버
+      else if (env.gitlabBranch == env.DEVELOP) {
+        sh 'docker-compose -f docker-compose-dev.yml build'
       }
     }
+  } 
+  post {
+    success {
+        echo 'Build Success'
+    }
 
-    stage('Deploy') {
-      steps {
-        script {
-          // 운영 서버
-          if (env.gitlabBranch == env.MASTER) {
-            sh 'docker-compose -f docker-compose-prod.yml up -d'
-          }
-          // 개발 서버
-          else if (env.gitlabBranch == env.DEVELOP) {
-            sh 'docker-compose -f docker-compose-dev.yml up -d'
-          }
-        }
+    failure {
+        echo 'Build Failed'
+        sh 'docker-compose -f docker-compose-dev.yml build'
+    }
+  }
+}
+
+stage('Deploy') {
+  steps {
+    script {
+      // 운영 서버
+      if (env.gitlabBranch == env.MASTER) {
+        sh 'docker-compose -f docker-compose-prod.yml up -d'
+      }
+      // 개발 서버
+      else if (env.gitlabBranch == env.DEVELOP) {
+        sh 'docker-compose -f docker-compose-dev.yml up -d'
       }
     }
   }
+  post {
+    success {
+        echo 'Deploy Success'
+    }
+
+    failure {
+        echo 'Deploy Failed'
+        sh 'docker-compose -f docker-compose-dev.yml up -d'
+    }
+  }
+}
 }
