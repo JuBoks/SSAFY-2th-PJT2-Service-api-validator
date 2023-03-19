@@ -3,9 +3,9 @@ pipeline {
 
   stages {
     stage('Hello') {
-        steps {
-            echo "Hello1 ${env.gitlabBranch} ${env.BRANCH_NAME} ${env.GIT_BRANCH}"
-        }
+      steps {
+        echo "Hello1 ${env.gitlabBranch} ${env.BRANCH_NAME} ${env.GIT_BRANCH}"
+      }
     }
     
     stage('SCM') {
