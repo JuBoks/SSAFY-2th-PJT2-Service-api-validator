@@ -46,9 +46,21 @@ const deleteOneDomain = async (domainId) => {
   }
 };
 
+const getDomain = async (domain_id) => {
+  try {
+    let sql = "SELECT * FROM tbl_domain WHERE domain_id = ?";
+    let params = [domain_id];
+    let [rows, fields] = await pool.query(sql, params);
+    return rows[0];
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAllDomains,
   createNewDomain,
   updateOneDomain,
   deleteOneDomain,
+  getDomain
 };
