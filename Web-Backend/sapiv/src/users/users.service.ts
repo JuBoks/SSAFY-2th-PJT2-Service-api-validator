@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { User } from './entities/user.entity';
+import { CustomRequest } from 'src/common/custromrequest';
 
 
 @Injectable()
@@ -26,7 +27,8 @@ export class UsersService {
       });
 
       await auth.setCustomUserClaims(userInfo.uid, {
-        state: 0, type: createUserDto.type
+        state: 0,
+        type: createUserDto.type
       });
       
     } catch(error){
@@ -76,8 +78,44 @@ export class UsersService {
     })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(updateUserDto: UpdateUserDto, request: CustomRequest) {
+    if(updateUserDto.state !== undefined && updateUserDto.state >= request.user.state){
+      throw new HttpException(
+        "허가되지 않은 행동입니다.",
+        HttpStatus.UNAUTHORIZED
+      );
+    }
+    if(updateUserDto.type !== undefined && updateUserDto.uid !== request.user.uid){
+      throw new HttpException(
+        "허가되지 않은 행동입니다.",
+        HttpStatus.UNAUTHORIZED
+      );
+    }    
+    const auth = getAuth(this.firebase);
+    try{
+      const user = await auth.getUser(updateUserDto.uid);
+      if(user.uid !== request.user.uid && user.customClaims.state >= request.user.state){
+        throw new HttpException(
+          "허가되지 않은 행동입니다.",
+          HttpStatus.UNAUTHORIZED
+        );
+      }       
+      if(updateUserDto.state === undefined){
+        updateUserDto.state = user.customClaims.state;
+      }
+      if(updateUserDto.type === undefined){
+        updateUserDto.type = user.customClaims.type;
+      }
+      await auth.setCustomUserClaims(updateUserDto.uid, {state: updateUserDto.state, type: updateUserDto.type});
+    }
+    catch(error){
+      throw new HttpException(
+        error.message,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    
+    return "success";
   }
 
   remove(id: number) {
