@@ -1,6 +1,9 @@
 const metadata = require("../database/MetaData");
 const api = require("../database/Api");
 const domain = require("../database/Domain");
+const validatorService = require("./validatorService");
+const Validator = require("../database/Validator");
+
 const axios = require("axios");
 
 const getAllMetadatas = async (apiId) => {
@@ -65,8 +68,30 @@ const createMetadata = async (apiId, body) => {
     }
 }
 
+const createExpectResponse = async (metaId, response) => {
+    try {
+        const schema = validatorService(response, Array.isArray(response));
+        
+        //자료형 추론 결과 우선 anayled data 테이블에 저장
+        const dataId = await Validator.createAnalyzedData(schema);
+
+        //expect response log 저장
+        const responseId = await metadata.createExpectResponse(metaId, dataId, response);
+
+        //metadata 에 response id 업데이트
+        await metadata.updateResponseIdInMetadata(metaId, responseId);
+        
+        return responseId;
+
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 module.exports = {
     getAllMetadatas,
     createMetadata,
     testMetadata,
+    createExpectResponse
 };

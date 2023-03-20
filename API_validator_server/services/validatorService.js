@@ -62,34 +62,45 @@ const createApiTestResult = async (meta_id, action_id, response) => {
   const schema = inferSchema(response, Array.isArray(response));
   // console.log(schema);
 
-  //meta id 에 현재 기대 response 값이 있는지 확인한다.
-  const expect_response = await Validator.getResponseByMetaId(meta_id);
-  // console.log(expect_response.data_id);
-  const answer_schema = await Validator.getAnalyzedDataByDataId(
-    expect_response.data_id
-  );
+  try {
+    //meta id 에 현재 기대 response 값이 있는지 확인한다.
+    const expect_response = await Validator.getResponseByMetaId(meta_id);
+    // console.log(expect_response.data_id);
+    const answer_schema = await Validator.getAnalyzedDataByDataId(
+      expect_response.data_id
+    );
+
+  }
+  catch(error) {
+    throw error;
+  }
 
   let result = false;
 
   //자료형 추론 결과 저장
   let data_id = null;
 
-  //기대하는 값이 있으면, 정답지와 diff 비교, pass/fail 판단
-  if (expect_response !== null) {
-    //메소드 호출
-    result = isEmpty(compareJson(schema, answer_schema));
-
-    //만약 pass면,expect_response의 data_id 저장
-    if (result) {
-      data_id = expect_response.data_id;
-    }
-
-    //fail 이면 자료형 추론 결과 저장
-    else {
-      data_id = await Validator.createAnalyzedData(schema);
-    }
-  } else {
-    data_id = await Validator.createAnalyzedData(schema);
+  try {
+      //기대하는 값이 있으면, 정답지와 diff 비교, pass/fail 판단
+      if (expect_response !== null) {
+        //메소드 호출
+        result = isEmpty(compareJson(schema, answer_schema));
+    
+        //만약 pass면,expect_response의 data_id 저장
+        if (result) {
+          data_id = expect_response.data_id;
+        }
+    
+        //fail 이면 자료형 추론 결과 저장
+        else {
+          data_id = await Validator.createAnalyzedData(schema);
+        }
+      } else {
+        data_id = await Validator.createAnalyzedData(schema);
+      }
+  }
+  catch(error) {
+    throw error;
   }
 
   const data = [
@@ -100,8 +111,15 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     JSON.stringify(response),
     result,
   ];
-  await Validator.updateMetaRequestTime(meta_id);
-  //테스트 테이블에 저장
+  try { 
+    //테스트 테이블에 저장
+    await Validator.updateMetaRequestTime(meta_id);
+  }
+  
+  catch(error) {
+    throw error;
+  }
+  
   const result_id = await Validator.createTestResult(data);
   return { result_id: result_id, result: result };
 };
