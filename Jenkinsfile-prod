@@ -1,0 +1,53 @@
+pipeline { 
+  agent any
+
+  stages {
+    stage('Remove') {
+      steps {
+        script {
+          // 운영용 컨테이너 삭제
+          def sapiv_webfe_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-prod')
+          def sapiv_webbe_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-prod')
+          def sapiv_api_validator_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-api-validator-prod')
+          def sapiv_db_prod = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-prod')
+
+          if (sapiv_webfe_prod.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webfe_prod)
+          }
+          if (sapiv_webbe_prod.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webbe_prod)
+          }
+          if (sapiv_api_validator_prod.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_api_validator_prod)
+          }
+          if (sapiv_db_prod.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_db_prod)
+          }
+        }
+      }
+    }
+
+    stage('Config') {
+      steps {
+        // 운영서버
+        sh 'docker-compose -f docker-compose-prod.yml --env-file .env.dbprod config'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        // 운영서버
+        sh 'docker-compose -f docker-compose-prod.yml build'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        // 운영서버
+        sh 'docker-compose -f docker-compose-prod.yml up -d'
+      }
+    }
+
+  }
+
+}
