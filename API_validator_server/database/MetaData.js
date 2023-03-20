@@ -40,8 +40,35 @@ const createMetadata = async(apiId, body) => {
 }
 
 
+const createExpectResponse = async(metaId, dataId, response) => {
+    try{
+        let sql = "INSERT INTO tbl_expect_response_log (meta_id, data_id, response) VALUES (?, ?, ?)";
+        let params = [metaId, dataId, JSON.stringify(response)];
+        let [rows, fields] = await pool.query(sql, params);
+        return rows.insertId;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+const updateResponseIdInMetadata = async(metaId, responseId) => {
+    try {
+        let sql = "UPDATE tbl_metadata SET response_id = ? WHERE meta_id = ?";
+        let params = [metaId, responseId];
+        let [rows, fields] = await pool.query(sql, params);
+        return rows;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+
 module.exports =  {
     getAllMetadatas,
     createMetadata,
-    getMetaData
+    getMetaData,
+    createExpectResponse,
+    updateResponseIdInMetadata
 }

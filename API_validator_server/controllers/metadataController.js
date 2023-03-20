@@ -63,11 +63,15 @@ const testMetadata = async (req, res) => {
 
 const createExpectResponse = async (req, res) => {
   const {metaId} = req.params;
-  try{
-      const data = await metadataService.updateMetadata(metaId);
-      res.send({ data });
-  }catch (error) { 
+  const {response} = req.body;
 
+  try{
+      const data = await metadataService.createExpectResponse(metaId, response);
+      res.status(200).send({ "meta_id" : metaId, "response_id" : data });
+  }catch (error) { 
+    res
+        .status(error?.status || 500)
+        .send({ status: "FAILED", data: { error: error?.message || error } });
   }
 };
   
