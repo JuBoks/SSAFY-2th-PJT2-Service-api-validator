@@ -19,11 +19,26 @@ services:
     depends_on:
       - db-prod
     restart: always
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - '8000:3000'
     networks:
       - dbprod
       - frontprod
+
+  api-validator:
+    build: API_validator_server
+    container_name: sapiv-apivalidator-prod
+    depends_on:
+      - db-prod
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8070:3000"
+    networks:
+      - dbprod
 
   web-fe-prod:
     build: Frontend/api_validator
@@ -31,6 +46,8 @@ services:
     depends_on:
       - web-be-prod
     restart: always
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - '3000:3000'
     networks:

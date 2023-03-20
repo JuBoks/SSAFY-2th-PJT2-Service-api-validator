@@ -1,0 +1,54 @@
+pipeline { 
+  agent any
+  
+  stages {
+    stage('Remove') {
+      steps {
+        script {
+          // 개발용 컨테이너 삭제
+          def sapiv_webfe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-dev')
+          def sapiv_webbe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-dev')
+          def sapiv_apivalidator_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-apivalidator-dev')
+          def sapiv_db_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-dev')
+
+          if (sapiv_webfe_dev.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webfe_dev)
+          }
+          if (sapiv_webbe_dev.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webbe_dev)
+          }
+          if (sapiv_apivalidator_dev.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_apivalidator_dev)
+          }
+          if (sapiv_db_dev.length() > 0) {
+            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_db_dev)
+          }
+        }
+      }
+    }
+
+    stage('Config') {
+      steps {
+        // 개발서버
+        sh 'ls -al'
+        sh 'docker-compose -f docker-compose-dev.yml --env-file .env.dbdev config'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        // 개발서버
+        sh 'docker-compose -f docker-compose-dev.yml build'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        // 개발서버
+        sh 'docker-compose -f docker-compose-dev.yml up -d'
+      }
+    }
+
+  }
+
+}
