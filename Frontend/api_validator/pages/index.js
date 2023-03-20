@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Head from "next/head";
 import router from "next/router";
 import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
@@ -8,8 +9,11 @@ import auth from "../util/auth";
 import IndexLogo from "../components/IndexLogo";
 import axios from "axios";
 
+import { reauthenticateWithCredential } from "firebase/auth";
+
 export default function Home() {
   const url = "http://70.12.246.220:3000";
+  const [userCredential, setUserCredential] = useState("");
 
   const GetUsers = async (userUid) => {
     const res = await axios.get(url + "/api/users", {
@@ -17,6 +21,7 @@ export default function Home() {
         uid: userUid,
       },
     });
+    return res;
   };
 
   const handleSubmit = async (event) => {
@@ -25,8 +30,10 @@ export default function Home() {
 
     signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
       .then((userCredential) => {
+        setUserCredential(userCredential);
         const user = userCredential.user;
         const userUid = userCredential.user.uid;
+        console.log(user);
         const userData = GetUsers(userUid);
         console.log(userData);
         alert("Login Success");
@@ -39,6 +46,11 @@ export default function Home() {
         console.log(error);
       });
   };
+
+  // ----------------------------------
+  const user = auth.currentUser;
+
+  // TODO(you): prompt the user to re-provide their sign-in credentials
 
   return (
     <>

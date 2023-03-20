@@ -6,9 +6,37 @@ import DenseTable from "@/components/DenseTable.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import { useState } from "react";
 import router from "next/router";
+import auth from "../util/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(true);
+
+  const url = "http://70.12.246.220:3000";
+
+  const GetUsers = async (userUid) => {
+    const res = await axios.get(url + "/api/users", {
+      headers: {
+        uid: userUid,
+      },
+    });
+
+    if (res.data.state === 0) {
+      router.push("/");
+    }
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    console.log("auth", auth);
+    if (user) {
+      console.log("user", user);
+      const uid = user.uid;
+      GetUsers(uid);
+    } else {
+      console.log("User is Signed Out");
+    }
+  });
 
   return isAuthorize ? (
     <>
