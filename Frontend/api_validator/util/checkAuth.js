@@ -21,6 +21,7 @@ const GetUsers = async (userUid) => {
 };
 
 onAuthStateChanged(auth, (user) => {
+  console.log(auth);
   if (user) {
     const uid = user.uid;
     GetUsers(uid);
