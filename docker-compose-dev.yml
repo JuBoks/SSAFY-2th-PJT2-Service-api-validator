@@ -1,0 +1,41 @@
+version: "1.0"
+
+services:
+  db-dev:
+    image: mysql:8.0.20
+    container_name: sapiv-db-dev
+    env_file: .env.dbdev
+    restart: always
+    volumes: 
+      - /home/ubuntu/.dbdata-dev:/var/lib/mysql
+    ports:
+      - '3307:3306'
+    networks:
+      - dbdev
+  
+  web-be-dev:
+    build: Web-Backend/sapiv
+    container_name: sapiv-webbe-dev
+    depends_on:
+      - db-dev
+    restart: always
+    ports:
+      - '8001:3000'
+    networks:
+      - dbdev
+      - frontdev
+
+  web-fe-dev:
+    build: Frontend/api_validator
+    container_name: sapiv-webfe-dev
+    depends_on:
+      - web-be-dev
+    restart: always
+    ports:
+      - '3001:3000'
+    networks:
+      - frontdev
+
+networks:
+  dbdev:
+  frontdev:

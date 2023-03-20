@@ -1,0 +1,41 @@
+version: "1.0"
+
+services:
+  db-prod:
+    image: mysql:8.0.20
+    container_name: sapiv-db-prod
+    env_file: .env.dbprod
+    restart: always
+    volumes: 
+      - /home/ubuntu/.dbdata-prod:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    networks:
+      - dbprod
+  
+  web-be-prod:
+    build: Web-Backend/sapiv
+    container_name: sapiv-webbe-prod
+    depends_on:
+      - db-prod
+    restart: always
+    ports:
+      - '8000:3000'
+    networks:
+      - dbprod
+      - frontprod
+
+  web-fe-prod:
+    build: Frontend/api_validator
+    container_name: sapiv-webfe-prod
+    depends_on:
+      - web-be-prod
+    restart: always
+    ports:
+      - '3000:3000'
+    networks:
+      - frontprod
+
+networks:
+  dbprod:
+  frontprod:

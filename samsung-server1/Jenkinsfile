@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    stages {
+        stage('dockerizing'){
+            steps{
+                dir('samsung-server1') {
+                    sh 'docker build -t sapiv/samsung-server1-image ./'
+                }
+            }
+
+            post {
+                success {
+                    echo 'Dockerizing Success'
+                }
+
+                failure {
+                    echo 'Dockerizing Failed'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+              script{
+	            def container = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-samsung-server1')
+
+                if (container.trim().length() > 0) {
+                  sh(returnStdout: false, script: 'docker ps -a -q -f name=sapiv-samsung-server1 && docker rm -f ' + container)
+                }
+              }
+
+                sh 'docker run --privileged=true --name sapiv-samsung-server1 -d -p 8088:3000 sapiv/samsung-server1-image'
+            }
+
+            post {
+                success {
+                    echo 'Deploy Success'
+                }
+
+                failure {
+                    echo 'Deploy Failed'
+                }
+            }
+        }
+    }
+}
