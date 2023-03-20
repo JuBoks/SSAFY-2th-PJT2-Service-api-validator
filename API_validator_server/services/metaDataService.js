@@ -3,6 +3,11 @@ const api = require("../database/Api");
 const domain = require("../database/Domain");
 const axios = require("axios");
 
+const getAllMetadatas = async (apiId) => {
+    const data = await metadata.getAllMetadatas(apiId);
+    return data;
+}
+
 const testMetadata = async (metaId) => {
 
     const metadata_data = await metadata.getMetaData(metaId);
@@ -50,4 +55,18 @@ const testMetadata = async (metaId) => {
 
 }
 
-module.exports = {testMetadata};
+const createMetadata = async (apiId, body) => {
+    try {
+        const meta_id = await metadata.createMetadata(apiId, body);
+        return meta_id;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
+module.exports = {
+    getAllMetadatas,
+    createMetadata,
+    testMetadata,
+};
