@@ -1,18 +1,18 @@
 import Head from "next/head";
 import router from "next/router";
 import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
-import Copyright from "@/components/Copyright.js";
-import styles from "@/styles/login.module.css";
+import Copyright from "../components/Copyright.js";
+import styles from "../styles/login.module.css";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../util/auth";
-import IndexLogo from "@/components/IndexLogo.js";
+import IndexLogo from "../components/IndexLogo";
 import axios from "axios";
 
 export default function Home() {
   const url = "http://70.12.246.220:3000";
 
   const GetUsers = async (userUid) => {
-    const res = await axios.get(url + "/users", {
+    const res = await axios.get(url + "/api/users", {
       headers: {
         uid: userUid,
       },
@@ -39,23 +39,6 @@ export default function Home() {
         console.log(error);
       });
   };
-  axios
-    .post(
-      url + "/apis/test",
-      {
-        url: "http://j8s002.p.ssafy.io:8088/api/example-v1",
-        method: "GET",
-      },
-      {
-        headers: {
-          uid: "YFONccXiUTRaXCAHEziRdfvzO8A3",
-        },
-      }
-    )
-    .then((res) => {
-      console.log("get");
-      console.log(res);
-    });
 
   return (
     <>

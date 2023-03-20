@@ -16,14 +16,59 @@ import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-const drawerWidth = 240;
+function ResponsiveDrawer({ isAdmin, isAdminPage }) {
+  const drawerWidth = 240;
+  const menuItems = [
+    {
+      text: "Home",
+      icon: <HomeIcon />,
+      path: "/home",
+    },
+    {
+      text: "Favorite",
+      icon: <StarOutlineIcon />,
+      path: "/favorite",
+    },
+    {
+      text: "APIs",
+      icon: <ArticleIcon />,
+      path: "/apis",
+    },
+    {
+      text: "Profile",
+      icon: <PermIdentityIcon />,
+      path: "/profile",
+    },
+    isAdmin
+      ? {
+          text: "Admin",
+          icon: <AdminPanelSettingsIcon />,
+          path: "/admin/users",
+        }
+      : null,
+    isAdminPage
+      ? {
+          text: "User",
+          icon: null,
+          path: "/admin/users",
+        }
+      : null,
+    isAdminPage
+      ? {
+          text: "API",
+          icon: null,
+          path: "/admin/api",
+        }
+      : null,
+    {
+      text: "Logout",
+      icon: <LogoutIcon />,
+      path: "/",
+    },
+  ].filter(Boolean);
 
-function ResponsiveDrawer(props) {
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  const handleListItemClick = (path) => {
+    router.push(path);
   };
 
   const drawer = (
@@ -31,63 +76,26 @@ function ResponsiveDrawer(props) {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push("/home")}>
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Home"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <StarOutlineIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Favorite"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <ArticleIcon />
-            </ListItemIcon>
-            <ListItemText primary={"APIs"} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <PermIdentityIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Profile"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push("/admin/users")}>
-            <ListItemIcon>
-              <AdminPanelSettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Admin"} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push("/")}>
-            <ListItemIcon>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Logout"} />
-          </ListItemButton>
-        </ListItem>
+        {menuItems.slice(0, 3).map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton onClick={() => handleListItemClick(item.path)}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        <Divider />
+        {menuItems.slice(3).map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton onClick={() => handleListItemClick(item.path)}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </div>
   );
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box
@@ -97,10 +105,7 @@ function ResponsiveDrawer(props) {
     >
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
       <Drawer
-        container={container}
         variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
         }}
