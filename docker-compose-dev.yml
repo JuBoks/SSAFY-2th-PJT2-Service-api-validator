@@ -9,7 +9,7 @@ services:
     volumes: 
       - /home/ubuntu/.dbdata-dev:/var/lib/mysql
     ports:
-      - '3307:3306'
+      - '3306:3306'
     networks:
       - dbdev
   
@@ -20,10 +20,21 @@ services:
       - db-dev
     restart: always
     ports:
-      - '8001:3000'
+      - '8000:3000'
     networks:
       - dbdev
       - frontdev
+  
+  api-validator:
+    build: API_validator_server
+    container_name: sapiv-apivalidator-dev
+    depends_on:
+      - db-dev
+    restart: always
+    ports:
+      - "8070:3000"
+    networks:
+      - dbdev
 
   web-fe-dev:
     build: Frontend/api_validator
@@ -32,7 +43,7 @@ services:
       - web-be-dev
     restart: always
     ports:
-      - '3001:3000'
+      - '3000:3000'
     networks:
       - frontdev
 
