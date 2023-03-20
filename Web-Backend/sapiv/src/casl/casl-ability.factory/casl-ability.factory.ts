@@ -9,15 +9,27 @@ export type AppAbility = PureAbility<[Action, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
-  createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<
+  createForUser(user: User, request: any) {
+    const { can, build } = new AbilityBuilder<
       PureAbility<[Action, Subjects]>
     >(PureAbility);
 
+    
+    let uid = "";
+    if(request.body !== undefined && request.body.uid !== undefined){
+      uid = request.body.uid;
+    }
+
     if (user.state === 3) {
       can(Action.Manage, 'all'); // read-write access to everything
-    } else {
-      cannot(Action.Read, 'all'); // read-only access to everything
+    } 
+    else if (user.uid === uid){
+      can(Action.Manage, User); // read-only access to everything
+    }
+    else if(user.state === 2){
+      can(Action.Update, User);
+      can(Action.Delete, User);
+      can(Action.Read, User);
     }
 
     return build({
