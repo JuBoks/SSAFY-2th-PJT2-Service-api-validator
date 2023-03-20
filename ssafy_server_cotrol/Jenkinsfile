@@ -6,6 +6,13 @@ pipeline {
   }
 
   stages {
+
+    stage('Test') {
+      steps {
+        sh "echo ${env.gitlabBranch} you "
+      }
+    }
+
     stage('Remove') {
       steps {
         script {
