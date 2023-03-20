@@ -8,7 +8,9 @@ import DenseTable from "@/components/DenseTable.js";
 export default function Main() {
   const optionList = [
     { label: "Name", id: 1 },
-    { label: "Email", id: 2 },
+    { label: "Category", id: 2 },
+    { label: "Service", id: 3 },
+    { label: "Path", id: 4 },
   ];
 
   return (
@@ -19,15 +21,23 @@ export default function Main() {
         <Box component="main" sx={{ height: "100vh" }}>
           <Toolbar />
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
-            <Grid item xs={12}>
+            <Grid item xs={12} display="flex" justifyContent="space-between">
               <Typography
                 variant="h3"
                 component="h3"
                 m={(0, 5)}
                 sx={{ color: "blue" }}
               >
-                User Management
+                API Management
               </Typography>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                m={(0, 5)}
+              >
+                <Button variant="contained">+ New API Request</Button>
+              </Box>
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body1" component="body1" m={(0, 5)}>
