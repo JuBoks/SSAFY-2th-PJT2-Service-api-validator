@@ -7,6 +7,7 @@ async function bootstrap() {
     cors: true,
     snapshot: true,
    });
+   app.setGlobalPrefix('api')
   const config = new DocumentBuilder()
   .setTitle('SAPIV')
   .setDescription('API Description for SAPIV Project')

@@ -1,4 +1,4 @@
-import { AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility } from "@casl/ability";
+import { AbilityBuilder, ExtractSubjectType, InferSubjects, PureAbility } from "@casl/ability";
 import { Injectable } from "@nestjs/common";
 import { User } from "src/users/entities/user.entity";
 import { Action } from "../action";
@@ -12,7 +12,7 @@ export class CaslAbilityFactory {
   createForUser(user: User) {
     const { can, cannot, build } = new AbilityBuilder<
       PureAbility<[Action, Subjects]>
-    >(PureAbility as AbilityClass<AppAbility>);
+    >(PureAbility);
 
     if (user.state === 3) {
       can(Action.Manage, 'all'); // read-write access to everything

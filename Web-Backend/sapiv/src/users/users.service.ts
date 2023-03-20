@@ -44,7 +44,7 @@ export class UsersService {
     .then((userRecord) => {
       console.log(userRecord);
     })
-    return await userInfo;
+    return userInfo;
   }
 
   async findByEmail(email: string) {
