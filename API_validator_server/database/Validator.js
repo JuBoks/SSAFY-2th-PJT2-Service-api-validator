@@ -9,7 +9,7 @@ const getAnalyzedDataByDataId = async (data_id) => {
     // console.log(rows);
     return rows[0].result_data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -30,7 +30,7 @@ const getResponseByMetaId = async (meta_id) => {
       return rows[0];
     } else return null;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -42,7 +42,7 @@ const createAnalyzedData = async (schema) => {
     return rows.insertId;
   } catch (error) {
     console.log(error);
-    return error;
+    throw error;
   }
 };
 
@@ -56,7 +56,7 @@ const createTestResult = async (data) => {
     return rows.insertId;
   } catch (error) {
     console.log(error);
-    return error;
+    throw error;
   }
 };
 
