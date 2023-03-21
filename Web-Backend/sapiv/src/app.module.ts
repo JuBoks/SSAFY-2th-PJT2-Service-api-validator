@@ -7,9 +7,10 @@ import { CaslModule } from './casl/casl.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PoliciesGuard } from './common/guard/policies-guard';
 import { ApisModule } from './apis/apis.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule.forRoot(), CaslModule, ApisModule],
+  imports: [UsersModule, ConfigModule.forRoot(), CaslModule, ApisModule, FavoritesModule],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
