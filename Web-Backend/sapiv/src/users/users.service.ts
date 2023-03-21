@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
+import { getAuth, ListUsersResult } from 'firebase-admin/auth';
 import { User } from './entities/user.entity';
 import { CustomRequest } from 'src/common/custromrequest';
 
@@ -40,13 +40,42 @@ export class UsersService {
     return userInfo.uid;
   }
 
-  async findAll(): Promise<void> {
+  async findAll(nextPageToken: any){
     const auth = getAuth(this.firebase);
-    let userInfo = auth.getUser('YFONccXiUTRaXCAHEziRdfvzO8A3')
-    .then((userRecord) => {
-      console.log(userRecord);
-    })
-    return userInfo;
+    let listUsersResult;
+    
+    const tempList = [];
+    try{
+      if(nextPageToken === undefined){
+        listUsersResult = await auth.listUsers(1000);  
+      }
+      else{
+        listUsersResult = await auth.listUsers(1000, nextPageToken);
+      }
+    }
+    catch(error){
+      throw new HttpException(
+        error.message,
+        HttpStatus.BAD_REQUEST
+      )
+    }
+    listUsersResult.users.forEach((userRecord) => {
+      const {uid, email, displayName, customClaims} = userRecord.toJSON();
+      const user = {
+        uid,
+        email,
+        name: displayName,
+        state: customClaims.state,
+        type: customClaims.type,
+      }
+      tempList.push(user);
+    });
+    if (listUsersResult.pageToken) {
+      // List next batch of users.
+      const listUsers = tempList.concat(this.findAll(listUsersResult.pageToken));
+      return listUsers;
+    }
+    return tempList;
   }
 
   async findByEmail(email: string) {
