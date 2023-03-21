@@ -73,10 +73,22 @@ export class UsersService {
       }
     })
     .catch(() => {
-
       return null;
     })
   }
+
+  async verify(idToken: string): Promise<string | undefined>{
+    const auth = getAuth(this.firebase);
+    return await auth.verifyIdToken(idToken)
+    .then((decodedToken) => {
+      return decodedToken.uid;
+    })
+    .catch((error) => {
+      return '';
+    });
+  }
+
+
 
   async update(updateUserDto: UpdateUserDto, request: CustomRequest) {
     if(updateUserDto.state !== undefined && updateUserDto.state >= request.user.state){
