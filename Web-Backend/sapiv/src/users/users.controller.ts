@@ -29,6 +29,12 @@ export class UsersController {
     return this.usersService.findOne(request.user.uid);
   }
 
+  @Get('/authorize')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, User))
+  findAll() {
+    return this.usersService.findAll(undefined);
+  }
+
   @Get('/duplicate/:email')
   @AllowUnauthorizedRequest()
   async DuplicationCheck(@Param('email') email: string) {
