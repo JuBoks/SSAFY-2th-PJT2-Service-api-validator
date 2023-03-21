@@ -9,6 +9,10 @@ WORKDIR /app
 COPY ./ /app
 RUN npm install && npm run build
 
+# 환경변수 추가
+COPY service-account-file.json /home/service-account-file.json
+ENV GOOGLE_APPLICATION_CREDENTIALS="/home/service-account-file.json"
+
 # 앱 소스 복사
 COPY . .
 
