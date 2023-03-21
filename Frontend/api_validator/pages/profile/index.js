@@ -1,19 +1,29 @@
 import React, { useState } from "react";
+import router from "next/router";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
+import DenseTable from "@/components/DenseTable.js";
+import ProfileData from "@/components/ProfileData";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
-import { Button, Tab } from "@mui/material";
+import { Button, Tab, TextField, Autocomplete } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import EmailIcon from "@mui/icons-material/Email";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import PersonIcon from "@mui/icons-material/Person";
 
 export default function Profile() {
+  const optionList = [
+    { label: "Name", id: 1 },
+    { label: "Category", id: 2 },
+    { label: "Service", id: 3 },
+    { label: "Path", id: 4 },
+  ];
+
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleEditClick = () => {
+    router.push("/profile/edit");
   };
 
   return (
@@ -21,61 +31,100 @@ export default function Profile() {
       <Header />
       <Box sx={{ display: "flex" }}>
         <Nav isAdmin={true} />
-        <Box component="main" sx={{ height: "100vh" }}>
+        <Box component="main" sx={{ height: "100vh", width: "100%" }}>
           <Toolbar />
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
-            <Grid item>
-              <Box
-                item
-                width={300}
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                mt={10}
-              >
-                <AccountCircle style={{ color: "#6F6F6A", fontSize: 100 }} />
-                <Box m={(0, 5)}>
-                  <Box display="flex" alignItems="center" height={40}>
-                    <EmailIcon style={{ color: "#6F6F6A" }} />
-                    <Typography variant="body1" m={(0, 2)}>
-                      jek9412@naver.com
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" height={40}>
-                    <ApartmentIcon style={{ color: "#6F6F6A" }} />
-                    <Typography variant="body1" m={(0, 2)}>
-                      Client Developer
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" height={40}>
-                    <PersonIcon style={{ color: "#6F6F6A" }} />
-                    <Typography variant="body1" m={(0, 2)}>
-                      Admin
-                    </Typography>
-                  </Box>
-                </Box>
-                <Button size="large" variant="outlined">
-                  Edit Profile
-                </Button>
-              </Box>
+            <Grid
+              item
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <ProfileData />
+              <Button size="large" variant="outlined" onClick={handleEditClick}>
+                Edit Profile
+              </Button>
             </Grid>
             <Grid item>
               <Box sx={{ width: "100%", typography: "body1" }}>
                 <TabContext value={value}>
                   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <TabList
-                      onChange={handleChange}
-                      aria-label="lab API tabs example"
-                    >
-                      <Tab label="Item One" value="1" />
-                      <Tab label="Item Two" value="2" />
-                      <Tab label="Item Three" value="3" />
+                    <TabList onChange={handleChange} aria-label="profileData">
+                      <Tab label="Favorite" value="1" />
+                      <Tab label="Notification" value="2" />
                     </TabList>
                   </Box>
-                  <TabPanel value="1">Item One</TabPanel>
-                  <TabPanel value="2">Item Two</TabPanel>
-                  <TabPanel value="3">Item Three</TabPanel>
+                  <TabPanel value="1">
+                    <Grid container sx={{ width: "100vh" }}>
+                      <Grid item xs={4}>
+                        <Typography
+                          variant="body1"
+                          component="body1"
+                          m={(0, 5)}
+                        >
+                          Total : 100
+                        </Typography>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={8}
+                        display="flex"
+                        justifyContent="end"
+                        p={5}
+                      >
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={optionList}
+                          sx={{ width: 150 }}
+                          renderInput={(params) => (
+                            <TextField label="option" {...params} />
+                          )}
+                        />
+                        <TextField id="searchBar" variant="outlined" />
+                        <Button variant="contained">Search</Button>
+                      </Grid>
+                      <Grid item xs={12} m={5}>
+                        <DenseTable />
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <Grid container sx={{ width: "100vh" }}>
+                      <Grid item xs={4}>
+                        <Typography
+                          variant="body1"
+                          component="body1"
+                          m={(0, 5)}
+                        >
+                          Total : 100
+                        </Typography>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={8}
+                        display="flex"
+                        justifyContent="end"
+                        p={5}
+                      >
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={optionList}
+                          sx={{ width: 150 }}
+                          renderInput={(params) => (
+                            <TextField label="option" {...params} />
+                          )}
+                        />
+                        <TextField id="searchBar" variant="outlined" />
+                        <Button variant="contained">Search</Button>
+                      </Grid>
+                      <Grid item xs={12} m={5}>
+                        <DenseTable />
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
                 </TabContext>
               </Box>
             </Grid>

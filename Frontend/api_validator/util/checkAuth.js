@@ -3,13 +3,13 @@ import auth from "./auth";
 import router from "next/router";
 import axios from "axios";
 
-const url = "http://70.12.246.220:3000";
+const url = "https://sapiv.site/api";
 const isAuthorize = false;
 
 const GetUsers = async (userUid) => {
-  const res = await axios.get(url + "/api/users", {
+  const res = await axios.get(url + "/users", {
     headers: {
-      uid: userUid,
+      idToken: userUid,
     },
   });
 

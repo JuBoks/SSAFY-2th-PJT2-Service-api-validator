@@ -16,7 +16,7 @@ import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-function ResponsiveDrawer({ isAdmin, isAdminPage }) {
+function Nav({ isAdmin, isAdminPage }) {
   const drawerWidth = 240;
   const menuItems = [
     {
@@ -138,4 +138,4 @@ function ResponsiveDrawer({ isAdmin, isAdminPage }) {
   );
 }
 
-export default ResponsiveDrawer;
+export default Nav;
