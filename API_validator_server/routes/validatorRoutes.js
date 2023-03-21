@@ -13,4 +13,6 @@ router.post("/github-action", actionController.saveAction);
 
 router.put("/github-action", actionController.updateAction);
 
+router.post("/schema-test", validatorController.getInferredSchema);
+
 module.exports = router;
