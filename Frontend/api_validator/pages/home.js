@@ -12,27 +12,31 @@ import axios from "axios";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(true);
+  const url = "http://70.12.246.220:3000/api";
+  const GetUsers = async (idToken) => {
+    const res = await axios
+      .get(url + "/users", {
+        headers: {
+          idtoken: idToken,
+        },
+      })
+      .then((res) => console.log(res));
 
-  const url = "http://70.12.246.220:3000";
-
-  const GetUsers = async (userUid) => {
-    const res = await axios.get(url + "/api/users", {
-      headers: {
-        uid: userUid,
-      },
-    });
-
-    if (res.data.state === 0) {
-      router.push("/");
-    }
+    return res;
   };
 
   onAuthStateChanged(auth, (user) => {
-    console.log("auth", auth);
     if (user) {
-      console.log("user", user);
-      const uid = user.uid;
-      GetUsers(uid);
+      console.log(user);
+      auth.currentUser
+        .getIdToken(true)
+        .then((idToken) => {
+          console.log(idToken);
+          console.log(GetUsers(idToken));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       console.log("User is Signed Out");
     }
