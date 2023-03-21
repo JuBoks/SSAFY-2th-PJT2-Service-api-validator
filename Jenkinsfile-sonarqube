@@ -13,7 +13,7 @@ pipeline {
         script {
           def scannerHome = tool 'SonarScanner';
           withSonarQubeEnv() {
-            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sapiv-dev -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.ssafy.com -Dsonar.login=61bb570be7bb84c1e2b1f1f15ab4fcbe58f0a765" 
+            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sapiv -Dsonar.sources=. -Dsonar.host.url=http://15.165.235.18:9000 -Dsonar.login=sqp_2dcc989198cfb4d825df9f0ab09ea10f0436b5ec" 
           } 
         }
       }
