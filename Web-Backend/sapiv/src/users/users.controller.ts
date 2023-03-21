@@ -10,11 +10,9 @@ import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Action } from 'src/casl/action';
 import { User } from './entities/user.entity';
 
-
-
 @Controller('users')
 @ApiHeader({
-  name: 'uid',
+  name: 'idtoken',
   description: 'Custom header',
 })
 export class UsersController {
@@ -27,8 +25,8 @@ export class UsersController {
   }
 
   @Get()
-  findOne(@Req() request: Request) {
-    return this.usersService.findOne(request.headers['uid']);
+  findOne(@Req() request: CustomRequest) {
+    return this.usersService.findOne(request.user.uid);
   }
 
   @Get('/duplicate/:email')
@@ -42,7 +40,7 @@ export class UsersController {
     }
   }
 
-  @Patch('/authorize')
+  @Patch()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Update, User))
   async updateAdmin(@Body() updateUserDto: UpdateUserDto, @Req() request: CustomRequest){
     

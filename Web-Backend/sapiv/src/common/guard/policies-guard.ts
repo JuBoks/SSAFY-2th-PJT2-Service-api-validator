@@ -25,7 +25,8 @@ export class PoliciesGuard implements CanActivate {
     const allowUnauthorizedRequest = this.reflector.get<boolean>('allowUnauthorizedRequest', context.getHandler());
     if (allowUnauthorizedRequest) return true;
     const request = context.switchToHttp().getRequest();
-    const uid = request.headers.uid;
+    const idToken = request.headers.idtoken;
+    const uid = await this.usersService.verify(idToken)
     const user = await this.usersService.findOne(uid);
     if (!user) {
       throw new UnauthorizedException();
