@@ -23,7 +23,9 @@ const getAllMetadatas = async (req, res) => {
 };
 
 const createMetadata = async (req, res) => {
+  const {apiId} = req.params;
   const { body } = req;
+
   if (
     !body.header ||
     !body.params ||
@@ -48,8 +50,8 @@ const createMetadata = async (req, res) => {
     cycle_time: body.cycle_time,
   };
   try {
-    const createdMeta = await metadataService.createNewMeta(newMeta);
-    res.status(201).send({ status: "OK", data: createdMeta });
+    const meta_id = await metadataService.createMetadata(apiId, newMeta);
+    res.status(201).send({ status: "OK", "meta_id": meta_id });
   } catch (error) {
     res
       .status(error?.status || 500)
