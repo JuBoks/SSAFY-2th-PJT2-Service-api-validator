@@ -20,7 +20,7 @@ export class ApisController {
 
   @Post('test')
   async test(@Body() testApiDto: TestApiDto, @Res({ passthrough: true }) res: Response) {
-    return  await this.apisService.test(testApiDto);
+    return this.apisService.test(testApiDto);
   }
 
   @Get()
