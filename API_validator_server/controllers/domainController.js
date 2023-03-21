@@ -1,6 +1,5 @@
 const domainService = require("../services/domainService");
 
-// About Domain
 const createNewDomain = async (req, res) => {
   const { body } = req;
   if (!body.name || !body.domain || !body.category_id) {
@@ -8,7 +7,7 @@ const createNewDomain = async (req, res) => {
       status: "FAILED",
       data: {
         error:
-          "One of the following keys is missing or is empty in request body: 'name', 'domain', 'category_id",
+          "One of the following keys is missing or is empty in request body: 'name', 'domain', 'category_id'",
       },
     });
     return;
@@ -20,7 +19,10 @@ const createNewDomain = async (req, res) => {
   };
   try {
     const createdDomain = await domainService.createNewDomain(newDomain);
-    res.status(201).send({ status: "OK", data: createdDomain });
+    res.status(201).send({
+      status: "OK",
+      data: { domain_id: createdDomain.insertId, ...newDomain },
+    });
   } catch (error) {
     res
       .status(error?.status || 500)
@@ -50,7 +52,25 @@ const getAllDomains = async (req, res) => {
   }
 };
 
-const getOneDomain = (req, res) => {};
+const getOneDomain = async (req, res) => {
+  const {
+    params: { domainId },
+  } = req;
+  if (!domainId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: { error: "Parameter ':domainId' can not be empty" },
+    });
+  }
+  try {
+    const domain = await domainService.getOneDomain(domainId);
+    res.send({ status: "OK", data: domain });
+  } catch (error) {
+    res
+      .status(error?.status || 500)
+      .send({ status: "FAILED", data: { error: error?.message || error } });
+  }
+};
 
 const updateOneDomain = async (req, res) => {
   const {

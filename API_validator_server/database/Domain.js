@@ -1,24 +1,48 @@
-
-const getAllDomains = async (conn, category_id) => {
+const createNewDomain = async (conn, newDomain) => {
   try {
-    let sql = "SELECT * FROM tbl_domain WHERE category_id = ?";
-    let params = [category_id];
-    let [rows, fields] = await conn.query(sql, params);
+    let sql = `SELECT * From tbl_domain WHERE domain = ? and state = 0`;
+    let params = [newDomain.domain];
+    let [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Domain '${newCategory.domain}' already exists`,
+      };
+    }
+    sql = "INSERT INTO tbl_domain (name, domain, category_id) values (?, ?, ?)";
+    params = [newDomain.name, newDomain.domain, newDomain.category_id];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
-const createNewDomain = async (conn, newDomain) => {
+const getAllDomains = async (conn, categoryId) => {
   try {
-    let sql =
-      "INSERT INTO tbl_domain (name, domain, category_id) values (?, ?, ?)";
-    let params = [newDomain.name, newDomain.domain, newDomain.category_id];
-    let [rows, fields] = await conn.query(sql, params);
+    let sql = "SELECT * FROM tbl_domain WHERE category_id = ? and state = 0";
+    let params = [categoryId];
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: 500, message: error };
+  }
+};
+
+const getOneDomain = async (conn, domainId) => {
+  try {
+    let sql = "SELECT * FROM tbl_domain WHERE domain_id = ? WHERE state = 0";
+    let params = [domainId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find domain with the id '${domainId}'`,
+      };
+    }
+    return rows;
+  } catch (error) {
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
@@ -58,8 +82,8 @@ const getDomain = async (conn, domain_id) => {
 
 module.exports = {
   getAllDomains,
+  getOneDomain,
   createNewDomain,
   updateOneDomain,
   deleteOneDomain,
-  getDomain
 };
