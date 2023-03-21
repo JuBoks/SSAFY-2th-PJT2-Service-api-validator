@@ -13,7 +13,6 @@ export class ApisService {
     let result;
     try{
       result = await axios.request(requestConfig);
-      console.log(result);
     }
     catch(error){
       throw new HttpException(

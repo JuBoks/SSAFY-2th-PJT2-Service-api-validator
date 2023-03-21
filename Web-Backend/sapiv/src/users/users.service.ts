@@ -79,11 +79,11 @@ export class UsersService {
 
   async verify(idToken: string): Promise<string | undefined>{
     const auth = getAuth(this.firebase);
-    return await auth.verifyIdToken(idToken)
+    return auth.verifyIdToken(idToken)
     .then((decodedToken) => {
       return decodedToken.uid;
     })
-    .catch((error) => {
+    .catch(() => {
       return '';
     });
   }
@@ -130,7 +130,19 @@ export class UsersService {
     return "success";
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(uid: string): Promise<string | undefined>{
+    const auth = getAuth(this.firebase);
+    return auth.updateUser(uid, {
+      disabled: true,
+    })
+    .then(() => {
+      return "success";
+    })
+    .catch((error) => {
+      throw new HttpException(
+        error.message,
+        HttpStatus.NOT_MODIFIED
+      )
+    });
   }
 }

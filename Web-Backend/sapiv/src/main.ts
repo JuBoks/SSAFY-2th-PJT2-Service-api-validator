@@ -8,7 +8,7 @@ async function bootstrap() {
     snapshot: true,
    });
   app.setGlobalPrefix('api')
-  const allowlist = ['http://localhost:3000', 'http://sapiv.site']
+  const allowlist = ['http://localhost:3000', 'https://sapiv.site']
   const corsOptionsDelegate = function (req, callback) {
     let corsOptions;
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
@@ -26,7 +26,7 @@ async function bootstrap() {
   app.enableCors(corsOptionsDelegate);
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
   await app.listen(3000);
 }
 bootstrap();
