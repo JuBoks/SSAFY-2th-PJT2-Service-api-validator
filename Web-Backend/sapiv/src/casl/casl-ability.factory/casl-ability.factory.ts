@@ -16,15 +16,18 @@ export class CaslAbilityFactory {
 
     
     let uid = "";
-    if(request.body !== undefined && request.body.uid !== undefined){
+    if(request.bodyUsed && request.body.uid !== undefined){
       uid = request.body.uid;
+    }
+    else if(request.params !== undefined && request.params.uid !== undefined){
+      uid = request.params.uid;
     }
 
     if (user.state === 3) {
       can(Action.Manage, 'all'); // read-write access to everything
     } 
     else if (user.uid === uid){
-      can(Action.Manage, User); // read-only access to everything
+      can(Action.Manage, User); 
     }
     else if(user.state === 2){
       can(Action.Update, User);

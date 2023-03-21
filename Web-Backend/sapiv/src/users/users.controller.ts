@@ -47,8 +47,9 @@ export class UsersController {
     return this.usersService.update(updateUserDto, request);
   }
     
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete(':uid')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, User))
+  remove(@Param('uid') uid: string) {
+    return this.usersService.remove(uid);
   }
 }
