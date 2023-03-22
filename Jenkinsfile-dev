@@ -30,7 +30,6 @@ pipeline {
     stage('Config') {
       steps {
         // 개발서버
-        sh 'ls -al'
         sh 'docker-compose -f docker-compose-dev.yml --env-file .env.dbdev config'
       }
     }
@@ -38,7 +37,7 @@ pipeline {
     stage('Build') {
       steps {
         // 개발서버
-        sh 'docker-compose -f docker-compose-dev.yml build'
+        sh 'docker-compose -f docker-compose-dev.yml build --no-cache'
       }
     }
 
