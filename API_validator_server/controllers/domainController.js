@@ -85,7 +85,10 @@ const updateOneDomain = async (req, res) => {
   }
   try {
     const updatedDomain = await domainService.updateOneDomain(domainId, body);
-    res.send({ status: "OK", data: updatedDomain });
+    res.send({
+      status: "OK",
+      data: { domain_id: domainId, ...body },
+    });
   } catch (error) {
     res
       .status(error?.status || 500)
