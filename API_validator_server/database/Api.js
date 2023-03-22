@@ -44,7 +44,7 @@ const getOneApi = async (conn, apiId) => {
         message: `Can't find api with the id '${apiId}'`,
       };
     }
-    return rows;
+    return rows[0];
   } catch (error) {
     throw { status: error?.status || 500, message: error?.message || error };
   }

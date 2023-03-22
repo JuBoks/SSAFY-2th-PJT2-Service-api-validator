@@ -29,7 +29,7 @@ router.post("/metadatas", metadataController.createNewMetadata);
 router.get("/metadatas", metadataController.getAllMetadatas);
 router.get("/metadatas/:metaId", metadataController.getOneMetadata);
 router.put("/metadatas/:metaId", metadataController.updateOneMetadata);
-router.delete("/metadatas:metaId", metadataController.deleteOneMetadata);
+router.delete("/metadatas/:metaId", metadataController.deleteOneMetadata);
 router.post("/metadatas/:metaId/test", metadataController.testMetadata);
 router.post(
   "/metadatas/:metaId/expect",

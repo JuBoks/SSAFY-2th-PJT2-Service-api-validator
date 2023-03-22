@@ -95,7 +95,7 @@ const updateOneMetadata = async (req, res) => {
   }
   try {
     const updatedMeta = await metadataService.updateOneMetadata(metaId, body);
-    res.send({ status: "OK", data: updatedMeta });
+    res.send({ status: "OK", data: { meta_id: metaId, ...body } });
   } catch (error) {
     res
       .status(error?.status || 500)
@@ -124,10 +124,12 @@ const deleteOneMetadata = async (req, res) => {
 };
 
 const testMetadata = async (req, res) => {
-  const { metaId } = req.params;
+  const {
+    params: { metaId },
+  } = req;
   try {
     const data = await metadataService.testMetadata(metaId);
-    res.send({ data });
+    res.send({ status: "OK", data });
   } catch (error) {}
 };
 

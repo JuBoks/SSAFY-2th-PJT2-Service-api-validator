@@ -39,7 +39,7 @@ const getOneCategory = async (conn, categoryId) => {
         message: `Can't find category with the id '${categoryId}'`,
       };
     }
-    return rows;
+    return rows[0];
   } catch (error) {
     throw { status: error?.status || 500, message: error?.message || error };
   }

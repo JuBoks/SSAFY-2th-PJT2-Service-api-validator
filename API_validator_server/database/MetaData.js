@@ -28,9 +28,9 @@ const getAllMetadatas = async (conn, apiId) => {
   }
 };
 
-const getOneMetaData = async (conn, metaId) => {
+const getOneMetadata = async (conn, metaId) => {
   try {
-    let sql = "SELECT * FROM tbl_metadata WHERE meta_id = ? WHERE state = 0";
+    let sql = "SELECT * FROM tbl_metadata WHERE meta_id = ? and state = 0";
     let params = [metaId];
     let [rows, _] = await conn.query(sql, params);
     if (!rows.length) {
@@ -39,13 +39,13 @@ const getOneMetaData = async (conn, metaId) => {
         message: `Can't find metadata with the id '${metaId}'`,
       };
     }
-    return rows;
+    return rows[0];
   } catch (error) {
     throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
-const updateOneMeta = async (conn, metaId, changes) => {
+const updateOneMetadata = async (conn, metaId, changes) => {
   try {
     let sql = `SELECT * From tbl_metadata WHERE meta_id = ? and state = 0`;
     let params = [metaId];
@@ -75,7 +75,7 @@ const updateOneMeta = async (conn, metaId, changes) => {
   }
 };
 
-const deleteOneMeta = async (conn, metaId) => {
+const deleteOneMetadata = async (conn, metaId) => {
   try {
     let sql = "UPDATE tbl_metadata SET state = 1 WHERE meta_id = ?";
     let params = [metaId];
@@ -112,9 +112,9 @@ const updateResponseIdInMetadata = async (conn, metaId, responseId) => {
 module.exports = {
   getAllMetadatas,
   createNewMetadata,
-  getOneMetaData,
+  getOneMetadata,
   createExpectResponse,
   updateResponseIdInMetadata,
-  updateOneMeta,
-  deleteOneMeta,
+  updateOneMetadata,
+  deleteOneMetadata,
 };
