@@ -22,6 +22,7 @@ const SignUp = () => {
 
   const handleTypeChange = (props) => setType(props.target.value);
 
+  // email 변경시 이벤트 함수
   const handleEmailChange = async (props) => {
     try {
       if (!props.target.value) return;
