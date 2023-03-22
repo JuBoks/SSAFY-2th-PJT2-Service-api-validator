@@ -30,7 +30,6 @@ pipeline {
     stage('Config') {
       steps {
         // 개발서버
-        sh 'ls -al'
         sh 'docker-compose -f docker-compose-dev.yml --env-file .env.dbdev config'
       }
     }
