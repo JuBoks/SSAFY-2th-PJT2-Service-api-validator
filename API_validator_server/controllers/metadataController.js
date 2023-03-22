@@ -1,4 +1,4 @@
-const metadataService = require("../services/metadataService");
+const metadataService = require("../services/metadataService")
 
 const createNewMetadata = async (req, res) => {
   const { body } = req;
@@ -130,7 +130,7 @@ const testMetadata = async (req, res) => {
   try {
     const data = await metadataService.testMetadata(metaId);
     res.send({ status: "OK", data });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const createExpectResponse = async (req, res) => {
