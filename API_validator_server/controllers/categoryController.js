@@ -78,7 +78,7 @@ const updateOneCategory = async (req, res) => {
       categoryId,
       body
     );
-    res.send({ status: "OK", data: updatedCategory });
+    res.send({ status: "OK", data: { category_id: categoryId, ...body } });
   } catch (error) {
     res
       .status(error?.status || 500)

@@ -1,5 +1,45 @@
 const metadataService = require("../services/metadataService");
 
+const createNewMetadata = async (req, res) => {
+  const { body } = req;
+  if (
+    !body.api_id ||
+    !body.header ||
+    !body.params ||
+    !body.body ||
+    !body.cycle_time ||
+    !body.name
+  ) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error:
+          "One of the following keys is missing or is empty in request body: 'api_id', 'name', 'header', 'params', 'body', 'cycle_time'",
+      },
+    });
+    return;
+  }
+  const newMeta = {
+    api_id: body.api_id,
+    name: body.name,
+    header: body.header,
+    params: body.params,
+    body: body.body,
+    cycle_time: body.cycle_time,
+  };
+  try {
+    const createdMeta = await metadataService.createNewMetadata(newMeta);
+    res.status(201).send({
+      status: "OK",
+      data: { meta_id: createdMeta.insertId, ...newMeta },
+    });
+  } catch (error) {
+    res
+      .status(error?.status || 500)
+      .send({ status: "FAILED", data: { error: error?.message || error } });
+  }
+};
+
 const getAllMetadatas = async (req, res) => {
   const { body } = req;
   if (!body.api_id) {
@@ -22,36 +62,19 @@ const getAllMetadatas = async (req, res) => {
   }
 };
 
-const createMetadata = async (req, res) => {
-  const {apiId} = req.params;
-  const { body } = req;
-
-  if (
-    !body.header ||
-    !body.params ||
-    !body.body ||
-    !body.cycle_time ||
-    !body.name
-  ) {
+const getOneMetadata = async (req, res) => {
+  const {
+    params: { metaId },
+  } = req;
+  if (!metaId) {
     res.status(400).send({
       status: "FAILED",
-      data: {
-        error:
-          "One of the following keys is missing or is empty in request body: 'name', 'header', 'params', 'body', 'cycle_time'",
-      },
+      data: { error: "Parameter ':metaId' can not be empty" },
     });
-    return;
   }
-  const newMeta = {
-    name: body.name,
-    header: body.header,
-    params: body.params,
-    body: body.body,
-    cycle_time: body.cycle_time,
-  };
   try {
-    const meta_id = await metadataService.createMetadata(apiId, newMeta);
-    res.status(201).send({ status: "OK", "meta_id": meta_id });
+    const meta = await metadataService.getOneMetadata(metaId);
+    res.send({ status: "OK", data: meta });
   } catch (error) {
     res
       .status(error?.status || 500)
@@ -59,7 +82,7 @@ const createMetadata = async (req, res) => {
   }
 };
 
-const updateMetadata = async (req, res) => {
+const updateOneMetadata = async (req, res) => {
   const {
     body,
     params: { metaId },
@@ -67,11 +90,11 @@ const updateMetadata = async (req, res) => {
   if (!metaId) {
     res.status(400).send({
       status: "FAILED",
-      data: { error: "Parameter ':domainId' can not be empty" },
+      data: { error: "Parameter ':metaId' can not be empty" },
     });
   }
   try {
-    const updatedMeta = await metadataService.updateMetadata(metaId, body);
+    const updatedMeta = await metadataService.updateOneMetadata(metaId, body);
     res.send({ status: "OK", data: updatedMeta });
   } catch (error) {
     res
@@ -80,18 +103,18 @@ const updateMetadata = async (req, res) => {
   }
 };
 
-const deleteMetadata = async (req, res) => {
+const deleteOneMetadata = async (req, res) => {
   const {
     params: { metaId },
   } = req;
   if (!metaId) {
     res.status(400).send({
       status: "FAILED",
-      data: { error: "Parameter ':domainId' can not be empty" },
+      data: { error: "Parameter ':metaId' can not be empty" },
     });
   }
   try {
-    await metadataService.deleteMetadata(metaId);
+    await metadataService.deleteOneMetadata(metaId);
     res.status(204).send({ status: "OK" });
   } catch (error) {
     res
@@ -124,9 +147,10 @@ const createExpectResponse = async (req, res) => {
 
 module.exports = {
   getAllMetadatas,
-  createMetadata,
-  updateMetadata,
-  deleteMetadata,
+  getOneMetadata,
+  createNewMetadata,
+  updateOneMetadata,
+  deleteOneMetadata,
   testMetadata,
   createExpectResponse,
 };
