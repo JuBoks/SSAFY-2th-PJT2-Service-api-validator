@@ -32,7 +32,24 @@ const updateAction = async (body) => {
     }
     
   };
+
+const getActionsByDate = async (startTime, endTime) => {
+    const conn = await pool.getConnection();
+    
+    try {
+      const data = await action.getActionsByDate(conn, startTime, endTime);
+
+      return data;
+    }
+    catch(error) {
+      throw error;
+    }
   
+};
 
 
-module.exports = { saveAction, updateAction };
+module.exports = { 
+  saveAction, 
+  updateAction, 
+  getActionsByDate
+};
