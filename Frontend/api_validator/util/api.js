@@ -1,18 +1,24 @@
 import axios from "axios";
 
-class API {
-  constructor() {
-    this.url = "http://70.12.246.220:3000/api";
-  }
+const url = "https://j8s002.p.ssafy.io/api";
 
-  async GetUsers(idToken) {
-    console.log("idToken:", idToken);
-    return (res = await axios.get(this.url + "/users", {
-      headers: {
-        idToken: idToken,
-      },
-    }));
-  }
-}
+const GetUsers = async (idToken) => {
+  const res = await axios.get(url + "/users", {
+    headers: {
+      idtoken: idToken,
+    },
+  });
+  return res;
+};
 
-export default API;
+const PostUsers = async (reqData) => {
+  const res = await axios.post(url + "/users", reqData);
+  return res;
+};
+
+const GetUsersDuplicateEmail = async (email) => {
+  const res = await axios.get(url + "/users/duplicate/" + email);
+  return res;
+};
+
+export { GetUsers, PostUsers, GetUsersDuplicateEmail };

@@ -1,77 +1,52 @@
 import React, { useState } from "react";
-import Head from "next/head";
 import router from "next/router";
 import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
 import Copyright from "../components/Copyright.js";
 import styles from "../styles/login.module.css";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../util/auth";
 import IndexLogo from "../components/IndexLogo";
-import axios from "axios";
-
-import { reauthenticateWithCredential } from "firebase/auth";
+import { GetUsers } from "@/util/api.js";
 
 export default function Home() {
-  const url = "http://70.12.246.220:3000";
-  const [userCredential, setUserCredential] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const GetUsers = async (userUid) => {
-    const res = await axios.get(url + "/api/users", {
-      headers: {
-        uid: userUid,
-      },
-    });
-    return res;
-  };
-
+  // Login 버튼 클릭 이벤트
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    try {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const res = await signInWithEmailAndPassword(
+        auth,
+        data.get("email"),
+        data.get("password")
+      );
+      const idToken = await auth.currentUser.getIdToken(true);
+      const userData = await GetUsers(idToken);
 
-    signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
-      .then((userCredential) => {
-        setUserCredential(userCredential);
-        const user = userCredential.user;
-        const userUid = userCredential.user.uid;
-        console.log(user);
-        const userData = GetUsers(userUid);
-        console.log(userData);
-        alert("Login Success");
+      const userState = userData.data.state;
+      if (userState === 0) {
+        alert("준회원입니다. 관리자의 승인이 필요합니다.");
+      } else {
         router.push("/home");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert("Login Fail\n" + errorMessage);
-        console.log(error);
-      });
+      }
+    } catch (err) {
+      setIsError(true);
+      setErrorMsg("아이디 또는 비밀번호를 잘못 입력했습니다.");
+      console.log(err);
+    }
   };
-
-  // ----------------------------------
-  const user = auth.currentUser;
-
-  // TODO(you): prompt the user to re-provide their sign-in credentials
 
   return (
     <>
-      <Head>
-        <title>Samsung API Validator</title>
-        <meta name="description" content="samsung API validator" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Grid container>
         <Grid item xs={7}>
           <IndexLogo />
         </Grid>
         <Grid item xs={5}>
-          <Box className={styles["right-box"]}>
-            <Typography
-              component="h1"
-              variant="h4"
-              style={{ color: "#5A5A5F" }}
-            >
+          <Box className={styles.right}>
+            <Typography component="h1" variant="h4" className={styles.text}>
               Login
             </Typography>
 
@@ -96,6 +71,8 @@ export default function Home() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={isError}
+                helperText={errorMsg}
               />
 
               <Link href="#" variant="body1">
