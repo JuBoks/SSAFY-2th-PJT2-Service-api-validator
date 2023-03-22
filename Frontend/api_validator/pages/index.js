@@ -12,7 +12,6 @@ export default function Home() {
   const [isError, setIsError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Login 버튼 클릭 이벤트
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
