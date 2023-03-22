@@ -9,8 +9,5 @@ WORKDIR /app
 COPY ./ /app
 RUN npm install
 
-# 앱 소스 복사
-COPY . .
-
 # 시작 명령어 설정
 CMD ["node", "app"]
