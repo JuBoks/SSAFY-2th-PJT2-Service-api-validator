@@ -28,7 +28,7 @@ const SignUp = () => {
       const res = await GetUsersDuplicateEmail(props.target.value);
       if (res.data === "Not Available") {
         setIsDuplicatedEmail(true);
-        setEmailMsg("이미 존재하는 이메일입니다.");
+        setEmailMsg("사용 불가한 이메일입니다.");
       } else {
         setIsDuplicatedEmail(false);
         setEmailMsg("");
