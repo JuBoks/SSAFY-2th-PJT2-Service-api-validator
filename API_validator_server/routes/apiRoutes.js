@@ -25,11 +25,11 @@ router.get("/apis/:apiId", apiController.getOneApi);
 router.put("/apis/:apiId", apiController.updateOneApi);
 router.delete("/apis/:apiId", apiController.deleteOneApi);
 
-router.post("/metadatas", metadataController.createMetadata);
+router.post("/metadatas", metadataController.createNewMetadata);
 router.get("/metadatas", metadataController.getAllMetadatas);
-// router.get("/metadatas/:metaId", metadataController.getOneMetadatas);
-router.put("/metadatas/:metaId", metadataController.updateMetadata);
-router.delete("/metadatas:metaId", metadataController.deleteMetadata);
+router.get("/metadatas/:metaId", metadataController.getOneMetadata);
+router.put("/metadatas/:metaId", metadataController.updateOneMetadata);
+router.delete("/metadatas:metaId", metadataController.deleteOneMetadata);
 router.post("/metadatas/:metaId/test", metadataController.testMetadata);
 router.post(
   "/metadatas/:metaId/expect",

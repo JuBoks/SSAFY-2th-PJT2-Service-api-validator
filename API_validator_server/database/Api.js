@@ -1,35 +1,78 @@
-const getAllApis = async (conn, domain_id) => {
+const createNewApi = async (conn, newApi) => {
   try {
-    let sql = "SELECT * FROM tbl_api WHERE domain_id = ?";
-    let params = [domain_id];
-    let [rows, fields] = await conn.query(sql, params);
+    let sql = `SELECT * From tbl_api WHERE method = ? resources = ? and domain_id = ? and state = 0`;
+    let params = [newApi.method, newApi.resources, newApi.domain_id];
+    let [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Api '${newApi.method}':'${newApi.resources}' already exists`,
+      };
+    }
+    sql = "INSERT INTO tbl_api (method, resources, domain_id) values (?, ?, ?)";
+    params = [newApi.method, newApi.resources, newApi.domain_id];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
-const createNewApi = async (conn, newApi) => {
+const getAllApis = async (conn, domainId) => {
   try {
-    let sql =
-      "INSERT INTO tbl_api (method, resources, domain_id) values (?, ?, ?)";
-    let params = [newApi.method, newApi.resources, newApi.domain_id];
-    let [rows, fields] = await conn.query(sql, params);
+    let sql = "SELECT * FROM tbl_api WHERE domain_id = ? and state = 0";
+    let params = [domainId];
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: 500, message: error };
+  }
+};
+
+const getOneApi = async (conn, apiId) => {
+  try {
+    let sql = "SELECT * FROM tbl_api WHERE api_id = ? WHERE state = 0";
+    let params = [apiId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find api with the id '${apiId}'`,
+      };
+    }
+    return rows;
+  } catch (error) {
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
 const updateOneApi = async (conn, apiId, changes) => {
   try {
-    let sql =
+    let sql = `SELECT * From tbl_api WHERE method = ? resources = ? and domain_id = ? and state = 0`;
+    let params = [newApi.method, newApi.resources, newApi.domain_id];
+    let [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Api '${newApi.method}':'${newApi.resources}' already exists`,
+      };
+    }
+    sql = `SELECT * From tbl_api WHERE api_id = ? and state = 0`;
+    params = [apiId];
+    [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find api with the id '${apiId}'`,
+      };
+    }
+    sql =
       "UPDATE tbl_api SET method = ?, resources = ?, domain_id = ? WHERE api_id = ?";
-    let params = [changes.method, changes.resources, changes.domain_id, apiId];
-    let [rows, fields] = await conn.query(sql, params);
+    params = [changes.method, changes.resources, changes.domain_id, apiId];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
@@ -37,28 +80,17 @@ const deleteOneApi = async (conn, apiId) => {
   try {
     let sql = "UPDATE tbl_api SET state = 1 WHERE api_id = ?";
     let params = [apiId];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
-  }
-};
-
-const getApi = async (conn, api_id) => {
-  try {
-    let sql = "SELECT * FROM tbl_api WHERE api_id = ?";
-    let params = [api_id];
-    let [rows, fields] = await conn.query(sql, params);
-    return rows[0];
-  } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
 module.exports = {
   getAllApis,
+  getOneApi,
   createNewApi,
   updateOneApi,
   deleteOneApi,
-  getApi
 };

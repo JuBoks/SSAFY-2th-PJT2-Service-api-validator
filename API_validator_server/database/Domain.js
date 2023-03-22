@@ -1,7 +1,7 @@
 const createNewDomain = async (conn, newDomain) => {
   try {
-    let sql = `SELECT * From tbl_domain WHERE domain = ? and state = 0`;
-    let params = [newDomain.domain];
+    let sql = `SELECT * From tbl_domain WHERE domain = ? and category_id = ? and state = 0`;
+    let params = [newDomain.domain, newDomain.category_id];
     let [rows, _] = await conn.query(sql, params);
     if (rows.length) {
       throw {
@@ -48,13 +48,31 @@ const getOneDomain = async (conn, domainId) => {
 
 const updateOneDomain = async (conn, domainId, changes) => {
   try {
-    let sql =
+    let sql = `SELECT * From tbl_domain WHERE domain = ? and and category_id = ? state = 0`;
+    let params = [changes.domain, changes.category_id];
+    let [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Domain '${changes.domain}' already exists`,
+      };
+    }
+    sql = `SELECT * From tbl_domain WHERE domain_id = ? and state = 0`;
+    params = [domainId];
+    [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find domain with the id '${domainId}'`,
+      };
+    }
+    sql =
       "UPDATE tbl_domain SET name = ?, domain = ?, category_id = ? WHERE domain_id = ?";
-    let params = [changes.name, changes.domain, changes.category_id, domainId];
-    let [rows, fields] = await conn.query(sql, params);
+    params = [changes.name, changes.domain, changes.category_id, domainId];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
@@ -62,21 +80,10 @@ const deleteOneDomain = async (conn, domainId) => {
   try {
     let sql = "UPDATE tbl_domain SET state = 1 WHERE domain_id = ?";
     let params = [domainId];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
-  }
-};
-
-const getDomain = async (conn, domain_id) => {
-  try {
-    let sql = "SELECT * FROM tbl_domain WHERE domain_id = ?";
-    let params = [domain_id];
-    let [rows, fields] = await conn.query(sql, params);
-    return rows[0];
-  } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
