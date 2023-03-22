@@ -190,7 +190,7 @@ const SignUp = () => {
                 Already have an account?
               </Typography>
 
-              <Link href="/" variant="body1" mx={2}>
+              <Link href="/" variant="body1" mx={2} underline="none">
                 {"Login now"}
               </Link>
             </Grid>
