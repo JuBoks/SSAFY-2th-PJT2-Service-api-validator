@@ -57,16 +57,14 @@ const createTestResult = async (conn, data) => {
 
 const getApiList = async (conn) => {
   try {
-    // let sql = "SELECT * FROM tbl_metadata WHERE state = 0";
     let sql = `SELECT * FROM tbl_metadata as meta
       INNER JOIN tbl_api as api
       ON api.api_id = meta.api_id
       INNER JOIN tbl_domain as domain
       ON domain.domain_id = api.domain_id
-      WHERE meta.last_req_time is null or (UNIX_TIMESTAMP(NOW()) - meta.last_req_time) div 3600 >= meta.cycle_time
+      WHERE (meta.last_req_time is null or (UNIX_TIMESTAMP(NOW()) - meta.last_req_time) div 3600 >= meta.cycle_time)
       and meta.state = 0 and api.state = 0 and domain.state = 0`;
-
-    const [rows, fields] = await conn.query(sql);
+    const [rows, _] = await conn.query(sql);
     return rows;
   } catch (error) {
     return error;
@@ -78,8 +76,7 @@ const updateMetaRequestTime = async (conn, meta_id) => {
     let sql =
       "UPDATE tbl_metadata SET last_req_time = UNIX_TIMESTAMP(NOW()) WHERE (meta_id = ?);";
     let params = [meta_id];
-    const [rows, fields] = await conn.query(sql, params);
-    // console.log(rows);
+    const [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
     return error;

@@ -15,7 +15,6 @@ const getApiList = async (req, res) => {
 const createApiTestResult = async (req, res) => {
   const { body } = req;
   const { meta_id, action_id, response } = body;
-  // console.log(meta_id);
 
   try {
     const data = await validatorService.createApiTestResult(
