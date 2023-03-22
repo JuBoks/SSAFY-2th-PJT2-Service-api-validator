@@ -1,35 +1,85 @@
-const getAllApis = async (conn, domain_id) => {
-  try {
-    let sql = "SELECT * FROM tbl_api WHERE domain_id = ?";
-    let params = [domain_id];
-    let [rows, fields] = await conn.query(sql, params);
-    return rows;
-  } catch (error) {
-    return error;
-  }
-};
+const http_method = { 0: "GET", 1: "POST", 2: "PUT", 3: "DELETE" };
 
 const createNewApi = async (conn, newApi) => {
   try {
-    let sql =
-      "INSERT INTO tbl_api (method, resources, domain_id) values (?, ?, ?)";
+    let sql = `SELECT * From tbl_api WHERE method = ? and resources = ? and domain_id = ? and state = 0`;
     let params = [newApi.method, newApi.resources, newApi.domain_id];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Api '${http_method[newApi.method]}':'${
+          newApi.resources
+        }' already exists`,
+      };
+    }
+    sql = "INSERT INTO tbl_api (method, resources, domain_id) values (?, ?, ?)";
+    params = [newApi.method, newApi.resources, newApi.domain_id];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: error?.status || 500, message: error?.message || error };
+  }
+};
+
+const getAllApis = async (conn, domainId) => {
+  try {
+    let sql = "SELECT * FROM tbl_api WHERE domain_id = ? and state = 0";
+    let params = [domainId];
+    let [rows, _] = await conn.query(sql, params);
+    return rows;
+  } catch (error) {
+    throw { status: 500, message: error };
+  }
+};
+
+const getOneApi = async (conn, apiId) => {
+  try {
+    let sql = "SELECT * FROM tbl_api WHERE api_id = ? and state = 0";
+    let params = [apiId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find api with the id '${apiId}'`,
+      };
+    }
+    return rows[0];
+  } catch (error) {
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
 const updateOneApi = async (conn, apiId, changes) => {
   try {
-    let sql =
+    let sql = `SELECT * From tbl_api WHERE api_id = ? and state = 0`;
+    let params = [apiId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find api with the id '${apiId}'`,
+      };
+    }
+    sql = `SELECT * From tbl_api WHERE method = ? and resources = ? and domain_id = ? and state = 0`;
+    params = [changes.method, changes.resources, changes.domain_id];
+    [rows, _] = await conn.query(sql, params);
+    if (rows.length) {
+      throw {
+        status: 400,
+        message: `Api '${http_method[changes.method]}':'${
+          changes.resources
+        }' already exists`,
+      };
+    }
+
+    sql =
       "UPDATE tbl_api SET method = ?, resources = ?, domain_id = ? WHERE api_id = ?";
-    let params = [changes.method, changes.resources, changes.domain_id, apiId];
-    let [rows, fields] = await conn.query(sql, params);
+    params = [changes.method, changes.resources, changes.domain_id, apiId];
+    [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
@@ -37,28 +87,17 @@ const deleteOneApi = async (conn, apiId) => {
   try {
     let sql = "UPDATE tbl_api SET state = 1 WHERE api_id = ?";
     let params = [apiId];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    return error;
-  }
-};
-
-const getApi = async (conn, api_id) => {
-  try {
-    let sql = "SELECT * FROM tbl_api WHERE api_id = ?";
-    let params = [api_id];
-    let [rows, fields] = await conn.query(sql, params);
-    return rows[0];
-  } catch (error) {
-    return error;
+    throw { status: 500, message: error };
   }
 };
 
 module.exports = {
   getAllApis,
+  getOneApi,
   createNewApi,
   updateOneApi,
   deleteOneApi,
-  getApi
 };

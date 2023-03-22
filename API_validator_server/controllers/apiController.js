@@ -1,15 +1,13 @@
 const apiService = require("../services/apiService");
 
-// About API
 const createNewApi = async (req, res) => {
-  console.log(req.body);
   const { body } = req;
   if (!body.method || !body.resources || !body.domain_id) {
     res.status(400).send({
       status: "FAILED",
       data: {
         error:
-          "One of the following keys is missing or is empty in request body: 'method', 'resources', 'domain_id",
+          "One of the following keys is missing or is empty in request body: 'method', 'resources', 'domain_id'",
       },
     });
     return;
@@ -21,7 +19,9 @@ const createNewApi = async (req, res) => {
   };
   try {
     const createdApi = await apiService.createNewApi(newApi);
-    res.status(201).send({ status: "OK", data: createdApi });
+    res
+      .status(201)
+      .send({ status: "OK", data: { api_id: createdApi.insertId, ...newApi } });
   } catch (error) {
     res
       .status(error?.status || 500)
@@ -51,7 +51,25 @@ const getAllApis = async (req, res) => {
   }
 };
 
-const getOneApi = (req, res) => {};
+const getOneApi = async (req, res) => {
+  const {
+    params: { apiId },
+  } = req;
+  if (!apiId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: { error: "Parameter ':apiId' can not be empty" },
+    });
+  }
+  try {
+    const api = await apiService.getOneApi(apiId);
+    res.send({ status: "OK", data: api });
+  } catch (error) {
+    res
+      .status(error?.status || 500)
+      .send({ status: "FAILED", data: { error: error?.message || error } });
+  }
+};
 
 const updateOneApi = async (req, res) => {
   const {
@@ -66,7 +84,7 @@ const updateOneApi = async (req, res) => {
   }
   try {
     const updatedApi = await apiService.updateOneApi(apiId, body);
-    res.send({ status: "OK", data: updatedApi });
+    res.send({ status: "OK", data: { api_id: apiId, ...body } });
   } catch (error) {
     res
       .status(error?.status || 500)

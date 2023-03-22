@@ -1,52 +1,97 @@
-const getAllMetadatas = async (conn, api_id) => {
-  try {
-    let sql = "SELECT * FROM tbl_metadata WHERE api_id = ?";
-    let params = [api_id];
-    let [rows, _] = await conn.query(sql, params);
-    return rows;
-  } catch (error) {
-    return error;
-  }
-};
-
-const getMetaData = async (conn, metaId) => {
-  try {
-    let sql = "SELECT * FROM tbl_metadata WHERE meta_id = ? AND state = 0";
-    let params = [metaId];
-    let [rows, fields] = await conn.query(sql, params);
-    if (rows.length == 0) throw new Error("No Content");
-    return rows[0];
-  } catch (error) {
-    throw error;
-  }
-};
-
-const createMetadata = async (conn, apiId, body) => {
+const createNewMetadata = async (conn, newMeta) => {
   try {
     let sql =
       "INSERT INTO tbl_metadata (api_id, name, header, params, body, cycle_time) VALUES (?, ?, ?, ?, ?, ?)";
     let params = [
-      apiId,
-      body.name,
-      JSON.stringify(body.header),
-      JSON.stringify(body.params),
-      JSON.stringify(body.body),
-      body.cycle_time,
+      newMeta.api_id,
+      newMeta.name,
+      JSON.stringify(newMeta.header),
+      JSON.stringify(newMeta.params),
+      JSON.stringify(newMeta.body),
+      newMeta.cycle_time,
     ];
-    let [rows, fields] = await conn.query(sql, params);
-    return rows.insertId;
+    let [rows, _] = await conn.query(sql, params);
+    return rows;
   } catch (error) {
-    throw error;
+    throw { status: 500, message: error };
   }
 };
 
+const getAllMetadatas = async (conn, apiId) => {
+  try {
+    let sql = "SELECT * FROM tbl_metadata WHERE api_id = ? and state = 0";
+    let params = [apiId];
+    let [rows, _] = await conn.query(sql, params);
+    return rows;
+  } catch (error) {
+    throw { status: 500, message: error };
+  }
+};
+
+const getOneMetadata = async (conn, metaId) => {
+  try {
+    let sql = "SELECT * FROM tbl_metadata WHERE meta_id = ? and state = 0";
+    let params = [metaId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find metadata with the id '${metaId}'`,
+      };
+    }
+    return rows[0];
+  } catch (error) {
+    throw { status: error?.status || 500, message: error?.message || error };
+  }
+};
+
+const updateOneMetadata = async (conn, metaId, changes) => {
+  try {
+    let sql = `SELECT * From tbl_metadata WHERE meta_id = ? and state = 0`;
+    let params = [metaId];
+    let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find metadata with the id '${metaId}'`,
+      };
+    }
+    sql =
+      "UPDATE tbl_metadata SET api_id = ?, response_id = ?, header = ?, params = ?, body = ?, name = ?, cycle_time = ? WHERE meta_id = ?";
+    params = [
+      changes.api_id,
+      changes.response_id,
+      JSON.stringify(changes.header),
+      JSON.stringify(changes.params),
+      JSON.stringify(changes.body),
+      changes.name,
+      changes.cycle_time,
+      metaId,
+    ];
+    [rows, _] = await conn.query(sql, params);
+    return rows;
+  } catch (error) {
+    throw { status: 500, message: error };
+  }
+};
+
+const deleteOneMetadata = async (conn, metaId) => {
+  try {
+    let sql = "UPDATE tbl_metadata SET state = 1 WHERE meta_id = ?";
+    let params = [metaId];
+    let [rows, _] = await conn.query(sql, params);
+    return rows;
+  } catch (error) {
+    throw { status: 500, message: error };
+  }
+};
 
 const createExpectResponse = async (conn, metaId, dataId, response) => {
   try {
     let sql =
       "INSERT INTO tbl_expect_response_log (meta_id, data_id, response) VALUES (?, ?, ?)";
     let params = [metaId, dataId, JSON.stringify(response)];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
     return rows.insertId;
   } catch (error) {
     throw error;
@@ -57,51 +102,19 @@ const updateResponseIdInMetadata = async (conn, metaId, responseId) => {
   try {
     let sql = "UPDATE tbl_metadata SET response_id = ? WHERE meta_id = ?";
     let params = [metaId, responseId];
-    let [rows, fields] = await conn.query(sql, params);
+    let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
     throw error;
   }
 };
 
-const updateOneMeta = async (conn, metaId, changes) => {
-  try {
-    let sql =
-      "UPDATE tbl_metadata SET api_id = ?, response_id = ?, header = ?, params = ?, body = ?, name = ?, cycle_time = ? WHERE meta_id = ?";
-    let params = [
-      changes.api_id,
-      changes.response_id,
-      changes.header,
-      changes.params,
-      changes.body,
-      changes.name,
-      changes.cycle_time,
-      metaId,
-    ];
-    let [rows, _] = await conn.query(sql, params);
-    return rows;
-  } catch (error) {
-    return error;
-  }
-};
-
-const deleteOneMeta = async (conn, metaId) => {
-  try {
-    let sql = "UPDATE tbl_metadata SET state = 1 WHERE meta_id = ?";
-    let params = [metaId];
-    let [rows, _] = await conn.query(sql, params);
-    return rows;
-  } catch (error) {
-    return error;
-  }
-};
-
 module.exports = {
   getAllMetadatas,
-  createMetadata,
-  getMetaData,
+  createNewMetadata,
+  getOneMetadata,
   createExpectResponse,
   updateResponseIdInMetadata,
-  updateOneMeta,
-  deleteOneMeta,
+  updateOneMetadata,
+  deleteOneMetadata,
 };
