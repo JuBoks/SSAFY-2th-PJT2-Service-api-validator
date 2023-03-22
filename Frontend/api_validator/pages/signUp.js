@@ -1,41 +1,96 @@
 import React, { useState } from "react";
-import Image from "next/image";
+import router from "next/router";
 import { Grid, Box, Typography, TextField } from "@mui/material";
 import { Link, Button, InputLabel } from "@mui/material";
 import { Select, MenuItem, FormControl } from "@mui/material";
-import logo from "@/public/images/logo.png";
 import Copyright from "@/components/Copyright.js";
+import { PostUsers } from "@/util/api";
 import styles from "@/styles/login.module.css";
-import axios from "axios";
 import IndexLogo from "@/components/IndexLogo.js";
+import auth from "../util/auth";
+import { GetUsersDuplicateEmail } from "@/util/api";
 
 const SignUp = () => {
-  const url = "http://70.12.246.220:3000";
-  const [email, setEmail] = useState("");
   const [type, setType] = useState(0);
+  const [pwd, setPwd] = useState("");
+  const [emailMsg, setEmailMsg] = useState("");
+  const [pwdMsg, setPwdMsg] = useState("");
+  const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
+  const [isDuplicateEmail, setIsDuplicatedEmail] = useState(false);
+  const [isPwdError, setIsPwdError] = useState(false);
+  const [isConfirmPwdError, setIsConfirmPwdError] = useState(false);
 
-  const handleEmailChange = (props) => setEmail(props.target.value);
   const handleTypeChange = (props) => setType(props.target.value);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const reqData = {
-      name: data.get("username"),
-      email: data.get("email"),
-      password: data.get("password"),
-      type: parseInt(data.get("type")),
-    };
 
-    await axios
-      .post(url + "/users", reqData)
-      .then((res) => {
-        console.log(res);
-        alert("Sign up Success");
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Sign up Fail\n" + error.response.data.message);
-      });
+  const handleEmailChange = async (props) => {
+    try {
+      if (!props.target.value) return;
+      const res = await GetUsersDuplicateEmail(props.target.value);
+      if (res.data === "Not Available") {
+        setIsDuplicatedEmail(true);
+        setEmailMsg("사용 불가한 이메일입니다.");
+      } else {
+        setIsDuplicatedEmail(false);
+        setEmailMsg("");
+      }
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  };
+
+  const handlePwdChange = (props) => {
+    if (!props.target.value) return;
+    const cur_pwd = props.target.value;
+    setPwd(cur_pwd);
+
+    if (cur_pwd.length < 6) {
+      setIsPwdError(true);
+      setPwdMsg("6자 이상 입력해주세요.");
+    } else {
+      setIsPwdError(false);
+      setPwdMsg("");
+    }
+  };
+
+  const handleConfirmPwdChange = (props) => {
+    if (!props.target.value) return;
+    const confirmPwd = props.target.value;
+
+    if (confirmPwd !== pwd) {
+      setIsConfirmPwdError(true);
+      setConfirmPwdMsg("비밀번호가 동일하지 않습니다.");
+    } else {
+      setIsConfirmPwdError(false);
+      setConfirmPwdMsg("");
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+
+      if (isDuplicateEmail || isPwdError || isConfirmPwdError) {
+        alert("다시 입력해주세요.");
+        return;
+      }
+
+      const idToken = await auth.currentUser.getIdToken(true);
+      const data = new FormData(event.target);
+      const reqData = {
+        name: data.get("username"),
+        email: data.get("email"),
+        password: data.get("password"),
+        type: parseInt(data.get("type")),
+      };
+
+      const res = await PostUsers(reqData);
+      alert("회원가입 완료");
+      router.push("/");
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
   };
 
   return (
@@ -44,8 +99,8 @@ const SignUp = () => {
         <IndexLogo />
       </Grid>
       <Grid item xs={5}>
-        <Box className={styles["right-box"]}>
-          <Typography component="h1" variant="h4" style={{ color: "#5A5A5F" }}>
+        <Box className={styles.right}>
+          <Typography component="h1" variant="h4" className={styles.text}>
             Create Account
           </Typography>
 
@@ -66,10 +121,13 @@ const SignUp = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleEmailChange}
+              error={isDuplicateEmail}
+              helperText={emailMsg}
             />
 
             <TextField
@@ -81,7 +139,9 @@ const SignUp = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              helperText="6자 이상 입력해주세요."
+              error={isPwdError}
+              helperText={pwdMsg}
+              onChange={handlePwdChange}
             />
 
             <TextField
@@ -93,6 +153,9 @@ const SignUp = () => {
               type="password"
               id="confirm-password"
               autoComplete="current-password"
+              error={isConfirmPwdError}
+              helperText={confirmPwdMsg}
+              onChange={handleConfirmPwdChange}
             />
 
             <FormControl fullWidth sx={{ mt: "1rem" }}>

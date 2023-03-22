@@ -4,35 +4,39 @@ import Nav from "@/components/Nav.js";
 import BarChart from "@/components/BarChart.js";
 import DenseTable from "@/components/DenseTable.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
-import auth from "../util/auth";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import axios from "axios";
-import { useState, useRef, useLayoutEffect, constructor } from "react";
+import { useState } from "react";
 import router from "next/router";
+import auth from "../util/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
 
 export default function Main() {
-  const url = "http://70.12.246.220:3000";
-  const [isAuthorize, setIsAuthorize] = useState(false);
+  const [isAuthorize, setIsAuthorize] = useState(true);
+  const url = "http://70.12.246.220:3000/api";
+  const GetUsers = async (idToken) => {
+    const res = await axios
+      .get(url + "/users", {
+        headers: {
+          idtoken: idToken,
+        },
+      })
+      .then((res) => console.log(res));
 
-  const GetUsers = async (userUid) => {
-    const res = await axios.get(url + "/users", {
-      headers: {
-        uid: userUid,
-      },
-    });
-
-    setIsAuthorize(true);
-    console.log(res.data);
-    if (res.data.state !== 0) {
-      router.push("/");
-    }
+    return res;
   };
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      const uid = user.uid;
-      console.log(uid);
-      GetUsers(uid);
+      console.log(user);
+      auth.currentUser
+        .getIdToken(true)
+        .then((idToken) => {
+          console.log(idToken);
+          console.log(GetUsers(idToken));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       console.log("User is Signed Out");
     }
@@ -42,7 +46,7 @@ export default function Main() {
     <>
       <Header />
       <Box sx={{ display: "flex" }}>
-        <Nav />
+        <Nav isAdmin={true} />
         <Box component="main" sx={{ height: "100vh" }}>
           <Toolbar />
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>

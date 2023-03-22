@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
@@ -15,7 +15,7 @@ export default function Main() {
     <>
       <Header />
       <Box sx={{ display: "flex" }}>
-        <Nav isAdmin={true} isAdminPage={true} />
+        <Nav isAdmin={true} />
         <Box component="main" sx={{ height: "100vh" }}>
           <Toolbar />
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
@@ -26,15 +26,33 @@ export default function Main() {
                 m={(0, 5)}
                 sx={{ color: "blue" }}
               >
-                User Management
+                Favorite API
               </Typography>
             </Grid>
-            <Grid item xs={4}>
-              <Typography variant="body1" component="body1" m={(0, 5)}>
+            <Grid item xs={5}>
+              <Typography variant="body1" component="body1" ml={5} mr={1}>
                 Total : 100
               </Typography>
+              <Typography
+                variant="body1"
+                component="body1"
+                color="green"
+                ml={1}
+                mr={1}
+              >
+                Pass : 50
+              </Typography>
+              <Typography
+                variant="body1"
+                component="body1"
+                color="red"
+                ml={1}
+                mr={1}
+              >
+                Fail : 50
+              </Typography>
             </Grid>
-            <Grid item xs={8} display="flex" justifyContent="end" p={5}>
+            <Grid item xs={7} display="flex" justifyContent="end" p={5}>
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
