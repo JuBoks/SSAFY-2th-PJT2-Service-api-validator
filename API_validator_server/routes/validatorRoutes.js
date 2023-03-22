@@ -5,15 +5,9 @@ const actionController = require("../controllers/actionController");
 
 const router = express.Router();
 
-// router.get("/", validatorController.helloWorld);
-
-// router.post("/response", validatorController.getInferredSchema);
-
 router.get("/api", validatorController.getApiList);
 
 router.post("/api/test", validatorController.createApiTestResult);
-
-// router.get("/diff", validatorController.getApiDiff);
 
 router.post("/github-action", actionController.saveAction);
 
