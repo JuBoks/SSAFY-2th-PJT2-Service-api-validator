@@ -74,7 +74,7 @@ export default function Home() {
                 helperText={errorMsg}
               />
 
-              <Link href="#" variant="body1">
+              <Link href="/findPwd" variant="body1" underline="none">
                 Forgot password?
               </Link>
 
@@ -93,7 +93,7 @@ export default function Home() {
                   Not a Member?
                 </Typography>
 
-                <Link href="/signUp" variant="body1" mx={2}>
+                <Link href="/signUp" variant="body1" mx={2} underline="none">
                   {"Create account now"}
                 </Link>
               </Grid>
