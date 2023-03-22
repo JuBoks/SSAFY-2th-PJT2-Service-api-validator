@@ -40,7 +40,7 @@ const getOneDomain = async (conn, domainId) => {
         message: `Can't find domain with the id '${domainId}'`,
       };
     }
-    return rows;
+    return rows[0];
   } catch (error) {
     throw { status: error?.status || 500, message: error?.message || error };
   }

@@ -43,7 +43,7 @@ const getOneMetadata = async (metaId) => {
   }
 };
 
-const upadateOneMetadata = async (metaId, changes) => {
+const updateOneMetadata = async (metaId, changes) => {
   const conn = await pool.getConnection();
   try {
     const updatedMeta = await metadata.updateOneMetadata(conn, metaId, changes);
@@ -71,9 +71,9 @@ const testMetadata = async (metaId) => {
   const request = {};
   try {
     await conn.beginTransaction();
-    const metadata_data = await metadata.getMetaData(conn, metaId);
-    const api_data = await api.getApi(conn, metadata_data.api_id);
-    const domain_data = await domain.getDomain(conn, api_data.domain_id);
+    const metadata_data = await metadata.getOneMetadata(conn, metaId);
+    const api_data = await api.getOneApi(conn, metadata_data.api_id);
+    const domain_data = await domain.getOneDomain(conn, api_data.domain_id);
 
     request.url = domain_data.domain + api_data.resources;
 
@@ -122,10 +122,8 @@ const testMetadata = async (metaId) => {
 
 const createExpectResponse = async (metaId, response) => {
   const conn = await pool.getConnection();
-
   try {
     await conn.beginTransaction();
-
     const schema = validatorService.inferSchema(
       response,
       Array.isArray(response)
@@ -161,6 +159,6 @@ module.exports = {
   createNewMetadata,
   testMetadata,
   createExpectResponse,
-  upadateOneMetadata,
+  updateOneMetadata,
   deleteOneMetadata,
 };
