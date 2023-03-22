@@ -84,7 +84,7 @@ const updateOneApi = async (req, res) => {
   }
   try {
     const updatedApi = await apiService.updateOneApi(apiId, body);
-    res.send({ status: "OK", data: updatedApi });
+    res.send({ status: "OK", data: { api_id: apiId, ...body } });
   } catch (error) {
     res
       .status(error?.status || 500)
