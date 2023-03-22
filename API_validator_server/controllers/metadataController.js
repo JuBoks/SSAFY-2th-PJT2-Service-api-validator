@@ -1,4 +1,4 @@
-const metadataService = require("../services/metadataService.js");
+const metadataService = require("../services/metaDataService");
 
 const createNewMetadata = async (req, res) => {
   const { body } = req;
