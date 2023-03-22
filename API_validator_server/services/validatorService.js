@@ -139,7 +139,8 @@ const getApiList = async () => {
       acc.push({
         meta_id: cur.meta_id,
         method: cur.method,
-        url: cur.domain + cur.resources,
+        baseURL: cur.domain,
+        path: cur.resources,
         header: cur.header,
         params: cur.params,
         body: cur.body,
