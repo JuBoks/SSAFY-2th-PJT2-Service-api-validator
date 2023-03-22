@@ -57,13 +57,11 @@ const isEmpty = (object) => {
   return Object.keys(object).length === 0;
 };
 
-//transaction 처리 필요. conn 을 service에서 가져오게?
 const createApiTestResult = async (meta_id, action_id, response) => {
   const conn = await pool.getConnection();
 
   //response 자료형 추론하기
   const schema = inferSchema(response, Array.isArray(response));
-  // console.log(schema);
 
   try {
     //트랜잭션 시작
@@ -98,7 +96,9 @@ const createApiTestResult = async (meta_id, action_id, response) => {
         data_id = await Validator.createAnalyzedData(conn, schema);
       }
     } else {
-      data_id = await Validator.createAnalyzedData(conn, schema);
+      //정답지 없으면 예외처리
+      throw error;
+      //data_id = await Validator.createAnalyzedData(conn, schema);
     }
 
     //las req time 업데이트
