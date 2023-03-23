@@ -26,7 +26,7 @@ export default function Home() {
 
       const userState = userData.data.state;
       if (userState === 0) {
-        alert("준회원입니다. 관리자의 승인이 필요합니다.");
+        alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
       } else {
         router.push("/home");
       }
