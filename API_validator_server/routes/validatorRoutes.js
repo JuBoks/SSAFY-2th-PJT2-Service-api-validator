@@ -9,6 +9,10 @@ router.get("/api", validatorController.getApiList);
 
 router.post("/api/test", validatorController.createApiTestResult);
 
+router.post("/infer", validatorController.createInferredSchema);
+
+router.post("/diff", validatorController.createSchemaDiff);
+
 router.post("/github-action", actionController.saveAction);
 
 router.put("/github-action", actionController.updateAction);

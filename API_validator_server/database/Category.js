@@ -47,6 +47,17 @@ const getOneCategory = async (conn, categoryId) => {
 
 const updateOneCategory = async (conn, categoryId, changes) => {
   try {
+    if (changes.name) {
+      let sql = `SELECT * From tbl_category WHERE name = ? and state = 0`;
+      let params = [changes.name];
+      let [rows, _] = await conn.query(sql, params);
+      if (rows.length) {
+        throw {
+          status: 400,
+          message: `Category with the name '${changes.name}' already exists`,
+        };
+      }
+    }
     let sql = `SELECT * From tbl_category WHERE category_id = ? and state = 0`;
     let params = [categoryId];
     let [rows, _] = await conn.query(sql, params);
@@ -56,22 +67,16 @@ const updateOneCategory = async (conn, categoryId, changes) => {
         message: `Can't find category with the id '${categoryId}'`,
       };
     }
-    sql = `SELECT * From tbl_category WHERE name = ? and state = 0`;
-    params = [changes.name];
-    [rows, _] = await conn.query(sql, params);
-    if (rows.length) {
-      throw {
-        status: 400,
-        message: `Category with the name '${changes.name}' already exists`,
-      };
-    }
-
     sql = "UPDATE tbl_category SET name = ?, note = ? WHERE category_id = ?";
-    params = [changes.name, changes.note, categoryId];
+    params = [
+      changes.name || rows[0].name,
+      changes.note || rows[0].note,
+      categoryId,
+    ];
     [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    throw { status: 500, message: error };
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 

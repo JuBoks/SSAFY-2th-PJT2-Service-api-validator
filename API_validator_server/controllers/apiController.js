@@ -2,7 +2,11 @@ const apiService = require("../services/apiService");
 
 const createNewApi = async (req, res) => {
   const { body } = req;
-  if (!body.method || !body.resources || !body.domain_id) {
+  if (
+    !(0 <= body.method && body.method <= 3) ||
+    !body.resources ||
+    !body.domain_id
+  ) {
     res.status(400).send({
       status: "FAILED",
       data: {

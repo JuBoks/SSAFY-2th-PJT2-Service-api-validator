@@ -27,9 +27,15 @@ const getAllApis = async (conn, domainId) => {
     let sql = "SELECT * FROM tbl_api WHERE domain_id = ? and state = 0";
     let params = [domainId];
     let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find api with the domain_id '${domainId}'`,
+      };
+    }
     return rows;
   } catch (error) {
-    throw { status: 500, message: error };
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 

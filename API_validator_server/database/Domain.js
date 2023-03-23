@@ -23,9 +23,15 @@ const getAllDomains = async (conn, categoryId) => {
     let sql = "SELECT * FROM tbl_domain WHERE category_id = ? and state = 0";
     let params = [categoryId];
     let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find any domain with the category_id '${categoryId}'`,
+      };
+    }
     return rows;
   } catch (error) {
-    throw { status: 500, message: error };
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
@@ -72,7 +78,7 @@ const updateOneDomain = async (conn, domainId, changes) => {
     [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
-    throw { status: 500, message: error };
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 

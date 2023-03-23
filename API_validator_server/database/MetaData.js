@@ -22,9 +22,15 @@ const getAllMetadatas = async (conn, apiId) => {
     let sql = "SELECT * FROM tbl_metadata WHERE api_id = ? and state = 0";
     let params = [apiId];
     let [rows, _] = await conn.query(sql, params);
+    if (!rows.length) {
+      throw {
+        status: 400,
+        message: `Can't find metadata with the api_id '${apiId}'`,
+      };
+    }
     return rows;
   } catch (error) {
-    throw { status: 500, message: error };
+    throw { status: error?.status || 500, message: error?.message || error };
   }
 };
 
@@ -101,7 +107,7 @@ const createExpectResponse = async (conn, metaId, dataId, response) => {
 const updateResponseIdInMetadata = async (conn, metaId, responseId) => {
   try {
     let sql = "UPDATE tbl_metadata SET response_id = ? WHERE meta_id = ?";
-    let params = [metaId, responseId];
+    let params = [responseId, metaId];
     let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {

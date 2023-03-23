@@ -2,19 +2,12 @@ const metadataService = require("../services/metaDataService");
 
 const createNewMetadata = async (req, res) => {
   const { body } = req;
-  if (
-    !body.api_id ||
-    !body.header ||
-    !body.params ||
-    !body.body ||
-    !body.cycle_time ||
-    !body.name
-  ) {
+  if (!body.api_id || !body.cycle_time || !body.name) {
     res.status(400).send({
       status: "FAILED",
       data: {
         error:
-          "One of the following keys is missing or is empty in request body: 'api_id', 'name', 'header', 'params', 'body', 'cycle_time'",
+          "One of the following keys is missing or is empty in request body: 'api_id', 'name', 'cycle_time'",
       },
     });
     return;
@@ -127,16 +120,37 @@ const testMetadata = async (req, res) => {
   const {
     params: { metaId },
   } = req;
+  if (!metaId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: { error: "Parameter ':metaId' can not be empty" },
+    });
+  }
   try {
     const data = await metadataService.testMetadata(metaId);
     res.send({ status: "OK", data });
-  } catch (error) { }
+  } catch (error) {}
 };
 
 const createExpectResponse = async (req, res) => {
   const { metaId } = req.params;
   const { response } = req.body;
-
+  if (!metaId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: { error: "Parameter ':metaId' can not be empty" },
+    });
+  }
+  if (!response) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error:
+          "One of the following keys is missing or is empty in request body: 'response'",
+      },
+    });
+    return;
+  }
   try {
     const data = await metadataService.createExpectResponse(metaId, response);
     res.status(200).send({ meta_id: metaId, response_id: data });

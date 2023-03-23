@@ -73,6 +73,16 @@ const updateOneCategory = async (req, res) => {
       data: { error: "Parameter ':categoryId' can not be empty" },
     });
   }
+  if (!body.name && !body.note) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error:
+          "At least one of the following keys is required in request body: 'name', 'note'",
+      },
+    });
+    return;
+  }
   try {
     const updatedCategory = await categoryService.updateOneCategory(
       categoryId,

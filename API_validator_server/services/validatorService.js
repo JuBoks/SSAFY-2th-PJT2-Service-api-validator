@@ -160,4 +160,21 @@ const getApiList = async () => {
   }
 };
 
-module.exports = { getApiList, createApiTestResult, inferSchema };
+const createInferredSchema = (response) => {
+  return inferSchema(response, Array.isArray(response));
+};
+
+const createSchemaDiff = (source, compare) => {
+  const source_schema = inferSchema(source, Array.isArray(source));
+  const compare_schema = inferSchema(compare, Array.isArray(compare));
+
+  return compareJson(source_schema, compare_schema);
+};
+
+module.exports = {
+  getApiList,
+  createApiTestResult,
+  inferSchema,
+  createInferredSchema,
+  createSchemaDiff,
+};
