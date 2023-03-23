@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common';
-import { Repository } from 'typeorm';
+import { CustomRequest } from 'src/common/custromrequest';
+import { DataSource, Repository } from 'typeorm';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { Favorite } from './entities/favorite.entity';
@@ -10,14 +11,40 @@ export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
     private favoriteRepository: Repository<Favorite>,
+    private dataSource: DataSource
   ){}
 
-  findAll(): Promise<Favorite[]>{
-    return this.favoriteRepository.find();
+  async findAll(req:CustomRequest): Promise<Favorite[]>{
+    return await this.favoriteRepository.findBy({
+      uid: req.user.uid
+    });
   }
 
-  create(createFavoriteDto: CreateFavoriteDto) {
-    return this.favoriteRepository.save(createFavoriteDto);
+  async create(createFavoriteDto: CreateFavoriteDto, req:CustomRequest) {
+    const uid = req.user.uid;
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try{
+      for (const id of createFavoriteDto.apis){
+        const favorite = {
+          uid: uid,
+          meta_id: id,
+        }
+        await queryRunner.manager.save(favorite);
+      }
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        err.message,
+        HttpStatus.NOT_ACCEPTABLE,
+      )
+    } finally{
+      await queryRunner.release();
+    }
+    return "success";
   }
 
   

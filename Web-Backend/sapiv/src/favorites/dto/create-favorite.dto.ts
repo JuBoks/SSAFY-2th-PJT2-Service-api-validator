@@ -1,13 +1,10 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsArray } from "class-validator";
 
 export class CreateFavoriteDto {
   @ApiPropertyOptional()
-  name: string;
-  @ApiPropertyOptional()
-  description: string;
-  @ApiPropertyOptional()
-  filename: string;
-  @ApiPropertyOptional()
-  views: number;
+  @IsArray()
+  apis: Array<number>;
+  
   
 }

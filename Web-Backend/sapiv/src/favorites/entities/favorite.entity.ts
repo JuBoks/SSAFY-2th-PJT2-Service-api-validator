@@ -5,16 +5,16 @@ export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 500 })
-  name!: string;
-
-  @Column('text')
-  description!: string;
-
   @Column()
-  filename!: string;
+  uid: string;
 
   @Column('int')
-  views!: number;
+  meta_id: number;
+
+  @Column('int')
+  created_date: number;
+
+  @Column('int')
+  updated_date: number;
 
 }
