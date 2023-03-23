@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Router from "next/router";
 import { Box, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
@@ -9,10 +8,8 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import styles from "@/styles/profile.module.css";
 
 const ProfileData = ({ name, email, type, state }) => {
-  // const [name, setName] = useState("name");
-  // const [email, setEmail] = useState("email");
-  // const [type, setType] = useState(1);
-  // const [state, setState] = useState(0);
+  const typeList = ["Client Developer", "Server Developer", "QA", "etc"];
+  const stateList = ["Guest", "Maintainer", "Admin", "Owner"];
 
   const ProfileData = [
     {
@@ -27,12 +24,12 @@ const ProfileData = ({ name, email, type, state }) => {
     },
     {
       icon: <ApartmentIcon className={styles.item_icon} />,
-      content: type,
+      content: typeList[type],
       key: "type",
     },
     {
       icon: <SupervisedUserCircleIcon className={styles.item_icon} />,
-      content: state,
+      content: stateList[state],
       key: "state",
     },
   ];

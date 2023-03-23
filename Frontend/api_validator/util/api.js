@@ -16,9 +16,22 @@ const PostUsers = async (reqData) => {
   return res;
 };
 
+const PatchUsers = async (idToken, uidValue, stateValue, typeValue) => {
+  const reqData = {
+    headers: {
+      idtoken: idToken,
+    },
+    uid: uidValue,
+    state: stateValue,
+    type: typeValue,
+  };
+  const res = await axios.patch(url + "/users", reqData);
+  return res;
+};
+
 const GetUsersDuplicateEmail = async (email) => {
   const res = await axios.get(url + "/users/duplicate/" + email);
   return res;
 };
 
-export { GetUsers, PostUsers, GetUsersDuplicateEmail };
+export { GetUsers, PostUsers, GetUsersDuplicateEmail, PatchUsers };
