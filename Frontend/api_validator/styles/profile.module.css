@@ -1,0 +1,30 @@
+.frame {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: top 10px;
+}
+
+.frame .icon {
+  color: #6f6f6a;
+  font-size: 100px;
+}
+
+.group {
+  margin-top: 50px;
+}
+
+.group .item {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.item_icon {
+  color: #6f6f6a;
+  margin-right: 10px;
+}

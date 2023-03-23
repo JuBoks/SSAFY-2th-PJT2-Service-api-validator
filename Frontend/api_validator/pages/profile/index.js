@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import router from "next/router";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
@@ -7,8 +7,16 @@ import ProfileData from "@/components/ProfileData";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import { Button, Tab, TextField, Autocomplete } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { onAuthStateChanged } from "firebase/auth";
+import { GetUsers } from "@/util/api";
+import auth from "@/util/auth";
 
 export default function Profile() {
+  const [name, setName] = useState("name");
+  const [email, setEmail] = useState("email");
+  const [type, setType] = useState(1);
+  const [state, setState] = useState(0);
+
   const optionList = [
     { label: "Name", id: 1 },
     { label: "Category", id: 2 },
@@ -26,6 +34,22 @@ export default function Profile() {
     router.push("/profile/edit");
   };
 
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const idToken = await auth.currentUser.getIdToken(true);
+        const res = await GetUsers(idToken);
+        setName(user.displayName);
+        setEmail(user.email);
+        setType(res.data.type);
+        setState(res.data.state);
+      } else {
+        alert("로그인이 필요합니다.");
+        Router.push("/");
+      }
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -41,7 +65,12 @@ export default function Profile() {
               justifyContent="center"
               alignItems="center"
             >
-              <ProfileData />
+              <ProfileData
+                name={name}
+                email={email}
+                type={type}
+                state={state}
+              />
               <Button size="large" variant="outlined" onClick={handleEditClick}>
                 Edit Profile
               </Button>
