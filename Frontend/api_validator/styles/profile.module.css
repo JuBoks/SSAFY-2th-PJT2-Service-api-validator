@@ -28,3 +28,25 @@
   color: #6f6f6a;
   margin-right: 10px;
 }
+
+.text {
+  color: #6f6f6a;
+  margin: 10px;
+}
+
+.edit .main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 40px;
+  margin-left: 60px;
+  width: 500px;
+}
+
+.edit .item {
+  margin: 10px;
+}
+
+.edit .card {
+  margin-top: 50px;
+}

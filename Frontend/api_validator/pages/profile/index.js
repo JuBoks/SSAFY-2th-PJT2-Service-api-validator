@@ -14,7 +14,7 @@ import auth from "@/util/auth";
 export default function Profile() {
   const [name, setName] = useState("name");
   const [email, setEmail] = useState("email");
-  const [type, setType] = useState(1);
+  const [type, setType] = useState(0);
   const [state, setState] = useState(0);
 
   const optionList = [
@@ -55,7 +55,7 @@ export default function Profile() {
       <Header />
       <Box sx={{ display: "flex" }}>
         <Nav isAdmin={true} />
-        <Box component="main" sx={{ height: "100vh", width: "100%" }}>
+        <Box className="main" sx={{ height: "100vh", width: "100%" }}>
           <Toolbar />
           <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
             <Grid
