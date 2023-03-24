@@ -16,7 +16,7 @@ services:
   web-be-dev:
     build:
       context: Web-Backend/sapiv
-      dockerfile: Web-Backend/sapiv/Dockerfile-dev
+      dockerfile: Dockerfile-dev
     container_name: sapiv-webbe-dev
     depends_on:
       - db-dev
