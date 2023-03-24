@@ -28,7 +28,9 @@ services:
       - frontprod
 
   api-validator:
-    build: API_validator_server
+    build:
+      context: API_validator_server
+      dockerfile: Dockerfile-prod
     container_name: sapiv-apivalidator-prod
     depends_on:
       - db-prod
