@@ -14,7 +14,9 @@ services:
       - dbprod
   
   web-be-prod:
-    build: Web-Backend/sapiv
+    build:
+      context: Web-Backend/sapiv
+      dockerfile: Web-Backend/sapiv/Dockerfile-prod
     container_name: sapiv-webbe-prod
     depends_on:
       - db-prod
@@ -28,9 +30,7 @@ services:
       - frontprod
 
   api-validator:
-    build:
-      context: API_validator_server
-      dockerfile: Dockerfile-prod
+    build: API_validator_server
     container_name: sapiv-apivalidator-prod
     depends_on:
       - db-prod
