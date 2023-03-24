@@ -4,55 +4,72 @@ import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import { Button, TextField, Autocomplete } from "@mui/material";
 import DenseTable from "@/components/DenseTable.js";
+import styles from "@/styles/Admin.module.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { GetUsers } from "@/util/api";
+import auth from "@/util/auth";
 
 export default function Main() {
-  const optionList = [
-    { label: "Name", id: 1 },
-    { label: "Email", id: 2 },
-  ];
+  const [isAuthorize, setIsAuthorize] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  return (
+  const [uid, setUid] = useState("");
+  const [name, setName] = useState("");
+  const [idToken, setIdToken] = useState("");
+  const [email, setEmail] = useState("");
+  const [type, setType] = useState(0);
+  const [state, setState] = useState(0);
+
+  useEffect(() => {
+    // 사용자 권한 체크 이벤트
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await auth.currentUser.getIdToken(true);
+        const res = await GetUsers(token);
+
+        setIdToken(token);
+        setUid(user.uid);
+        setName(user.displayName);
+        setEmail(user.email);
+        setType(res.data.type);
+        setState(res.data.state);
+
+        if (res.data.state === 0) {
+          setIsAuthorize(false);
+          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+          Router.push("/");
+        } else if (res.data.state === 1) {
+          setIsAuthorize(true);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        }
+      } else {
+        setIsAuthorize(false);
+        alert("로그인이 필요합니다.");
+        Router.push("/");
+      }
+    });
+  }, []);
+  return isAdmin ? (
     <>
       <Header />
-      <Box sx={{ display: "flex" }}>
+      <Box display="flex">
         <Nav isAdmin={true} isAdminPage={true} />
-        <Box component="main" sx={{ height: "100vh" }}>
+        <Box>
           <Toolbar />
-          <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
-            <Grid item xs={12}>
-              <Typography
-                variant="h3"
-                component="h3"
-                m={(0, 5)}
-                sx={{ color: "blue" }}
-              >
-                User Management
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant="body1" component="body1" m={(0, 5)}>
-                Total : 100
-              </Typography>
-            </Grid>
-            <Grid item xs={8} display="flex" justifyContent="end" p={5}>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={optionList}
-                sx={{ width: 150 }}
-                renderInput={(params) => (
-                  <TextField label="option" {...params} />
-                )}
-              />
-              <TextField id="searchBar" variant="outlined" />
-              <Button variant="contained">Search</Button>
-            </Grid>
-            <Grid item xs={12} m={5}>
-              <DenseTable />
-            </Grid>
-          </Grid>
+          <Box className={styles.main}>
+            <Typography className={styles.text} variant="h3">
+              User Management
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </>
+  ) : (
+    <></>
   );
 }
