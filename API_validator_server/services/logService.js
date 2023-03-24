@@ -86,34 +86,47 @@ const getLogByResultId = async (resultId) => {
 
 const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
     const conn = await pool.getConnection();
-    
-    let interval = 0;
-    if(unit === "month") {
-        interval = cycle*30*1000*60*60*24;
+    const result = {};
+
+    let nowDate = new Date(startTime);
+    let endDate = new Date(endTime);
+
+
+    let interval = cycle*1;
+
+
+    while ( nowDate <= endDate ) {
+        let date = new Date(nowDate).toISOString().substring(0,10);
+        result[date] = {count_date : new Date(nowDate).toISOString().substring(0,10), pass_cnt : 0, fail_cnt : 0};
+
+        if(unit=== "month") {
+            nowDate.setMonth(nowDate.getMonth() + interval);
+        }
+        else if(unit === "week") {
+            nowDate.setDate(nowDate.getDate() + interval*7 );
+        }
+        else if(unit === "day") {
+            nowDate.setDate(nowDate.getDate() + interval); 
+        }
     }
-    else if(unit === "week") {
-        interval = cycle*7*1000*60*60*24;
-    }
-    else if(unit === "day") {
-        interval = cycle*1000*60*60*24;
-    }
-    else if(unit === "hour") {
-        interval = cycle*1000*60*60;
-    }
-    
+
     try {
         let data = await testLog.getResultByMetaId(conn, metaId, startTime, endTime);
 
-        console.log(data);
 
-        let date = new Date(startTime);
+        data.forEach((log) => {
+               const date = new Date(log).toISOString().substring(0,10);
 
-        // data.forEach((element)=> {
+               if(date in result) {
+                    if(log.result === 1) result.pass_cnt +=1;
+                    else result.fail_cnt +=1;
+               }
+        })
 
+        const entries = Object.values(result);
 
-        // });
-
-        return data;
+        console.log(entries);
+        return entries;
     }
     catch(error) {
         throw error;

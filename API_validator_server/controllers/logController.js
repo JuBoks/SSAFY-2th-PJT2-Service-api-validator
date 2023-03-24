@@ -46,20 +46,23 @@ const getLogByResultId = async (req, res) => {
 
 const getResultByMetaId = async (req, res) => {
     const {metaId} = req.params;
-    const {month, week, day, hour, startTime, endTime} = req.query;
+    const {month, week, day, startTime, endTime} = req.query;
     
-    if(month !== null ) {
 
+    let unit = "";
+    let cycle = 1;
+    if(month !== undefined ) {
+        unit = "month";
+        cycle = month;
     }
-    else if(week !== null) {
-
-    }
-    else if(day !== null) {
-
+    else if(week !== undefined) {
+        unit = "week";
+        cycle = week;
     }
     else {
-        if(hour === null) hour = 1; //아무 값도 안들어왔다면 기본 1시간 주기
-        
+       unit = "day";
+        if(day === undefined) cycle = 1; //아무 값도 안들어왔다면 기본 1시간 주기
+        else cycle = day;
     }
 
 
@@ -70,7 +73,7 @@ const getResultByMetaId = async (req, res) => {
     }
 
     try {
-        const data = await logService.getResultByMetaId(metaId, startTime, endTime);
+        const data = await logService.getResultByMetaId(metaId, unit, cycle, startTime, endTime);
 
         res.status(200).send({ status: "OK", "data": data });
     }
