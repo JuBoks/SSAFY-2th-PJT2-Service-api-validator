@@ -1,20 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("favorites")
+@Entity("tbl_favorite_api")
 export class Favorite {
   @PrimaryGeneratedColumn()
-  id: number;
+  favorite_id: number;
 
   @Column()
-  uid: string;
+  user_id: string;
 
   @Column('int')
   meta_id: number;
 
-  @Column('int')
-  created_date: number;
+  created_at: number;
 
-  @Column('int')
-  updated_date: number;
+  updated_at: number;
 
 }
