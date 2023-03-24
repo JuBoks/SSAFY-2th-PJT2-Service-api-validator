@@ -16,7 +16,7 @@ export default function Main() {
   return (
     <>
       <Header />
-      <Box sx={{ display: "flex" }}>
+      <Box display="flex">
         <Nav isAdmin={true} isAdminPage={true} />
         <Box component="main" sx={{ height: "100vh" }}>
           <Toolbar />

@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const url = "https://j8s002.p.ssafy.io/api";
+const api = axios.create({
+  baseURL: "https://j8s002.p.ssafy.io/api",
+});
 
-const GetUsers = async (idToken) => {
-  const res = await axios.get(url + "/users", {
+export const GetUsers = async (idToken) => {
+  const res = await api.get("/users", {
     headers: {
       idtoken: idToken,
     },
@@ -11,12 +13,12 @@ const GetUsers = async (idToken) => {
   return res;
 };
 
-const PostUsers = async (reqData) => {
-  const res = await axios.post(url + "/users", reqData);
+export const PostUsers = async (reqData) => {
+  const res = await api.post("/users", reqData);
   return res;
 };
 
-const PatchUsers = async (idToken, uidValue, stateValue, typeValue) => {
+export const PatchUsers = async (idToken, uidValue, stateValue, typeValue) => {
   let reqData = "";
   if (stateValue === null) {
     reqData = [
@@ -43,29 +45,21 @@ const PatchUsers = async (idToken, uidValue, stateValue, typeValue) => {
       },
     ];
   }
-  const res = await axios.patch(url + "/users", ...reqData);
+  const res = await api.patch("/users", ...reqData);
   return res;
 };
 
-const DeleteUsersUid = async (idToken, uid) => {
+export const DeleteUsersUid = async (idToken, uid) => {
   const headers = {
     headers: {
       idtoken: idToken,
     },
   };
-  const res = await axios.delete(url + "/users/" + String(uid), headers);
+  const res = await api.delete("/users/" + String(uid), headers);
   return res;
 };
 
-const GetUsersDuplicateEmail = async (email) => {
-  const res = await axios.get(url + "/users/duplicate/" + email);
+export const GetUsersDuplicateEmail = async (email) => {
+  const res = await api.get("/users/duplicate/" + email);
   return res;
-};
-
-export {
-  GetUsers,
-  PostUsers,
-  GetUsersDuplicateEmail,
-  PatchUsers,
-  DeleteUsersUid,
 };
