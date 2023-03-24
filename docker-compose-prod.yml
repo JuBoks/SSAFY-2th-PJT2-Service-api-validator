@@ -16,7 +16,7 @@ services:
   web-be-prod:
     build:
       context: Web-Backend/sapiv
-      dockerfile: Web-Backend/sapiv/Dockerfile-prod
+      dockerfile: Dockerfile-prod
     container_name: sapiv-webbe-prod
     depends_on:
       - db-prod
