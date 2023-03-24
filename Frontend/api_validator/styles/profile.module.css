@@ -1,22 +1,22 @@
-.frame {
+.profileInfo {
   width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: top 10px;
+  margin-top: 50px;
 }
 
-.frame .icon {
+.profileInfo .icon {
   color: #6f6f6a;
   font-size: 100px;
 }
 
-.group {
+.profileInfo .group {
   margin-top: 50px;
 }
 
-.group .item {
+.profileInfo .group .item {
   display: flex;
   align-items: center;
   height: 40px;
@@ -24,14 +24,29 @@
   margin-bottom: 5px;
 }
 
-.item_icon {
+.profileInfo .group .item .startIcon {
   color: #6f6f6a;
   margin-right: 10px;
+}
+
+.profileInfo .button {
+  margin: 10px;
+  width: 200px;
 }
 
 .text {
   color: #6f6f6a;
   margin: 10px;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profileInfo .info {
+  margin-top: 100px;
 }
 
 .edit .main {
