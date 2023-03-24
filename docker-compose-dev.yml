@@ -30,7 +30,7 @@ services:
   api-validator:
     build:
       context: API_validator_server
-      dockerfile: Dockerfile-dev
+      dockerfile: API_validator_server/Dockerfile-dev
     container_name: sapiv-apivalidator-dev
     depends_on:
       - db-dev
