@@ -14,7 +14,9 @@ services:
       - dbdev
   
   web-be-dev:
-    build: Web-Backend/sapiv
+    build:
+      context: Web-Backend/sapiv
+      dockerfile: Dockerfile-dev
     container_name: sapiv-webbe-dev
     depends_on:
       - db-dev
@@ -28,9 +30,7 @@ services:
       - frontdev
   
   api-validator:
-    build:
-      context: API_validator_server
-      dockerfile: Dockerfile-dev
+    build: API_validator_server
     container_name: sapiv-apivalidator-dev
     depends_on:
       - db-dev
