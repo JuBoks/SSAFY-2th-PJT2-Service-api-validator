@@ -17,15 +17,43 @@ const PostUsers = async (reqData) => {
 };
 
 const PatchUsers = async (idToken, uidValue, stateValue, typeValue) => {
-  const reqData = {
+  let reqData = "";
+  if (stateValue === null) {
+    reqData = [
+      {
+        uid: uidValue,
+        type: parseInt(typeValue),
+      },
+      {
+        headers: {
+          idtoken: idToken,
+        },
+      },
+    ];
+  } else {
+    reqData = [
+      {
+        uid: uidValue,
+        state: parseInt(stateValue),
+      },
+      {
+        headers: {
+          idtoken: idToken,
+        },
+      },
+    ];
+  }
+  const res = await axios.patch(url + "/users", ...reqData);
+  return res;
+};
+
+const DeleteUsersUid = async (idToken, uid) => {
+  const headers = {
     headers: {
       idtoken: idToken,
     },
-    uid: uidValue,
-    state: stateValue,
-    type: typeValue,
   };
-  const res = await axios.patch(url + "/users", reqData);
+  const res = await axios.delete(url + "/users/" + String(uid), headers);
   return res;
 };
 
@@ -34,4 +62,10 @@ const GetUsersDuplicateEmail = async (email) => {
   return res;
 };
 
-export { GetUsers, PostUsers, GetUsersDuplicateEmail, PatchUsers };
+export {
+  GetUsers,
+  PostUsers,
+  GetUsersDuplicateEmail,
+  PatchUsers,
+  DeleteUsersUid,
+};
