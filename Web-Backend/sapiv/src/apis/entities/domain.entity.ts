@@ -1,18 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("tbl_api")
-export class Api {
+@Entity("tbl_domain")
+export class Domain {
   @PrimaryGeneratedColumn()
-  api_id: number;
-
-  @Column("int")
   domain_id: number;
 
+  @Column("int")
+  category_id: number;
+
   @Column()
-  method: number;
+  name: string;
   
   @Column()
-  resources: string;
+  domain: string;
       
   @Column()
   state: boolean;
