@@ -1,8 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Req } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
-import { AllowUnauthorizedRequest } from 'src/common/guard/allow-unauthorized-request';
 import { CustomRequest } from 'src/common/custromrequest';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { CheckPolicies } from 'src/common/guard/policies-guard';
@@ -28,6 +26,12 @@ export class FavoritesController {
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Favorite))
   async findAll(@Req() req:CustomRequest) {
     return await this.favoritesService.findAll(req);
+  }
+
+  @Get('/test/:term/:start/:end')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Favorite))
+  async test(@Req() req:CustomRequest, @Param('term') term: number, @Param('start') start: number, @Param('end') end: number ) {
+    return await this.favoritesService.test(req, term, start, end);
   }
 
   @Delete(':id')

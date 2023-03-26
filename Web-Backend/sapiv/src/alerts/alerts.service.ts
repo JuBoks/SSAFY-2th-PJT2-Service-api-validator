@@ -1,20 +1,20 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { Api } from 'src/apis/entities/api.entity';
 import { TestCase } from 'src/apis/entities/testcase.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { CustomRequest } from 'src/common/custromrequest';
-import { Action } from 'src/common/entities/action.entity';
-import { TestResult } from 'src/common/entities/testresult.entity';
 import { Domain } from 'src/domains/entities/domain.entity';
 import { Metadata } from 'src/metadatas/entities/metadata.entity';
 import { DataSource } from 'typeorm';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { Favorite } from './entities/favorite.entity';
+import { CreateAlertDto } from './dto/create-alert.dto';
+import { Alert } from './entities/alert.entity';
 
 @Injectable()
-export class FavoritesService {
+export class AlertsService {
   constructor(
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private readonly mailerService: MailerService
   ){}
 
   async findAll(req:CustomRequest): Promise<TestCase[]>{
@@ -28,8 +28,8 @@ export class FavoritesService {
         const subQuery = qb
             .subQuery()
             .select("meta_id")
-            .from(Favorite, "favorites")
-            .where("favorites.user_id = :uid")
+            .from(Alert, "alerts")
+            .where("alerts.user_id = :uid")
             .getQuery()
         return "metadata.meta_id IN " + subQuery
     })
@@ -50,18 +50,18 @@ export class FavoritesService {
     
   }
 
-  async create(createFavoriteDto: CreateFavoriteDto, req:CustomRequest) {
+  async create(createAlertDto: CreateAlertDto, req:CustomRequest) {
     const uid = req.user.uid;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try{
-      for (const id of createFavoriteDto.apis){
-        const favorite = new Favorite();
-        favorite.user_id = uid;
-        favorite.meta_id = id;
+      for (const id of createAlertDto.apis){
+        const alert = new Alert();
+        alert.user_id = uid;
+        alert.meta_id = id;
         
-        await queryRunner.manager.save(favorite);
+        await queryRunner.manager.save(alert);
       }
       await queryRunner.commitTransaction();
     } catch (err) {
@@ -76,48 +76,42 @@ export class FavoritesService {
     return "success";
   }
 
-  async test(req:CustomRequest, term:number, start:number, end:number): Promise<TestCase[]>{
-    return await this.dataSource
-   .createQueryBuilder()
-   .from(TestResult, "testresult")
-   .where((qb) => {
-       const subQuery = qb
-          .subQuery()
-          .select("meta_id")
-          .from(Favorite, "favorites")
-          .where("favorites.user_id = :uid")
-          .getQuery()
-       return "testresult.meta_id IN " + subQuery
-   })
-   .where((qb) => {
-    const subQuery = qb
-        .subQuery()
-        .select("action_id")
-        .from(Action, "actions")
-        .where("actions.created_at >= : start")
-        .andWhere("actions.created_at <= : end")
-        .getQuery()
-    return "testresult.action_id IN " + subQuery
-  })
-  .andWhere("metadata.state = 0")
-  .setParameter("uid", req.user.uid)
-  .setParameter("start", start)
-  .setParameter("end", end)
-  .select('testresult.action_id')
-  .addSelect("SUM(result = true)", "pass_cnt")
-  .addSelect("SUM(result = false)", "fail_cnt")
-  .groupBy('testresult.action_id DIV :term')
-  .setParameter("term", term)
-  .getRawMany();
- }
   async remove(id: number, req:CustomRequest) {
     return await this.dataSource
-    .getRepository(Favorite)
-    .createQueryBuilder('favorites')
+    .getRepository(Alert)
+    .createQueryBuilder('alerts')
     .delete()
-    .from(Favorite)
+    .from(Alert)
     .where("user_id = :uid", { uid: req.user.uid })
     .andWhere("meta_id = :id", { id: id})
     .execute()
+  }
+
+  async notice(id: number) {
+    const list = await this.dataSource
+    .getRepository(Alert)
+    .createQueryBuilder('alerts')
+    .from(Alert, 'alert')
+    .where("meta_id = :id", { id: id})
+    .select("user_id")
+    .execute()
+    this.mail(list);
+  }
+
+
+
+  public mail(list: Array<Alert>): void {
+    for (const mail of list) {
+      this.mailerService
+      .sendMail({
+        to: mail.user_id, // list of receivers
+        from: 'noreply@nestjs.com', // sender address
+        subject: 'Testing Nest MailerModule ✔', // Subject line
+        text: 'welcome', // plaintext body
+        html: '<b>welcome</b>', // HTML body content
+      })
+      .then(() => {})
+      .catch(() => {});
+    }
   }
 }

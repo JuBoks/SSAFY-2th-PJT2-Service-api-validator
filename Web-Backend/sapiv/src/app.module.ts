@@ -9,6 +9,11 @@ import { PoliciesGuard } from './common/guard/policies-guard';
 import { ApisModule } from './apis/apis.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LogsModule } from './logs/logs.module';
+import { CategoriesModule } from './categories/categories.module';
+import { DomainsModule } from './domains/domains.module';
+import { MetadatasModule } from './metadatas/metadatas.module';
+import { AlertsModule } from './alerts/alerts.module';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -25,7 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: false,
     }),
-  }),],
+  }), LogsModule, CategoriesModule, DomainsModule, MetadatasModule, AlertsModule,],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
