@@ -1,46 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import BarChart from "@/components/BarChart.js";
 import DenseTable from "@/components/DenseTable.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
-import { useState } from "react";
-import router from "next/router";
 import auth from "../util/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import axios from "axios";
+import { GetUsers } from "@/util/api";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(true);
-  const url = "http://70.12.246.220:3000/api";
-  const GetUsers = async (idToken) => {
-    const res = await axios
-      .get(url + "/users", {
-        headers: {
-          idtoken: idToken,
-        },
-      })
-      .then((res) => console.log(res));
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [state, setState] = useState(false);
 
-    return res;
-  };
+  useEffect(() => {
+    // 사용자 권한 체크 이벤트
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await auth.currentUser.getIdToken(true);
+        const res = await GetUsers(token);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log(user);
-      auth.currentUser
-        .getIdToken(true)
-        .then((idToken) => {
-          console.log(idToken);
-          console.log(GetUsers(idToken));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      console.log("User is Signed Out");
-    }
-  });
+        setState(res.data.state);
+
+        if (res.data.state === 0) {
+          setIsAuthorize(false);
+          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+          Router.push("/");
+        } else if (res.data.state === 1) {
+          setIsAuthorize(true);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        }
+      } else {
+        setIsAuthorize(false);
+        alert("로그인이 필요합니다.");
+        Router.push("/");
+      }
+    });
+  }, []);
 
   return isAuthorize ? (
     <>
