@@ -8,6 +8,7 @@ import styles from "@/styles/Admin.module.css";
 import { onAuthStateChanged } from "firebase/auth";
 import { GetUsers } from "@/util/api";
 import auth from "@/util/auth";
+import UserTable from "@/components/UserTable";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(false);
@@ -65,6 +66,7 @@ export default function Main() {
             <Typography className={styles.text} variant="h3">
               User Management
             </Typography>
+            <UserTable />
           </Box>
         </Box>
       </Box>
