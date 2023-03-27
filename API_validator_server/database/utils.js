@@ -16,10 +16,11 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  enableKeepAlive: true,
 });
 
-const getConnection = async() => {
-  return await pool.getConnection(async conn => conn); 
-}
+const getConnection = async () => {
+  return await pool.getConnection(async (conn) => conn);
+};
 
 module.exports = { getConnection };
