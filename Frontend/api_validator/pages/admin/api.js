@@ -17,6 +17,9 @@ export default function adminAPI() {
             <Typography className={styles.text} variant="h3">
               API Management
             </Typography>
+            <Typography className={styles.text} mt={2} variant="subtitle1">
+              수많은 API를 쉽게 관리해보세요.
+            </Typography>
             <APITable />
           </Box>
         </Box>

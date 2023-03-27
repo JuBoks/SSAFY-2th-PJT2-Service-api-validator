@@ -2,19 +2,33 @@ import React from "react";
 import styles from "@/styles/Admin.module.css";
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
-import { Box, Divider, Toolbar, Typography, TextField } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Toolbar,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+} from "@mui/material";
 import FreeSoloCreateOptionDialog from "@/components/FreeSoloCreateOptionDialog";
 import ComboBox from "@/components/ComboBox";
 import { methodList } from "@/constants/methodList";
 import { cycleList } from "@/constants/cycleList";
 import TabAPIinfo from "@/components/TabAPIinfo";
 
+const sampleData = `{
+  "title": "abc",
+  "star": 5,
+  "Category": "Action"
+}`;
+
 export default function APIedit() {
   return (
     <>
       <Header />
       <Box display="flex">
-        <Nav />
+        <Nav isAdmin={true} isAdminPage={true} />
         <Box>
           <Toolbar />
           <Box className={styles.main}>
@@ -39,6 +53,20 @@ export default function APIedit() {
               <ComboBox label="Cycle" options={cycleList} />
             </Box>
             <TabAPIinfo />
+            <Box display="flex" flexDirection="row-reverse" m={3}>
+              <Button variant="contained">API Test</Button>
+            </Box>
+            <Divider />
+            <Typography className={styles.text} mt={2} mb={2} variant="h5">
+              Response
+            </Typography>
+            <Paper>
+              <Typography className={styles.paper}>{sampleData}</Typography>
+            </Paper>
+            <Box display="flex" flexDirection="row-reverse" m={3}>
+              <Button variant="contained">Save</Button>
+              <Button variant="contained">Set Standard</Button>
+            </Box>
           </Box>
         </Box>
       </Box>
