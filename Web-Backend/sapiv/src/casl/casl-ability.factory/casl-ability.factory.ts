@@ -1,9 +1,11 @@
 import { AbilityBuilder, ExtractSubjectType, InferSubjects, PureAbility } from "@casl/ability";
 import { Injectable } from "@nestjs/common";
+import { Alert } from "src/alerts/entities/alert.entity";
+import { Favorite } from "src/favorites/entities/favorite.entity";
 import { User } from "src/users/entities/user.entity";
 import { Action } from "../action";
 
-type Subjects = InferSubjects<typeof User> | 'all';
+type Subjects = InferSubjects<typeof User | typeof Favorite | typeof Alert> | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 
@@ -34,6 +36,10 @@ export class CaslAbilityFactory {
       can(Action.Delete, User);
       can(Action.Read, User);
     }
+    else if(user.state <= 2 && user.state > 0){
+      can(Action.Manage, Favorite);
+    }
+
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details

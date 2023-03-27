@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
-import { getAuth, ListUsersResult } from 'firebase-admin/auth';
+import { getAuth } from 'firebase-admin/auth';
 import { User } from './entities/user.entity';
 import { CustomRequest } from 'src/common/custromrequest';
 
@@ -43,8 +43,7 @@ export class UsersService {
   async findAll(nextPageToken: any){
     const auth = getAuth(this.firebase);
     let listUsersResult;
-    
-    const tempList = [];
+    const userList = [];
     try{
       if(nextPageToken === undefined){
         listUsersResult = await auth.listUsers(1000);  
@@ -68,14 +67,13 @@ export class UsersService {
         state: customClaims.state,
         type: customClaims.type,
       }
-      tempList.push(user);
+      userList.push(user);
     });
     if (listUsersResult.pageToken) {
       // List next batch of users.
-      const listUsers = tempList.concat(this.findAll(listUsersResult.pageToken));
-      return listUsers;
+      return userList.concat(this.findAll(listUsersResult.pageToken));
     }
-    return tempList;
+    return userList;
   }
 
   async findByEmail(email: string) {
