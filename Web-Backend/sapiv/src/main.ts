@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -9,7 +8,6 @@ async function bootstrap() {
     snapshot: true,
    });
   app.setGlobalPrefix('api')
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   const allowlist = ['http://localhost:3000', 'https://sapiv.site']
   const corsOptionsDelegate = function (req, callback) {
     let corsOptions;

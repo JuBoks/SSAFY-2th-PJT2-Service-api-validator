@@ -14,9 +14,6 @@ import { DomainsModule } from './domains/domains.module';
 import { MetadatasModule } from './metadatas/metadatas.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { HttpModule } from '@nestjs/axios';
-import winston from 'winston';
-import path from 'path';
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -33,41 +30,7 @@ import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-win
       autoLoadEntities: true,
       synchronize: false,
     }),
-  }), CategoriesModule, DomainsModule, MetadatasModule, AlertsModule, HttpModule, WinstonModule.forRoot({
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json(),
-    ),
-    transports: [
-      new winston.transports.Console(),
-      new winston.transports.File({
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.ms(),
-          nestWinstonModuleUtilities.format.nestLike('MyApp', {
-            colors: true,
-            prettyPrint: true,
-          }),
-        ),
-        dirname: path.join(__dirname, './../log/debug/'), //path to where save loggin result 
-        filename: 'debug.log', //name of file where will be saved logging result
-        level: 'debug',
-      }),
-      new winston.transports.File({
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.ms(),
-          nestWinstonModuleUtilities.format.nestLike('MyApp', {
-            colors: true,
-            prettyPrint: true,
-          }),
-        ),
-        dirname: path.join(__dirname, './../log/info/'),
-        filename: 'info.log',
-        level: 'info',
-      }),
-    ],
-  }),],
+  }), CategoriesModule, DomainsModule, MetadatasModule, AlertsModule, HttpModule],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
