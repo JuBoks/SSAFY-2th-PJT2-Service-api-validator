@@ -4,6 +4,7 @@ const categoryController = require("../controllers/categoryController");
 const domainController = require("../controllers/domainController");
 const apiController = require("../controllers/apiController");
 const metadataController = require("../controllers/metadataController");
+const logController = require("../controllers/logController");
 
 const router = express.Router();
 
@@ -35,5 +36,10 @@ router.post(
   "/metadatas/:metaId/expect",
   metadataController.createExpectResponse
 );
+
+router.get("/logs", logController.getLogsByMetaId);
+router.get("/logs/:resultId", logController.getLogByResultId);
+router.get("/logs/graph/action", logController.getResultByAction);
+router.get("/logs/graph/metadatas/:metaId", logController.getResultByMetaId);
 
 module.exports = router;
