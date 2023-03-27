@@ -100,7 +100,10 @@ function Nav({ isAdmin, isAdminPage }) {
   return (
     <Box
       component="nav"
-      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      sx={{
+        width: { sm: drawerWidth },
+        flexShrink: { sm: 0 },
+      }}
       aria-label="mailbox folders"
     >
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -127,7 +130,7 @@ function Nav({ isAdmin, isAdminPage }) {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
-            zIndex: 0,
+            zIndex: 10,
           },
         }}
         open
