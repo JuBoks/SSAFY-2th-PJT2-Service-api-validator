@@ -1,9 +1,10 @@
+require("dotenv").config();
 
 const authCheck = async(req, res, next) => {
-    console.log("authCheck 실행");
-    const {chk} = req.query;
-    if (chk == 1) {
 
+    const chk = req.get('chk');
+    
+    if (chk === process.env.CHECK ) {
         next();
     }
     else {

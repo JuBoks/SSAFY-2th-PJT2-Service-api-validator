@@ -112,20 +112,27 @@ const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
 
     try {
         let data = await testLog.getResultByMetaId(conn, metaId, startTime, endTime);
-
+        let idx = 0;
 
         data.forEach((log) => {
-               const date = new Date(log).toISOString().substring(0,10);
+               let date = new Date(log.created_at);
+               let now_idx_date = new Date(Object.keys(result)[idx]);
+               let next_idx_date = new Date(Object.keys(result)[idx+1]);
+            
+            while( date >= next_idx_date && idx < Object.keys(result).length ) {
+                idx+=1;
+                now_idx_date = new Date(Object.keys(result)[idx]);
+                next_idx_date = new Date(Object.keys(result)[idx+1]);
+            }
 
-               if(date in result) {
-                    if(log.result === 1) result.pass_cnt +=1;
-                    else result.fail_cnt +=1;
-               }
+            const str_date = now_idx_date.toISOString().substring(0,10);
+            
+            if(log.result === 1) result[str_date].pass_cnt +=1;
+            else result[str_date].fail_cnt +=1;
         })
 
         const entries = Object.values(result);
 
-        console.log(entries);
         return entries;
     }
     catch(error) {
