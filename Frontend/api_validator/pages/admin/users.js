@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
-import { Button, TextField, Autocomplete } from "@mui/material";
 import styles from "@/styles/Admin.module.css";
 import { onAuthStateChanged } from "firebase/auth";
 import { GetUsers } from "@/util/api";
@@ -63,11 +62,14 @@ export default function AdminUsers() {
       <Header />
       <Box display="flex">
         <Nav isAdmin={true} isAdminPage={true} />
-        <Box>
+        <Box display="flex" flexDirection="column">
           <Toolbar />
           <Box className={styles.main}>
             <Typography className={styles.text} variant="h3">
-              User Management
+              유저 관리
+            </Typography>
+            <Typography className={styles.text} mt={2} variant="subtitle1">
+              유저들의 역할과 권한을 수정할 수 있습니다.
             </Typography>
             <UserTable userData={userData} />
           </Box>

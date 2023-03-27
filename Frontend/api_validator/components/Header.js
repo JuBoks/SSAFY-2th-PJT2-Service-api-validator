@@ -10,7 +10,7 @@ import logo from "@/public/images/logo_black.png";
 
 export default function Header() {
   return (
-    <AppBar style={{ backgroundColor: "white", zIndex: 1 }}>
+    <AppBar style={{ backgroundColor: "white", zIndex: 20 }}>
       <Toolbar>
         <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
