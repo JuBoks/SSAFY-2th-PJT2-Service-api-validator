@@ -24,6 +24,7 @@ import Router from "next/router";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [uid, setUid] = useState("");
   const [idToken, setIdToken] = useState("");
@@ -131,10 +132,18 @@ export default function Main() {
 
         if (res.data.state === 0) {
           setIsAuthorize(false);
+          setIsAdmin(false);
           alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
           Router.push("/");
-        } else {
+        } else if (res.data.state === 1) {
           setIsAuthorize(true);
+          setIsAdmin(false);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
         }
       } else {
         setIsAuthorize(false);
@@ -148,7 +157,7 @@ export default function Main() {
     <Box>
       <Header />
       <Box display="flex">
-        <Nav isAdmin={true} />
+        <Nav isAdmin={isAdmin} />
         <Box className={styles.edit}>
           <Toolbar />
           <Box className={styles.main}>
@@ -167,7 +176,11 @@ export default function Main() {
 
             <Card variant="outlined" className={styles.card}>
               <CardContent>
-                <FormControl fullWidth>
+                <Typography variant="h6" className={styles.text}>
+                  타입 변경
+                </Typography>
+
+                <FormControl fullWidth margin="normal">
                   <InputLabel id="type">Type</InputLabel>
                   <Select
                     labelId="type-label"
@@ -185,11 +198,7 @@ export default function Main() {
                 </FormControl>
 
                 <Box display="flex" flexDirection="row-reverse" mt={3}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={handleTypeChangeClick}
-                  >
+                  <Button variant="contained" onClick={handleTypeChangeClick}>
                     타입 변경
                   </Button>
                 </Box>
@@ -198,6 +207,10 @@ export default function Main() {
 
             <Card variant="outlined" className={styles.card}>
               <CardContent>
+                <Typography variant="h6" className={styles.text}>
+                  비밀번호 변경
+                </Typography>
+
                 <TextField
                   margin="normal"
                   required

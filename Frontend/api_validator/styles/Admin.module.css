@@ -1,0 +1,19 @@
+.main {
+  width: 100%;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.text {
+  color: #6f6f6a;
+}
+
+.table {
+  margin-top: 50px;
+}
+
+.dataGrid {
+  margin-top: 50px;
+  width: 90%
+}

@@ -14,6 +14,7 @@ import styles from "@/styles/profile.module.css";
 
 export default function Profile() {
   const [isAuthorize, setIsAuthorize] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [uid, setUid] = useState("");
   const [name, setName] = useState("");
@@ -31,10 +32,6 @@ export default function Profile() {
     { label: "Service", id: 3 },
     { label: "Path", id: 4 },
   ];
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   useEffect(() => {
     // 사용자 권한 체크 이벤트
@@ -54,8 +51,14 @@ export default function Profile() {
           setIsAuthorize(false);
           alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
           Router.push("/");
-        } else {
+        } else if (res.data.state === 1) {
           setIsAuthorize(true);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
         }
       } else {
         setIsAuthorize(false);
@@ -69,7 +72,7 @@ export default function Profile() {
     <>
       <Header />
       <Box display="flex">
-        <Nav />
+        <Nav isAdmin={isAdmin} />
         <Box>
           <Toolbar />
           <ProfileInfoUI
