@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "@/styles/Admin.module.css";
+import Router from "next/router";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -88,10 +89,16 @@ const rows = [
 
 function CustomToolbar() {
   return (
-    <Box display="flex" flexDirection="row-reverse">
-      <Button variant="contained">+ New</Button>
+    <Box className={styles.toolbar}>
+      <Button variant="contained" onClick={handleNewClick}>
+        + New
+      </Button>
     </Box>
   );
+}
+
+function handleNewClick() {
+  Router.push("/admin/apiEdit");
 }
 
 export default function APITable() {
