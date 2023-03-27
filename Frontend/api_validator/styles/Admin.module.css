@@ -15,11 +15,15 @@
 
 .dataGrid {
   margin-top: 50px;
-  width: 90%
+  width: 90%;
 }
 
 .toolbar {
   margin: 10px;
   display: flex;
   flex-direction: row-reverse;
+}
+
+.paper {
+  white-space: pre-line;
 }

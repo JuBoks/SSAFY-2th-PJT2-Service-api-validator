@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import FullFeaturedCrudGrid from "./MUI/FullFeaturedCrudGrid";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,13 +60,13 @@ export default function TabAPIinfo() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Header
+        <FullFeaturedCrudGrid />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Body
+        <FullFeaturedCrudGrid />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Param
+        <FullFeaturedCrudGrid />
       </TabPanel>
     </Box>
   );
