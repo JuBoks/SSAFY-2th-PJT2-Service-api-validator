@@ -20,6 +20,8 @@ const getAllDomains = async (categoryId) => {
     return allDomains;
   } catch (error) {
     throw error;
+  } finally {
+    conn.release();
   }
 };
 
