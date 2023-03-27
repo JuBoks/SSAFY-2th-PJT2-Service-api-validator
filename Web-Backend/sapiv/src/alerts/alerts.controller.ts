@@ -26,6 +26,7 @@ export class AlertsController {
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Alert))
   async findAll(@Req() req:CustomRequest) {
+    await this.alertsService.mail([{user_id: 'brianpsw@naver.com'}]);
     return await this.alertsService.findAll(req);
   }
 

@@ -100,7 +100,7 @@ export class AlertsService {
 
 
 
-  public mail(list: Array<Alert>): void {
+  public mail(list: Array<any>): void {
     for (const mail of list) {
       this.mailerService
       .sendMail({
