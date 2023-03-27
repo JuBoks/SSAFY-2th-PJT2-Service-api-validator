@@ -12,9 +12,9 @@ const PORT = 3000; //서버 포트 번호
 app.disable("x-powered-by");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/validator", validatorRouter);
+app.use("/validator",authCheck, validatorRouter);
 
-app.use("/api",authCheck, sapivRouter);
+app.use("/validator/web",authCheck, sapivRouter);
 
 
 app.listen(PORT, () => {
