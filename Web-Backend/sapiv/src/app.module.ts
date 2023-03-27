@@ -9,11 +9,14 @@ import { PoliciesGuard } from './common/guard/policies-guard';
 import { ApisModule } from './apis/apis.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LogsModule } from './logs/logs.module';
 import { CategoriesModule } from './categories/categories.module';
 import { DomainsModule } from './domains/domains.module';
 import { MetadatasModule } from './metadatas/metadatas.module';
 import { AlertsModule } from './alerts/alerts.module';
+import { HttpModule } from '@nestjs/axios';
+import winston from 'winston';
+import path from 'path';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -30,7 +33,41 @@ import { AlertsModule } from './alerts/alerts.module';
       autoLoadEntities: true,
       synchronize: false,
     }),
-  }), LogsModule, CategoriesModule, DomainsModule, MetadatasModule, AlertsModule,],
+  }), CategoriesModule, DomainsModule, MetadatasModule, AlertsModule, HttpModule, WinstonModule.forRoot({
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json(),
+    ),
+    transports: [
+      new winston.transports.Console(),
+      new winston.transports.File({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          nestWinstonModuleUtilities.format.nestLike('MyApp', {
+            colors: true,
+            prettyPrint: true,
+          }),
+        ),
+        dirname: path.join(__dirname, './../log/debug/'), //path to where save loggin result 
+        filename: 'debug.log', //name of file where will be saved logging result
+        level: 'debug',
+      }),
+      new winston.transports.File({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          nestWinstonModuleUtilities.format.nestLike('MyApp', {
+            colors: true,
+            prettyPrint: true,
+          }),
+        ),
+        dirname: path.join(__dirname, './../log/info/'),
+        filename: 'info.log',
+        level: 'info',
+      }),
+    ],
+  }),],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
