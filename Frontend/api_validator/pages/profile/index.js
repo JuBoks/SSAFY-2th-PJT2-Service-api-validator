@@ -33,10 +33,6 @@ export default function Profile() {
     { label: "Path", id: 4 },
   ];
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   useEffect(() => {
     // 사용자 권한 체크 이벤트
     onAuthStateChanged(auth, async (user) => {

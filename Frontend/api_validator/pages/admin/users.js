@@ -3,14 +3,14 @@ import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import { Button, TextField, Autocomplete } from "@mui/material";
-import DenseTable from "@/components/DenseTable.js";
 import styles from "@/styles/Admin.module.css";
 import { onAuthStateChanged } from "firebase/auth";
 import { GetUsers } from "@/util/api";
 import auth from "@/util/auth";
 import UserTable from "@/components/UserTable";
+import { GetUsersAuthorize } from "@/util/api";
 
-export default function Main() {
+export default function AdminUsers() {
   const [isAuthorize, setIsAuthorize] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -20,20 +20,23 @@ export default function Main() {
   const [email, setEmail] = useState("");
   const [type, setType] = useState(0);
   const [state, setState] = useState(0);
+  const [userData, setUserData] = useState("");
 
   useEffect(() => {
     // 사용자 권한 체크 이벤트
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const token = await auth.currentUser.getIdToken(true);
-        const res = await GetUsers(token);
+        const idToken = await auth.currentUser.getIdToken(true);
+        const res = await GetUsers(idToken);
+        const resUsers = await GetUsersAuthorize(idToken);
 
-        setIdToken(token);
+        setIdToken(idToken);
         setUid(user.uid);
         setName(user.displayName);
         setEmail(user.email);
         setType(res.data.type);
         setState(res.data.state);
+        setUserData(resUsers.data);
 
         if (res.data.state === 0) {
           setIsAuthorize(false);
@@ -66,7 +69,7 @@ export default function Main() {
             <Typography className={styles.text} variant="h3">
               User Management
             </Typography>
-            <UserTable />
+            <UserTable userData={userData} />
           </Box>
         </Box>
       </Box>
