@@ -8,3 +8,12 @@
 .text {
   color: #6f6f6a;
 }
+
+.table {
+  margin-top: 50px;
+}
+
+.dataGrid {
+  margin-top: 50px;
+  width: 90%
+}

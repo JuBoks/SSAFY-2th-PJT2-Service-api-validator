@@ -21,6 +21,7 @@ export default function Main() {
         const res = await GetUsers(token);
 
         setState(res.data.state);
+        console.log(token);
 
         if (res.data.state === 0) {
           setIsAuthorize(false);

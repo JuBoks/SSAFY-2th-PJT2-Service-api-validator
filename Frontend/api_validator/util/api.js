@@ -63,3 +63,13 @@ export const GetUsersDuplicateEmail = async (email) => {
   const res = await api.get("/users/duplicate/" + email);
   return res;
 };
+
+export const GetUsersAuthorize = async (idToken) => {
+  const headers = {
+    headers: {
+      idtoken: idToken,
+    },
+  };
+  const res = await api.get("/users/authorize", headers);
+  return res;
+};
