@@ -5,7 +5,7 @@ import { Box, Typography, Toolbar, Grid } from "@mui/material";
 import APITable from "@/components/APITable";
 import styles from "@/styles/Admin.module.css";
 
-export default function Main() {
+export default function adminAPI() {
   return (
     <>
       <Header />
