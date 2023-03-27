@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const validatorRouter = require("./routes/validatorRoutes");
-const sapivRouter = require("./routes/sapivRoutes");
+const apiRouter = require("./routes/apiRoutes");
 const { authCheck } = require("./middleware/authCheck");
 
 
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/validator",authCheck, validatorRouter);
 
-app.use("/validator/web",authCheck, sapivRouter);
+app.use("/validator/web",authCheck, apiRouter);
 
 
 app.listen(PORT, () => {
