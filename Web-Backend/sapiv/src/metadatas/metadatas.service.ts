@@ -81,9 +81,9 @@ export class MetadatasService {
     return data;
   }
 
-  async test(id: number, metadataDto: MetadataDto){
+  async test(id: number){
     const { data } = await firstValueFrom(
-      this.httpService.post<any>(process.env.VALIDATOR_METADATA + '/${id}/test', metadataDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.post<any>(process.env.VALIDATOR_METADATA + '/${id}/test', {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -98,7 +98,7 @@ export class MetadatasService {
 
   async expect(id: number, expectResponseDto: ExpectResponseDto){
     const { data } = await firstValueFrom(
-      this.httpService.post<ExpectResponse>(process.env.VALIDATOR_METADATA + '/${id}/expect', expectResponseDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.post<ExpectResponse>(process.env.VALIDATOR_METADATA + `/${id}/expect`, expectResponseDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,

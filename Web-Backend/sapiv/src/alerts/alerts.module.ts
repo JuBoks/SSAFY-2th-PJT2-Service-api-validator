@@ -17,7 +17,7 @@ import { UsersModule } from 'src/users/users.module';
       transport: {
         host: process.env.MAILDEV_HOST,
         port: parseInt(process.env.MAILDEV_PORT),
-        ignoreTLS: true,
+        ignoreTLS: false,
         secure: false,
         auth: {
           user: process.env.MAILDEV_INCOMING_USER,
