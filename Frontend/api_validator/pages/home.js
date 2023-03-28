@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Router from "next/router";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import BarChart from "@/components/BarChart.js";
@@ -38,7 +39,6 @@ export default function Main() {
         }
       } else {
         setIsAuthorize(false);
-        alert("로그인이 필요합니다.");
         Router.push("/");
       }
     });
