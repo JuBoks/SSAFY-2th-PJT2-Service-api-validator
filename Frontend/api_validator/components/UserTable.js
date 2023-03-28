@@ -118,7 +118,7 @@ export default function UserTable(props) {
               handleOpen(cellValues.row.uid, event);
             }}
           >
-            계정 삭제
+            계정 중지
           </Button>
         );
       },
@@ -202,14 +202,14 @@ export default function UserTable(props) {
       />
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="subtitle1">계정을 삭제하시겠습니까?</Typography>
+          <Typography variant="subtitle1">계정을 중지하시겠습니까?</Typography>
           <Box display="flex" flexDirection="row-reverse">
             <Button
               color="error"
               variant="contained"
               onClick={handleDeleteClick}
             >
-              계정 삭제
+              계정 중지
             </Button>
           </Box>
         </Box>
