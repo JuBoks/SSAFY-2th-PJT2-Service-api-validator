@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import Router from "next/router";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
-import BarChart from "@/components/BarChart.js";
-import DenseTable from "@/components/DenseTable.js";
-import { Box, Typography, Toolbar, Grid } from "@mui/material";
+import { Box, Typography, Toolbar, Grid, Paper } from "@mui/material";
 import auth from "../util/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { GetUsers } from "@/util/api";
+import { StackedBarChart } from "@/components/ChartJS/StackedBarChart";
+import { PieChart } from "@/components/ChartJS/PieChart";
+import styles from "@/styles/Home.module.css";
+import { sampleData } from "@/constants/apiTestSample.js";
+import { ResultDayData } from "@/constants/apiTestResultSampleDay";
+import StickyHeadTable from "@/components/MUI/StickyHeadTable";
+import { resultRows, resultColumns } from "@/constants/ResultListSample";
 
 export default function Main() {
   const [isAuthorize, setIsAuthorize] = useState(true);
@@ -47,41 +52,93 @@ export default function Main() {
   return isAuthorize ? (
     <>
       <Header />
-      <Box sx={{ display: "flex" }}>
-        <Nav isAdmin={true} />
-        <Box component="main" sx={{ height: "100vh" }}>
+      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
+        <Nav isAdmin={isAdmin} />
+        <Box m={3}>
           <Toolbar />
-          <Grid container sx={{ backgroundColor: "#F9F9F9" }}>
-            <Grid item xs={12}>
-              <Typography
-                variant="h4"
-                component="h4"
-                m={(0, 5)}
-                sx={{ color: "blue" }}
-              >
-                Recent Chart
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <BarChart title="Favorite API" />
-            </Grid>
-            <Grid item xs={6}>
-              <BarChart title="All" />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h4"
-                component="h4"
-                m={(0, 5)}
-                sx={{ color: "blue" }}
-              >
-                Favorite API Test Result
-              </Typography>
-            </Grid>
-            <Grid item xs={12} m={(0, 5)}>
-              <DenseTable />
-            </Grid>
-          </Grid>
+          <Box className={styles["chart-box"]}>
+            <Typography variant="h6">Favorite API Chart</Typography>
+            <Box display="flex" mt={3}>
+              <Paper className={styles["stacked-chart-paper"]} elevation={1}>
+                <Box className={styles["stacked-chart"]}>
+                  <StackedBarChart data={sampleData} />
+                </Box>
+              </Paper>
+              <Paper className={styles["pie-chart-paper"]} elevation={1}>
+                <Box className={styles["pie-chart"]}>
+                  <PieChart data={ResultDayData} title="2023.02.30" />
+                </Box>
+              </Paper>
+            </Box>
+          </Box>
+
+          <Box className={styles["chart-box"]} mt={5}>
+            <Typography variant="h6">APIs Chart</Typography>
+            <Box display="flex" mt={3}>
+              <Paper className={styles["stacked-chart-paper"]} elevation={1}>
+                <Box className={styles["stacked-chart"]}>
+                  <StackedBarChart data={sampleData} />
+                </Box>
+              </Paper>
+              <Paper className={styles["pie-chart-paper"]} elevation={1}>
+                <Box className={styles["pie-chart"]}>
+                  <PieChart data={ResultDayData} title="2023.02.30" />
+                </Box>
+              </Paper>
+            </Box>
+          </Box>
+
+          <Box className={styles["chart-box"]} mt={5}>
+            <Typography variant="h6">Recent Favorite API Result</Typography>
+            <Box mt={3} mb={3}>
+              <Paper elevation={1} sx={{ padding: 2 }}>
+                <Box display="flex">
+                  <Typography variant="subtitle1" mr={3}>
+                    Date : 2023.02.28 13:00:00
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3}>
+                    Total : 100
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3} color="green">
+                    Pass : 80
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3} color="Red">
+                    Fail : 10
+                  </Typography>
+                  <Typography variant="subtitle1" color="blue">
+                    N/E : 10
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
+            <StickyHeadTable columns={resultColumns} rows={resultRows} />
+          </Box>
+
+          <Box className={styles["chart-box"]} mt={5}>
+            <Typography variant="h6">Recent APIs Result</Typography>
+            <Box mt={3} mb={3}>
+              <Paper elevation={1} sx={{ padding: 2 }}>
+                <Box display="flex">
+                  <Typography variant="subtitle1" mr={3}>
+                    Date : 2023.02.28 13:00:00
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3}>
+                    Total : 100
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3} color="green">
+                    Pass : 80
+                  </Typography>
+                  <Typography variant="subtitle1" mr={3} color="Red">
+                    Fail : 10
+                  </Typography>
+                  <Typography variant="subtitle1" color="blue">
+                    N/E : 10
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
+            <StickyHeadTable columns={resultColumns} rows={resultRows} />
+          </Box>
         </Box>
       </Box>
     </>

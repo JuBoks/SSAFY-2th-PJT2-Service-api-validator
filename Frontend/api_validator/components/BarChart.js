@@ -23,47 +23,51 @@ ChartJS.register(
   Legend
 );
 
+const labels = ["2023.03.01", "2023.03.02", "2023.03.03"];
 const data = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
+  labels: labels,
   datasets: [
     {
-      type: "line",
-      label: "Dataset 1",
-      borderColor: "rgb(54, 162, 235)",
-      borderWidth: 2,
-      data: [1, 2, 3, 4, 5],
+      label: "Pass",
+      data: [80, 90, 70],
     },
     {
-      type: "bar",
-      label: "Dataset 2",
-      backgroundColor: "rgb(255, 99, 132)",
-      data: [1, 2, 3, 4, 5, 6],
-      borderColor: "red",
-      borderWidth: 2,
+      label: "Fail",
+      data: [(10, 5, 20)],
     },
     {
-      type: "bar",
-      label: "Dataset 3",
-      backgroundColor: "rgb(75, 192, 192)",
-      data: [1, 2, 3, 4, 5, 6],
+      label: "N/E",
+      data: [10, 5, 10],
     },
   ],
 };
 
 export default function BarChart(props) {
-  const options = {
-    responsive: true,
-    plugins: {
-      title: {
-        display: true,
-        text: props.title,
+  const config = {
+    type: "bar",
+    data: data,
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Chart.js Bar Chart - Stacked",
+        },
+      },
+      responsive: true,
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          stacked: true,
+        },
       },
     },
   };
 
   return (
-    <Box m={5}>
-      <Bar data={data} options={options} />
+    <Box width={550} height={350} m={2}>
+      <Bar data={data} config={config} />
     </Box>
   );
 }
