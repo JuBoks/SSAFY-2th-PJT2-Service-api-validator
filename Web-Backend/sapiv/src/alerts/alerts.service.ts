@@ -6,6 +6,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { CustomRequest } from 'src/common/custromrequest';
 import { Domain } from 'src/domains/entities/domain.entity';
 import { Metadata } from 'src/metadatas/entities/metadata.entity';
+import { UsersService } from 'src/users/users.service';
 import { DataSource } from 'typeorm';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { Alert } from './entities/alert.entity';
@@ -14,7 +15,8 @@ import { Alert } from './entities/alert.entity';
 export class AlertsService {
   constructor(
     private dataSource: DataSource,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly usersService: UsersService
   ){}
 
   async findAll(req:CustomRequest): Promise<TestCase[]>{
@@ -92,19 +94,20 @@ export class AlertsService {
     .getRepository(Alert)
     .createQueryBuilder('alerts')
     .from(Alert, 'alert')
-    .where("meta_id = :id", { id: id})
-    .select("user_id")
+    .where("alert.meta_id = :id", { id: id})
+    .select("alert.user_id")
     .execute()
     this.mail(list);
   }
 
 
 
-  public mail(list: Array<Alert>): void {
-    for (const mail of list) {
+  public async mail(list: Array<Alert>): Promise<void> {
+    for (const alert of list) {
+      const user =  await this.usersService.findOne(alert.user_id);
       this.mailerService
       .sendMail({
-        to: mail.user_id, // list of receivers
+        to: user.email, // list of receivers
         from: 'noreply@nestjs.com', // sender address
         subject: 'Testing Nest MailerModule ✔', // Subject line
         text: 'welcome', // plaintext body

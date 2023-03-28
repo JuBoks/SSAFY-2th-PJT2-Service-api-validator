@@ -36,6 +36,7 @@ export class AlertsController {
   }
 
   @Delete(':id')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, Alert))
   remove(@Param('id') id: number, @Req() request: CustomRequest) {
     return this.alertsService.remove(+id, request);
   }

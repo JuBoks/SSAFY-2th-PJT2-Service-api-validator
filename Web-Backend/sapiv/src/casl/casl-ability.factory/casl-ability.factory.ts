@@ -1,11 +1,12 @@
 import { AbilityBuilder, ExtractSubjectType, InferSubjects, PureAbility } from "@casl/ability";
 import { Injectable } from "@nestjs/common";
 import { Alert } from "src/alerts/entities/alert.entity";
+import { TestCase } from "src/apis/entities/testcase.entity";
 import { Favorite } from "src/favorites/entities/favorite.entity";
 import { User } from "src/users/entities/user.entity";
 import { Action } from "../action";
 
-type Subjects = InferSubjects<typeof User | typeof Favorite | typeof Alert> | 'all';
+type Subjects = InferSubjects<typeof User | typeof Favorite | typeof Alert | typeof TestCase> | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 
@@ -18,10 +19,10 @@ export class CaslAbilityFactory {
 
     
     let uid = "";
-    if(request.bodyUsed && request.body.uid !== undefined){
+    if(request.bodyUsed && request.body.uid){
       uid = request.body.uid;
     }
-    else if(request.params !== undefined && request.params.uid !== undefined){
+    else if(request.params && request.params.uid){
       uid = request.params.uid;
     }
 
@@ -35,9 +36,12 @@ export class CaslAbilityFactory {
       can(Action.Update, User);
       can(Action.Delete, User);
       can(Action.Read, User);
+      can(Action.Manage, TestCase)
     }
-    else if(user.state <= 2 && user.state > 0){
+    
+    if(user.state <= 2 && user.state > 0){
       can(Action.Manage, Favorite);
+      can(Action.Manage, Alert);
     }
 
 
