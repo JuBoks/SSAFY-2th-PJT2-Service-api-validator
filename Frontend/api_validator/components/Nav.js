@@ -1,5 +1,5 @@
 import * as React from "react";
-import router from "next/router";
+import Router from "next/router";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -15,6 +15,8 @@ import ArticleIcon from "@mui/icons-material/Article";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import auth from "@/util/auth";
+import { signOut } from "firebase/auth";
 
 function Nav({ isAdmin, isAdminPage }) {
   const drawerWidth = 240;
@@ -60,15 +62,21 @@ function Nav({ isAdmin, isAdminPage }) {
           path: "/admin/api",
         }
       : null,
-    {
-      text: "Logout",
-      icon: <LogoutIcon />,
-      path: "/",
-    },
   ].filter(Boolean);
 
   const handleListItemClick = (path) => {
-    router.push(path);
+    Router.push(path);
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      const res = await signOut(auth);
+      alert("로그아웃 되었습니다.");
+      Router.push("/");
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   const drawer = (
@@ -93,6 +101,14 @@ function Nav({ isAdmin, isAdminPage }) {
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem key="Logout" disablePadding>
+          <ListItemButton onClick={handleLogoutClick}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );

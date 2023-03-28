@@ -60,7 +60,7 @@ export default function APIedit() {
             <Typography className={styles.text} mt={2} mb={2} variant="h5">
               Response
             </Typography>
-            <Paper>
+            <Paper variant="outlined">
               <Typography className={styles.paper}>{sampleData}</Typography>
             </Paper>
             <Box display="flex" flexDirection="row-reverse" m={3}>
