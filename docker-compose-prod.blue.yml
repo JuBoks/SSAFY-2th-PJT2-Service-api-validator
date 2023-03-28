@@ -1,0 +1,40 @@
+services:
+  web-be-prod-blue:
+    build:
+      context: Web-Backend/sapiv
+      dockerfile: Dockerfile-prod
+    container_name: sapiv-webbe-prod-blue
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - '8000:3000'
+    networks:
+      - blue
+
+  api-validator-blue:
+    build: API_validator_server
+    container_name: sapiv-apivalidator-prod-blue
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8070:3000"
+    networks:
+      - blue
+
+  web-fe-prod-blue:
+    build: Frontend/api_validator
+    container_name: sapiv-webfe-prod-blue
+    depends_on:
+      - web-be-prod-blue
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - '3000:3000'
+    networks:
+      - blue
+
+networks:
+  blue:
