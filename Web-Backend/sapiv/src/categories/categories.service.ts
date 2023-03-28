@@ -38,7 +38,7 @@ export class CategoriesService {
 
   async findOne(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Category[]>(process.env.VALIDATOR_CATEGORY, {headers: {chk: process.env.SERVER_KEY}, params: {categoryId: id}}).pipe(
+      this.httpService.get<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, {headers: {chk: process.env.SERVER_KEY}}).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -52,7 +52,7 @@ export class CategoriesService {
 
   async update(id: number, categoryDto: CategoryDto) {
     const { data } = await firstValueFrom(
-      this.httpService.put<Category[]>(process.env.VALIDATOR_CATEGORY, categoryDto, {headers: {chk: process.env.SERVER_KEY}, params: {categoryId: id}}).pipe(
+      this.httpService.put<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, categoryDto, {headers: {chk: process.env.SERVER_KEY}}).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -66,7 +66,7 @@ export class CategoriesService {
 
   async remove(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.delete<Category[]>(process.env.VALIDATOR_CATEGORY, {headers: {chk: process.env.SERVER_KEY}, params: {categoryId: id}}).pipe(
+      this.httpService.delete<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, {headers: {chk: process.env.SERVER_KEY}}).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,

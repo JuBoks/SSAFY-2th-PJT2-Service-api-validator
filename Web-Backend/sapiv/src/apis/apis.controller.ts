@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { ApiHeader } from '@nestjs/swagger';
 import { ApisService } from './apis.service';
 import { CreateApiDto } from './dto/create-api.dto';
@@ -7,7 +7,7 @@ import { UpdateApiDto } from './dto/update-api.dto';
 
 @Controller('apis')
 @ApiHeader({
-  name: 'uid',
+  name: 'idtoken',
   description: 'Custom header',
 })
 export class ApisController {
@@ -24,8 +24,8 @@ export class ApisController {
   }
 
   @Get()
-  findAll() {
-    return this.apisService.findAll();
+  findAll(@Query('domainId') id: string) {
+    return this.apisService.findAll(+id);
   }
 
   @Get(':id')

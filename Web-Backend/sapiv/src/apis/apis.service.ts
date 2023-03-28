@@ -11,6 +11,7 @@ export class ApisService {
   constructor(private readonly httpService: HttpService) {}
 
   async create(createApiDto: CreateApiDto) {
+    console.log(process.env.VALIDATOR_API);
     const { data } = await firstValueFrom(
       this.httpService.post<Api>(process.env.VALIDATOR_API, createApiDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
@@ -39,9 +40,9 @@ export class ApisService {
     return result['data'];
   }
 
-  async findAll() {
+  async findAll(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.get<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}, params: {domainId: id}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -55,7 +56,7 @@ export class ApisService {
 
   async findOne(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.get<Api>(process.env.VALIDATOR_API+`/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -69,7 +70,7 @@ export class ApisService {
 
   async update(id: number, updateApiDto: UpdateApiDto) {
     const { data } = await firstValueFrom(
-      this.httpService.put<Api>(process.env.VALIDATOR_API, updateApiDto, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.put<Api>(process.env.VALIDATOR_API+`/${id}`, updateApiDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -83,7 +84,7 @@ export class ApisService {
 
   async remove(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.put<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.delete<Api>(process.env.VALIDATOR_API+`/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
