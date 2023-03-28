@@ -1,7 +1,7 @@
 const Validator = require("../database/Validator");
 const pool = require("../database/utils");
-const { extractRootSchema } = require("../api_inference/inferSchema_v3");
-const { compareRootSchema } = require("../api_inference/compareSchema");
+const extractRootSchema = require("../api_inference/inferSchema_v3");
+const compareRootSchema = require("../api_inference/compareSchema");
 
 const inferSchema = (data, isArray) => {
   let schema = null;

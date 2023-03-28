@@ -1,13 +1,5 @@
 const extractRootSchema = require("./inferSchema_v3");
 
-// const fs = require("fs");
-// let sample_data = JSON.parse(fs.readFileSync("../database/sample.json"));
-// let sample_copy_data = JSON.parse(
-//   fs.readFileSync("../database/sample_copy.json")
-// );
-// const schema = extractRootSchema(sample_data);
-// const schema_copy = extractRootSchema(sample_copy_data);
-
 const isEmpty = (object) => {
   return Object.keys(object).length === 0;
 };
@@ -52,6 +44,7 @@ const compareRootSchema = (source, criteria) => {
         } else {
           // 4. 같은 자료형일때
           const data_type = data_1[sub_key];
+          // 원시자료형이면 재귀적으로 탐색 불필요
           if (primitiveSet.has(data_type)) continue;
           compareSchema(source[data_type], criteria[data_type], data_type);
         }
@@ -74,10 +67,7 @@ const compareRootSchema = (source, criteria) => {
   const changes = {};
 
   // root부터 검사하기
-  const source_schema = extractRootSchema(source);
-  const criteria_schema = extractRootSchema(criteria);
-  compareSchema(source_schema["root"], criteria_schema["root"], "root");
-
+  compareSchema(source["root"], criteria["root"], "root");
   return changes;
 };
 
