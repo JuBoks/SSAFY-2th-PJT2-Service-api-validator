@@ -1,18 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
-export class CreateApiDto {
-    
+export class DomainDto {
+
     @ApiProperty()
     @IsNumber()
-    domain_id: number;
-    
-    @ApiProperty()
-    @IsNumber()
-    method: number;
-    
+    category_id: number;
+
     @ApiProperty()
     @IsString()
-    resources: string;
-    
+    name: string;
+
+    @ApiProperty()
+    @IsString()
+    domain: string;
 }
