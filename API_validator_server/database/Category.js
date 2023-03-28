@@ -20,7 +20,7 @@ const createNewCategory = async (conn, newCategory) => {
 
 const getAllCategories = async (conn) => {
   try {
-    let sql = "SELECT * FROM tbl_category WHERE state = 0";
+    let sql = "SELECT *  FROM tbl_category WHERE state = 0";
     let [rows, _] = await conn.query(sql);
     return rows;
   } catch (error) {
