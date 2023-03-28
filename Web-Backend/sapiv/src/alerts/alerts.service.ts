@@ -83,7 +83,6 @@ export class AlertsService {
     .getRepository(Alert)
     .createQueryBuilder('alerts')
     .delete()
-    .from(Alert)
     .where("user_id = :uid", { uid: req.user.uid })
     .andWhere("meta_id = :id", { id: id})
     .execute()
@@ -93,9 +92,8 @@ export class AlertsService {
     const list = await this.dataSource
     .getRepository(Alert)
     .createQueryBuilder('alerts')
-    .from(Alert, 'alert')
-    .where("alert.meta_id = :id", { id: id})
-    .select("alert.user_id")
+    .where("meta_id = :id", { id: id})
+    .select("user_id")
     .execute()
     this.mail(list);
   }
@@ -105,6 +103,7 @@ export class AlertsService {
   public async mail(list: Array<Alert>): Promise<void> {
     for (const alert of list) {
       const user =  await this.usersService.findOne(alert.user_id);
+      console.log(user);
       this.mailerService
       .sendMail({
         to: user.email, // list of receivers
@@ -114,7 +113,11 @@ export class AlertsService {
         html: '<b>welcome</b>', // HTML body content
       })
       .then(() => {})
-      .catch(() => {});
+      .catch((e) => {throw new HttpException(
+        e.message,
+        HttpStatus.BAD_REQUEST
+      )
+      });
     }
   }
 }

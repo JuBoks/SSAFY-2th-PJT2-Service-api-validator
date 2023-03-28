@@ -76,14 +76,13 @@ export class FavoritesService {
     return "success";
   }
 
-  async test(req:CustomRequest, term:number, start:number, end:number): Promise<TestCase[]>{
+  async test(req:CustomRequest, term:number, start:number, end:number): Promise<any>{
     return await this.dataSource
    .createQueryBuilder()
    .from(TestResult, "testresult")
    .where((qb) => {
        const subQuery = qb
           .subQuery()
-          .select("meta_id")
           .from(Favorite, "favorites")
           .where("favorites.user_id = :uid")
           .getQuery()
@@ -94,16 +93,14 @@ export class FavoritesService {
         .subQuery()
         .select("action_id")
         .from(Action, "actions")
-        .where("actions.created_at >= : start")
-        .andWhere("actions.created_at <= : end")
+        .where("actions.created_at >= :start")
+        .andWhere("actions.created_at <= :end")
         .getQuery()
     return "testresult.action_id IN " + subQuery
   })
-  .andWhere("metadata.state = 0")
   .setParameter("uid", req.user.uid)
   .setParameter("start", start)
   .setParameter("end", end)
-  .select('testresult.action_id')
   .addSelect("SUM(result = true)", "pass_cnt")
   .addSelect("SUM(result = false)", "fail_cnt")
   .groupBy('testresult.action_id DIV :term')

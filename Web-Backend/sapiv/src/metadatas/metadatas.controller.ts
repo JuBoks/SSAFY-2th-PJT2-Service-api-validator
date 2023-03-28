@@ -24,13 +24,14 @@ export class MetadatasController {
 
   @Post('/test/:id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, TestCase))
-  test(@Param('id') id: string, @Body() metadataDto: MetadataDto) {
-    return this.metadatasService.test(+id, metadataDto);
+  test(@Param('id') id: string) {
+    return this.metadatasService.test(+id);
   }
 
   @Post('/expect/:id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, TestCase))
   expect(@Param('id') id: string, @Body() expectResponseDto: ExpectResponseDto) {
+    console.log(expectResponseDto);
     return this.metadatasService.expect(+id, expectResponseDto);
   }
 

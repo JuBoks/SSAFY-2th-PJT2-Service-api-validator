@@ -8,15 +8,12 @@ export class MetadataDto {
     api_id: number;
 
     @ApiProperty()
-    @IsJSON()
     header: JSON;
     
     @ApiProperty()
-    @IsJSON()
     params: JSON;
     
     @ApiProperty()
-    @IsJSON()
     body: JSON;
 
     @ApiProperty()

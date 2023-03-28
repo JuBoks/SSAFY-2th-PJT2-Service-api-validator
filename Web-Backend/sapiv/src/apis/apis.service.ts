@@ -11,7 +11,6 @@ export class ApisService {
   constructor(private readonly httpService: HttpService) {}
 
   async create(createApiDto: CreateApiDto) {
-    console.log(process.env.VALIDATOR_API);
     const { data } = await firstValueFrom(
       this.httpService.post<Api>(process.env.VALIDATOR_API, createApiDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
