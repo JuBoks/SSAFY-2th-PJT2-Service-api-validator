@@ -1,5 +1,7 @@
 const Validator = require("../database/Validator");
 const pool = require("../database/utils");
+const { extractRootSchema } = require("../api_inference/inferSchema_v3");
+const { compareRootSchema } = require("../api_inference/compareSchema");
 
 const inferSchema = (data, isArray) => {
   let schema = null;
@@ -61,7 +63,8 @@ const createApiTestResult = async (meta_id, action_id, response) => {
   const conn = await pool.getConnection();
 
   //response 자료형 추론하기
-  const schema = inferSchema(response, Array.isArray(response));
+  // const schema = inferSchema(response, Array.isArray(response));
+  const schema = extractRootSchema(response);
 
   try {
     //트랜잭션 시작
@@ -84,7 +87,8 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       );
 
       //메소드 호출
-      result = isEmpty(compareJson(schema, answer_schema));
+      // result = isEmpty(compareJson(schema, answer_schema));
+      result = isEmpty(compareRootSchema(schema, answer_schema));
 
       //만약 pass면,expect_response의 data_id 저장
       if (result) {
@@ -160,4 +164,9 @@ const getApiList = async () => {
   }
 };
 
-module.exports = { getApiList, createApiTestResult, inferSchema };
+module.exports = {
+  getApiList,
+  createApiTestResult,
+  inferSchema,
+  extractRootSchema,
+};

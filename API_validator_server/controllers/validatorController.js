@@ -49,7 +49,8 @@ const getInferredSchema = (req, res) => {
   */
   // 자료형 추론
   try {
-    const schema = validatorService.inferSchema(body, Array.isArray(body));
+    // const schema = validatorService.inferSchema(body, Array.isArray(body));
+    const schema = validatorService.extractRootSchema(body);
     console.log(schema);
     res.status(201).send({ status: "OK", data: schema });
   } catch (error) {
@@ -58,7 +59,6 @@ const getInferredSchema = (req, res) => {
       .send({ status: "FAILED", data: { error: error?.message || error } });
   }
 };
-
 
 const getApiDiff = (req, res) => {
   res.send("Get API Diff");

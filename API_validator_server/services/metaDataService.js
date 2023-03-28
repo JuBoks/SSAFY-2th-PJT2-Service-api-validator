@@ -124,10 +124,11 @@ const createExpectResponse = async (metaId, response) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const schema = validatorService.inferSchema(
-      response,
-      Array.isArray(response)
-    );
+    // const schema = validatorService.inferSchema(
+    //   response,
+    //   Array.isArray(response)
+    // );
+    const schema = validatorService.extractRootSchema(response);
 
     //자료형 추론 결과 우선 anayled data 테이블에 저장
     const dataId = await Validator.createAnalyzedData(conn, schema);
