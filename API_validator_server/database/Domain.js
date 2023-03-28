@@ -20,10 +20,17 @@ const createNewDomain = async (conn, newDomain) => {
 
 const getAllDomains = async (conn, categoryId) => {
   try {
-    let sql = "SELECT * FROM tbl_domain WHERE category_id = ? and state = 0";
-    let params = [categoryId];
-    let [rows, _] = await conn.query(sql, params);
-    return rows;
+    if(categoryId) {
+      let sql = "SELECT * FROM tbl_domain WHERE category_id = ? and state = 0";
+      let params = [categoryId];
+      let [rows, _] = await conn.query(sql, params);
+      return rows;
+    }
+    else {
+      let sql = "SELECT * FROM tbl_domain WHERE state = 0";
+      let [rows, _] = await conn.query(sql);
+      return rows;
+    }
   } catch (error) {
     throw { status: 500, message: error };
   }

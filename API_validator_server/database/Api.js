@@ -24,10 +24,17 @@ const createNewApi = async (conn, newApi) => {
 
 const getAllApis = async (conn, domainId) => {
   try {
-    let sql = "SELECT * FROM tbl_api WHERE domain_id = ? and state = 0";
-    let params = [domainId];
-    let [rows, _] = await conn.query(sql, params);
-    return rows;
+    if(domainId) {
+      let sql = "SELECT * FROM tbl_api WHERE domain_id = ? and state = 0";
+      let params = [domainId];
+      let [rows, _] = await conn.query(sql, params);
+      return rows;
+    }
+    else {
+      let sql = "SELECT * FROM tbl_api WHERE and state = 0";
+      let [rows, _] = await conn.query(sql);
+      return rows;
+    }
   } catch (error) {
     throw { status: 500, message: error };
   }
