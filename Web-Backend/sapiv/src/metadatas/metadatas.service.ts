@@ -25,9 +25,9 @@ export class MetadatasService {
     return data;
   }
 
-  async findAll() {
+  async findAll(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Metadata[]>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.get<Metadata[]>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -41,7 +41,7 @@ export class MetadatasService {
 
   async findOne(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Metadata>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.get<Metadata>(process.env.VALIDATOR_METADATA + `/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,

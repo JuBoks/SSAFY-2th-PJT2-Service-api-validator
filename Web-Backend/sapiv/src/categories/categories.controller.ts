@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { ApiHeader } from '@nestjs/swagger';
 import { TestCase } from 'src/apis/entities/testcase.entity';
 import { Action } from 'src/casl/action';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
@@ -7,6 +8,10 @@ import { CategoriesService } from './categories.service';
 import { CategoryDto } from './dto/category.dto';
 
 @Controller('categories')
+@ApiHeader({
+  name: 'idtoken',
+  description: 'Custom header',
+})
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

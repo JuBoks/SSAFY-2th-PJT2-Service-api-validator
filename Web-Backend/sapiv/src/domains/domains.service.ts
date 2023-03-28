@@ -23,9 +23,9 @@ export class DomainsService {
     return data;
   }
 
-  async findAll() {
+  async findAll(id : number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Domain[]>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.get<Domain[]>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}, params: {categoryId: id}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -39,7 +39,7 @@ export class DomainsService {
 
   async findOne(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Domain>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}, params: {domainId: id}} ).pipe(
+      this.httpService.get<Domain>(process.env.VALIDATOR_DOMAIN + `/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -53,7 +53,7 @@ export class DomainsService {
 
   async update(id: number, updateDomainDto: DomainDto) {
     const { data } = await firstValueFrom(
-      this.httpService.put<Domain>(process.env.VALIDATOR_DOMAIN, updateDomainDto, {headers: {chk: process.env.SERVER_KEY}, params: {domainId: id}} ).pipe(
+      this.httpService.put<Domain>(process.env.VALIDATOR_DOMAIN + `/${id}`, updateDomainDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -67,7 +67,7 @@ export class DomainsService {
 
   async remove(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.delete<Domain>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}, params: {domainId: id}} ).pipe(
+      this.httpService.delete<Domain>(process.env.VALIDATOR_DOMAIN + `/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { MetadatasService } from './metadatas.service';
 import { MetadataDto } from './dto/metadata.dto';
 import { TestCase } from 'src/apis/entities/testcase.entity';
@@ -6,8 +6,13 @@ import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { CheckPolicies } from 'src/common/guard/policies-guard';
 import { Action } from 'src/casl/action';
 import { ExpectResponseDto } from './dto/create-expect-response.dto';
+import { ApiHeader } from '@nestjs/swagger';
 
 @Controller('metadatas')
+@ApiHeader({
+  name: 'idtoken',
+  description: 'Custom header',
+})
 export class MetadatasController {
   constructor(private readonly metadatasService: MetadatasService) {}
 
@@ -31,8 +36,8 @@ export class MetadatasController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, TestCase))
-  findAll() {
-    return this.metadatasService.findAll();
+  findAll(@Query('apiId') id:string) {
+    return this.metadatasService.findAll(+id);
   }
 
   @Get(':id')
