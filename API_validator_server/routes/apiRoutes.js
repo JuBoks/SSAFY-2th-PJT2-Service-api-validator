@@ -150,6 +150,13 @@ router.get("/logs/:resultId",
   validationCheck,
   logController.getLogByResultId);
 
+router.get("/logs/graph/user",
+  query('userId').exists(),
+  query('startTime').exists(),
+  query('endTime').exists(),
+  validationCheck,
+  logController.getResultByUser)
+
 router.get("/logs/graph/action",
   query('startTime').exists(),
   query('endTime').exists(),

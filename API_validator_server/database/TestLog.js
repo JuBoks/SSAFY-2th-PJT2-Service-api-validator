@@ -87,10 +87,32 @@ const getResultByMetaId = async (conn, metaId, startTime, endTime) => {
     }
 }
 
+const getResultByUserId = async (conn, userId, startTime, endTime) => {
+    try {
+        let sql = `SELECT result.result_id, result.result, DATE_FORMAT(from_unixtime(result.created_at), '%Y-%m-%d %H:%i:%s') as 'created_at' 
+        FROM tbl_test_result as result
+        INNER JOIN (
+            SELECT meta_id FROM tbl_favorite_api
+            WHERE user_id = ?
+            ) as favorite
+        ON result.meta_id = favorite.meta_id
+        WHERE result.created_at >= UNIX_TIMESTAMP(?) AND result.created_at <= UNIX_TIMESTAMP(?)`;
+        let params = [userId, startTime, endTime];
+        let [rows, fields] = await conn.query(sql, params);
+        return rows;
+    }
+    catch(error) {
+        console.log(error);
+
+        throw error;
+    }
+} 
+
 module.exports = {
     getLogsByMetaId,
     getLogsByMetaIdAndDate,
     getDataById,
     getLogByResultId,
-    getResultByMetaId
+    getResultByMetaId,
+    getResultByUserId
 }
