@@ -84,6 +84,65 @@ const getLogByResultId = async (resultId) => {
     }
 }
 
+const getResultByUser = async (userId, unit, cycle, startTime, endTime) => {
+    const conn = await pool.getConnection();
+    const result = {};
+
+    let nowDate = new Date(startTime);
+    let endDate = new Date(endTime);
+
+    let interval = cycle*1;
+
+
+    while ( nowDate <= endDate ) {
+        let date = new Date(nowDate).toISOString().substring(0,10);
+        result[date] = {count_date : new Date(nowDate).toISOString().substring(0,10), pass_cnt : 0, fail_cnt : 0};
+
+        if(unit=== "month") {
+            nowDate.setMonth(nowDate.getMonth() + interval);
+        }
+        else if(unit === "week") {
+            nowDate.setDate(nowDate.getDate() + interval*7 );
+        }
+        else if(unit === "day") {
+            nowDate.setDate(nowDate.getDate() + interval); 
+        }
+    }
+
+
+    try {
+        let data = await testLog.getResultByUserId(conn, userId, startTime, endTime);
+        let idx = 0;
+
+        data.forEach((log) => {
+               let date = new Date(log.created_at);
+               let now_idx_date = new Date(Object.keys(result)[idx]);
+               let next_idx_date = new Date(Object.keys(result)[idx+1]);
+            
+            while( date >= next_idx_date && idx < Object.keys(result).length ) {
+                idx+=1;
+                now_idx_date = new Date(Object.keys(result)[idx]);
+                next_idx_date = new Date(Object.keys(result)[idx+1]);
+            }
+
+            const str_date = now_idx_date.toISOString().substring(0,10);
+            
+            if(log.result === 1) result[str_date].pass_cnt +=1;
+            else result[str_date].fail_cnt +=1;
+        })
+
+        const entries = Object.values(result);
+
+        return entries;
+    }
+    catch(error) {
+        throw error;
+    }
+    finally {
+        conn.release();
+    }
+}
+
 const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
     const conn = await pool.getConnection();
     const result = {};
@@ -146,5 +205,6 @@ const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
 module.exports = {
     getLogsByMetaId,
     getLogByResultId,
+    getResultByUser,
     getResultByMetaId
 }
