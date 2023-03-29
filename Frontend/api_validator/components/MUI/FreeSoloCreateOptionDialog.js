@@ -10,8 +10,7 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 const filter = createFilterOptions();
 
-export default function FreeSoloCreateOptionDialog(props) {
-  const { label } = props;
+export default function FreeSoloCreateOptionDialog() {
   const [value, setValue] = React.useState(null);
   const [open, toggleOpen] = React.useState(false);
 
@@ -91,7 +90,9 @@ export default function FreeSoloCreateOptionDialog(props) {
         renderOption={(props, option) => <li {...props}>{option.title}</li>}
         sx={{ width: 300 }}
         freeSolo
-        renderInput={(params) => <TextField {...params} label={label} />}
+        renderInput={(params) => (
+          <TextField {...params} label="Free solo dialog" />
+        )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
