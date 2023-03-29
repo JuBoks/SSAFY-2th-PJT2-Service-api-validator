@@ -1,5 +1,6 @@
 const action = require("../database/Action");
 const pool = require("../database/utils");
+const metadata = require("../database/MetaData");
 
 const saveAction = async () => {
   const conn = await pool.getConnection();
@@ -20,7 +21,12 @@ const updateAction = async (action_id, pass, fail) => {
     const conn = await pool.getConnection();
 
     try {
-      const res_action_id = await action.updateAction(conn, action_id, pass, fail);
+      const metadatas_total = await metadata.getMetadatasCnt(conn);
+      const unexcuted = metadatas_total - pass - fail;
+
+      if(unexcuted < 0) throw new Error('pass, fail count are wrong.');
+
+      const res_action_id = await action.updateAction(conn, action_id, pass, fail, unexcuted);
 
       return res_action_id;
     }

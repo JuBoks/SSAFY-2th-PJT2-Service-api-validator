@@ -17,6 +17,22 @@ const createNewMetadata = async (conn, newMeta) => {
   }
 };
 
+const getMetadatasCnt = async (conn) => {
+  try {
+    let sql = `SELECT count(*) as 'cnt' FROM tbl_metadata as meta
+    INNER JOIN tbl_api as api
+    ON api.api_id = meta.api_id
+    INNER JOIN tbl_domain as domain
+    ON domain.domain_id = api.domain_id
+    WHERE meta.state = 0 and api.state = 0 and domain.state = 0`;
+    let [rows, _] = await conn.query(sql);
+    return rows[0].cnt;
+  } catch (error) {
+    throw { status: 500, message: error };
+  }
+
+}
+
 const getAllMetadatas = async (conn, apiId) => {
   try {
     let sql = "SELECT * FROM tbl_metadata WHERE api_id = ? and state = 0";
@@ -117,4 +133,5 @@ module.exports = {
   updateResponseIdInMetadata,
   updateOneMetadata,
   deleteOneMetadata,
+  getMetadatasCnt
 };

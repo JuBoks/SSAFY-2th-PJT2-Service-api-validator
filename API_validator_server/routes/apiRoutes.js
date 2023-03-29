@@ -99,16 +99,10 @@ router.post("/metadatas", [body('api_id').exists().isInt(),
     body('params').exists(), 
     body('body').exists(),
     body('cycle_time').exists().isInt(),
-    body('name').exists().isString().isLength({min : 5, max : 20}) , 
+    body('name').exists().isString() , 
     validationCheck ], metadataController.createNewMetadata);
 
-router.get("/metadatas", [query('order').isInt().optional({nullable : true}), 
-    query('column').isIn(['category', 'domain', 'api']).optional({nullable : true}),
-    query('page_num').isInt().optional({nullable : true}),
-    query('limit').isInt().optional({nullable : true}),
-    query('search_value').isString().isLength({min : 1, max : 128}).optional({nullable : true}),
-    query('search_option').isIn(['category', 'domain', 'api']).optional({nullable : true}),
-    validationCheck], metadataController.getAllMetadatas);
+router.get("/metadatas", [query('api_id').exists().isInt()], metadataController.getAllMetadatas);
 
 router.get("/metadatas/:metaId", 
     param('metaId').exists().isInt(),
@@ -149,6 +143,13 @@ router.get("/logs/:resultId",
   param('resultId').exists().isInt(),
   validationCheck,
   logController.getLogByResultId);
+
+router.get("/logs/graph/user",
+  query('userId').exists(),
+  query('startTime').exists(),
+  query('endTime').exists(),
+  validationCheck,
+  logController.getResultByUser)
 
 router.get("/logs/graph/action",
   query('startTime').exists(),
