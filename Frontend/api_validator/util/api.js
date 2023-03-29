@@ -149,6 +149,16 @@ export const DeleteApisId = async (idToken, id) => {
   return res;
 };
 
+export const GetApisAllTestcase = async (idToken) => {
+  const headers = {
+    headers: {
+      idtoken: idToken,
+    },
+  };
+  const res = await api.get(`/apis/all/testcase`, headers);
+  return res;
+};
+
 export const PostFavorites = async (idToken, apis) => {
   const headers = {
     headers: {
