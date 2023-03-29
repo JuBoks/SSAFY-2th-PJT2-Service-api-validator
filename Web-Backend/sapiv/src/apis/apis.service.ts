@@ -41,7 +41,7 @@ export class ApisService {
 
   async findAll(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}, params: {domainId: id}} ).pipe(
+      this.httpService.get<Api>(process.env.VALIDATOR_API, {headers: {chk: process.env.SERVER_KEY}, params: {domain_id: id}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
