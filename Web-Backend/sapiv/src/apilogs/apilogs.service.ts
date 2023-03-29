@@ -69,7 +69,7 @@ export class ApilogsService {
 
   async getResultByAction(timeDto: TimeDto) {
     const { data } = await firstValueFrom(
-      this.httpService.get<any>(process.env.VALIDATOR_LOG + `?/graph/aciton/?startTime=${timeDto.startTime}&endTime=${timeDto.endTime}`, {headers: {chk: process.env.SERVER_KEY} } ).pipe(
+      this.httpService.get<any>(process.env.VALIDATOR_LOG + `/graph/action?startTime=${timeDto.startTime}&endTime=${timeDto.endTime}`, {headers: {chk: process.env.SERVER_KEY} } ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
