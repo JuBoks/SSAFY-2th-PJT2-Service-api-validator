@@ -14,7 +14,7 @@ import { DomainsModule } from './domains/domains.module';
 import { MetadatasModule } from './metadatas/metadatas.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { HttpModule } from '@nestjs/axios';
-import { LogsModule } from './logs/logs.module';
+import { ApilogsModule } from './apilogs/apilogs.module';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -31,7 +31,7 @@ import { LogsModule } from './logs/logs.module';
       autoLoadEntities: true,
       synchronize: false,
     }),
-  }), CategoriesModule, DomainsModule, MetadatasModule, AlertsModule, HttpModule, LogsModule],
+  }), CategoriesModule, DomainsModule, MetadatasModule, AlertsModule, HttpModule, ApilogsModule],
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
