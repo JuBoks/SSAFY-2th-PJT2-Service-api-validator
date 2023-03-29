@@ -27,9 +27,7 @@ const createNewMetadata = async (req, res) => {
 };
 
 const getAllMetadatas = async (req, res) => {
-  const {
-    params: { api_id },
-  } = req;
+  const  { api_id } = req.query;
 
   try {
     const allMetas = await metadataService.getAllMetadatas(api_id);
