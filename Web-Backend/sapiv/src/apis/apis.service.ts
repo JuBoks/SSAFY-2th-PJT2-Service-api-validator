@@ -108,6 +108,9 @@ export class ApisService {
     .leftJoinAndSelect(Domain, "domain", "domain.domain_id = api.domain_id")
     .leftJoinAndSelect(Category, "category", "category.category_id = domain.category_id")
     .andWhere("metadata.state = 0")
+    .andWhere("category.state = 0")
+    .andWhere("domain.state = 0")
+    .andWhere("api.state = 0")
     .select(["metadata.meta_id",
     "category.name",
     "domain.domain", 
