@@ -15,7 +15,7 @@ export default function adminAPI() {
           <Toolbar />
           <Box className={styles.main}>
             <Typography className={styles.text} variant="h3">
-              API Management
+              API 관리
             </Typography>
             <Typography className={styles.text} mt={2} variant="subtitle1">
               수많은 API를 쉽게 관리해보세요.

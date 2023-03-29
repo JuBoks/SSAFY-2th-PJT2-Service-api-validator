@@ -6,14 +6,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import BarChart from "@/components/BarChart";
 import TabControl from "@/components/TabControl";
 import Playground from "@/components/Playground";
-import OutlinedCard from "@/components/OutlinedCard";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 
 export default function PostPage() {
   const router = useRouter();
