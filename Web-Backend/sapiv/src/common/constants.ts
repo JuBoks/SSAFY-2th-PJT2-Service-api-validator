@@ -4,12 +4,20 @@ export const USER_TYPE = {
     QA: 2,
     ETC: 3
 }
-type USER_TYPE = typeof USER_TYPE[keyof typeof USER_TYPE];
+export type USER_TYPE = typeof USER_TYPE[keyof typeof USER_TYPE];
 
 export const USER_STATE = {
-    NEWBIE: 0,
+    GUEST: 0,
     USER: 1,
     ADMIN: 2,
     SYSTEM_ADMIN: 3
 }
-type USER_STATE = typeof USER_STATE[keyof typeof USER_STATE];
+export type USER_STATE = typeof USER_STATE[keyof typeof USER_STATE];
+
+export const API_METHOD = {
+    GET: 0,
+    POST: 1,
+    PUT: 2,
+    DELETE: 3
+}
+export type API_METHOD = typeof USER_STATE[keyof typeof USER_STATE];

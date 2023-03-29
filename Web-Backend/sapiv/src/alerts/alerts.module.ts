@@ -9,6 +9,7 @@ import { Metadata } from 'src/metadatas/entities/metadata.entity';
 import { Alert } from './entities/alert.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Alert, Metadata, Api, Domain, Category]),
   MailerModule.forRootAsync({
@@ -16,7 +17,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       transport: {
         host: process.env.MAILDEV_HOST,
         port: parseInt(process.env.MAILDEV_PORT),
-        ignoreTLS: true,
+        ignoreTLS: false,
         secure: false,
         auth: {
           user: process.env.MAILDEV_INCOMING_USER,
@@ -35,6 +36,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       },
     }),
   }),
+  UsersModule
 ],
   controllers: [AlertsController],
   providers: [AlertsService]

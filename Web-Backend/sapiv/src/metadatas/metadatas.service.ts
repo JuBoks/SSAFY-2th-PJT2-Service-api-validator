@@ -1,26 +1,112 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMetadataDto } from './dto/create-metadata.dto';
-import { UpdateMetadataDto } from './dto/update-metadata.dto';
+import { HttpService } from '@nestjs/axios';
+import { HttpException, Injectable } from '@nestjs/common';
+import { AxiosError } from 'axios';
+import { firstValueFrom, catchError } from 'rxjs';
+import { ExpectResponseDto } from './dto/create-expect-response.dto';
+import { MetadataDto } from './dto/metadata.dto';
+import { ExpectResponse } from './entities/expect-response.entity';
+import { Metadata } from './entities/metadata.entity';
 
 @Injectable()
 export class MetadatasService {
-  create(createMetadataDto: CreateMetadataDto) {
-    return 'This action adds a new metadata';
+  constructor(private readonly httpService: HttpService) {}
+
+  async create(createMetadataDto: MetadataDto) {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Metadata>(process.env.VALIDATOR_METADATA, createMetadataDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  findAll() {
-    return `This action returns all metadatas`;
+  async findAll(id: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Metadata[]>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} metadata`;
+  async findOne(id: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Metadata>(process.env.VALIDATOR_METADATA + `/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  update(id: number, updateMetadataDto: UpdateMetadataDto) {
-    return `This action updates a #${id} metadata`;
+  async update(id: number, updateMetadataDto: MetadataDto) {
+    const { data } = await firstValueFrom(
+      this.httpService.put<Metadata>(process.env.VALIDATOR_METADATA, updateMetadataDto, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} metadata`;
+  async remove(id: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<Metadata>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async test(id: number){
+    const { data } = await firstValueFrom(
+      this.httpService.post<any>(process.env.VALIDATOR_METADATA + '/${id}/test', {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
+
+  }
+
+  async expect(id: number, expectResponseDto: ExpectResponseDto){
+    const { data } = await firstValueFrom(
+      this.httpService.post<ExpectResponse>(process.env.VALIDATOR_METADATA + `/${id}/expect`, expectResponseDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 }

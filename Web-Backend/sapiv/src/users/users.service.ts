@@ -45,7 +45,7 @@ export class UsersService {
     let listUsersResult;
     const userList = [];
     try{
-      if(nextPageToken === undefined){
+      if(!nextPageToken){
         listUsersResult = await auth.listUsers(1000);  
       }
       else{
@@ -59,15 +59,17 @@ export class UsersService {
       )
     }
     listUsersResult.users.forEach((userRecord) => {
-      const {uid, email, displayName, customClaims} = userRecord.toJSON();
-      const user = {
-        uid,
-        email,
-        name: displayName,
-        state: customClaims.state,
-        type: customClaims.type,
+      const {uid, email, displayName, customClaims, disabled} = userRecord.toJSON();
+      if(!disabled){
+        const user = {
+          uid,
+          email,
+          name: displayName,
+          state: customClaims.state,
+          type: customClaims.type,
+        }
+        userList.push(user);
       }
-      userList.push(user);
     });
     if (listUsersResult.pageToken) {
       // List next batch of users.
@@ -95,6 +97,7 @@ export class UsersService {
     .then((UserRecord) => {
       return {
         uid: UserRecord.uid,
+        email: UserRecord.email,
         state: UserRecord.customClaims.state,
         type: UserRecord.customClaims.type,
       }
@@ -118,13 +121,13 @@ export class UsersService {
 
 
   async update(updateUserDto: UpdateUserDto, request: CustomRequest) {
-    if(updateUserDto.state !== undefined && updateUserDto.state >= request.user.state){
+    if(updateUserDto.state && updateUserDto.state >= request.user.state){
       throw new HttpException(
         "허가되지 않은 행동입니다.",
         HttpStatus.UNAUTHORIZED
       );
     }
-    if(updateUserDto.type !== undefined && updateUserDto.uid !== request.user.uid){
+    if(updateUserDto.type && updateUserDto.uid !== request.user.uid){
       throw new HttpException(
         "허가되지 않은 행동입니다.",
         HttpStatus.UNAUTHORIZED
@@ -139,10 +142,10 @@ export class UsersService {
           HttpStatus.UNAUTHORIZED
         );
       }       
-      if(updateUserDto.state === undefined){
+      if(!updateUserDto.state){
         updateUserDto.state = user.customClaims.state;
       }
-      if(updateUserDto.type === undefined){
+      if(!updateUserDto.type){
         updateUserDto.type = user.customClaims.type;
       }
       await auth.setCustomUserClaims(updateUserDto.uid, {state: updateUserDto.state, type: updateUserDto.type});

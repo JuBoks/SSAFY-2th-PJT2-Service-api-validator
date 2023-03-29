@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateMetadataDto } from './create-metadata.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
-export class UpdateMetadataDto extends PartialType(CreateMetadataDto) {}
+export class UpdateMetadataDto  {
+    @ApiProperty()
+    @IsNumber()
+    response_id: number;
+}

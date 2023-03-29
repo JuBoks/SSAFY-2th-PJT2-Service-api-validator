@@ -6,6 +6,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { CustomRequest } from 'src/common/custromrequest';
 import { Domain } from 'src/domains/entities/domain.entity';
 import { Metadata } from 'src/metadatas/entities/metadata.entity';
+import { UsersService } from 'src/users/users.service';
 import { DataSource } from 'typeorm';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { Alert } from './entities/alert.entity';
@@ -14,7 +15,8 @@ import { Alert } from './entities/alert.entity';
 export class AlertsService {
   constructor(
     private dataSource: DataSource,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly usersService: UsersService
   ){}
 
   async findAll(req:CustomRequest): Promise<TestCase[]>{
@@ -81,7 +83,6 @@ export class AlertsService {
     .getRepository(Alert)
     .createQueryBuilder('alerts')
     .delete()
-    .from(Alert)
     .where("user_id = :uid", { uid: req.user.uid })
     .andWhere("meta_id = :id", { id: id})
     .execute()
@@ -91,7 +92,6 @@ export class AlertsService {
     const list = await this.dataSource
     .getRepository(Alert)
     .createQueryBuilder('alerts')
-    .from(Alert, 'alert')
     .where("meta_id = :id", { id: id})
     .select("user_id")
     .execute()
@@ -100,18 +100,24 @@ export class AlertsService {
 
 
 
-  public mail(list: Array<Alert>): void {
-    for (const mail of list) {
+  public async mail(list: Array<Alert>): Promise<void> {
+    for (const alert of list) {
+      const user =  await this.usersService.findOne(alert.user_id);
+      console.log(user);
       this.mailerService
       .sendMail({
-        to: mail.user_id, // list of receivers
+        to: user.email, // list of receivers
         from: 'noreply@nestjs.com', // sender address
         subject: 'Testing Nest MailerModule ✔', // Subject line
         text: 'welcome', // plaintext body
         html: '<b>welcome</b>', // HTML body content
       })
       .then(() => {})
-      .catch(() => {});
+      .catch((e) => {throw new HttpException(
+        e.message,
+        HttpStatus.BAD_REQUEST
+      )
+      });
     }
   }
 }

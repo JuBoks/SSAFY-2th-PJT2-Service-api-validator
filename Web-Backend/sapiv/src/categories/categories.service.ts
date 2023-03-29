@@ -2,16 +2,15 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable} from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom, catchError } from 'rxjs';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryDto } from './dto/category.dto';
 import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly httpService: HttpService) {}
-  async create(createCategoryDto: CreateCategoryDto, request) {
+  async create(createCategoryDto: CategoryDto, request) {
     const { data } = await firstValueFrom(
-      this.httpService.post<Category[]>('http://localhost:8070/validator').pipe(
+      this.httpService.post<Category[]>(process.env.VALIDATOR_CATEGORY, createCategoryDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -25,7 +24,7 @@ export class CategoriesService {
 
   async findAll() {
     const { data } = await firstValueFrom(
-      this.httpService.get<Category[]>('http://api-validator/validator/api').pipe(
+      this.httpService.get<Category[]>(process.env.VALIDATOR_CATEGORY, {headers: {chk: process.env.SERVER_KEY}}).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -37,15 +36,45 @@ export class CategoriesService {
     return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, {headers: {chk: process.env.SERVER_KEY}}).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, categoryDto: CategoryDto) {
+    const { data } = await firstValueFrom(
+      this.httpService.put<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, categoryDto, {headers: {chk: process.env.SERVER_KEY}}).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<Category[]>(process.env.VALIDATOR_CATEGORY + `/${id}`, {headers: {chk: process.env.SERVER_KEY}}).pipe(
+        catchError((error: AxiosError) => {
+          throw new HttpException(
+            error.message,
+            error.status
+          );
+        }),
+      ),
+    );
+    return data;
   }
 }
