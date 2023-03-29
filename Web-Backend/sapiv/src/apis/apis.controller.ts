@@ -42,4 +42,9 @@ export class ApisController {
   remove(@Param('id') id: string) {
     return this.apisService.remove(+id);
   }
+
+  @Get('all/testcase')
+  testCaseAll(){
+    return this.apisService.testCaseAll();
+  }
 }
