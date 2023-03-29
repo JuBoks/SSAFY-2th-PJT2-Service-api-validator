@@ -8,6 +8,7 @@ const createNewApi = async (req, res) => {
     resources: body.resources,
     domain_id: body.domain_id,
   };
+
   try {
     const createdApi = await apiService.createNewApi(newApi);
     res

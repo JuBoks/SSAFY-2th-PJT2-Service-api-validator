@@ -81,6 +81,9 @@ apiController.getOneApi);
 
 router.put("/apis/:apiId", 
   param('apiId').exists().isInt(),
+  body('method').exists().isInt({min: 0, max: 3}),
+  body('resources').exists(),
+  body('domain_id').exists().isInt(),
   validationCheck, 
 apiController.updateOneApi);
 
@@ -127,8 +130,9 @@ router.post("/metadatas/:metaId/test",
   validationCheck,
 metadataController.testMetadata);
 
-router.post(
-  "/metadatas/:metaId/expect",
+router.post("/metadatas/:metaId/expect",
+  param('metaId').exists().isInt(),
+  validationCheck,
   metadataController.createExpectResponse
 );
 
