@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import router from "next/router";
-import { Grid, Box, Typography, TextField } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import { Link, Button, InputLabel } from "@mui/material";
 import { Select, MenuItem, FormControl } from "@mui/material";
 import Copyright from "@/components/Copyright.js";
@@ -19,6 +25,7 @@ const SignUp = () => {
   const [isDuplicateEmail, setIsDuplicatedEmail] = useState(false);
   const [isPwdError, setIsPwdError] = useState(false);
   const [isConfirmPwdError, setIsConfirmPwdError] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleTypeChange = (props) => setType(props.target.value);
 
@@ -69,6 +76,7 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
+      setIsRegistering(true);
 
       if (isDuplicateEmail || isPwdError || isConfirmPwdError) {
         alert("다시 입력해주세요.");
@@ -90,6 +98,7 @@ const SignUp = () => {
     } catch (err) {
       console.log(err);
       alert(err);
+      setIsRegistering(false);
     }
   };
 
@@ -182,7 +191,7 @@ const SignUp = () => {
               size="large"
               sx={{ mt: 3, mb: 2 }}
             >
-              Create Account
+              {isRegistering ? <CircularProgress /> : "Create Account"}
             </Button>
 
             <Grid container>

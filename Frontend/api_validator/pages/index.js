@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import router from "next/router";
-import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Link,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import Copyright from "../components/Copyright.js";
 import styles from "../styles/login.module.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -11,10 +19,12 @@ import { GetUsers } from "@/util/api.js";
 export default function Home() {
   const [isError, setIsError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
+      setIsLoggingIn(true);
       const data = new FormData(event.currentTarget);
       const res = await signInWithEmailAndPassword(
         auth,
@@ -34,6 +44,7 @@ export default function Home() {
       setIsError(true);
       setErrorMsg("아이디 또는 비밀번호를 잘못 입력했습니다.");
       console.log(err);
+      setIsLoggingIn(false);
     }
   };
 
@@ -85,7 +96,7 @@ export default function Home() {
                 size="large"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Login
+                {isLoggingIn ? <CircularProgress color="inherit" /> : "Login"}
               </Button>
 
               <Grid container>

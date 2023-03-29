@@ -1,1 +1,1 @@
-export const methodList = ["GET", "POST", "PATCH", "DELETE"];
+export const methodList = ["GET", "POST", "PUT", "DELETE"];
