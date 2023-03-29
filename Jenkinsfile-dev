@@ -48,6 +48,20 @@ pipeline {
       }
     }
 
+    stage('Run prescript') {
+      steps {
+        script {
+          sleep 10
+          
+          def envDev = readFile('.env.dbdev').trim().split('\n')
+          withEnv(envDev.toList()) {
+            def pwd = env.MYSQL_ROOT_PASSWORD
+            sh(returnStdout: true, script: "docker exec -i sapiv-db-dev mysql -uroot -p${pwd} -e \"SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));\"")
+          }
+        }
+      }
+    }
+
   }
 
 }
