@@ -1,0 +1,40 @@
+services:
+  web-be-prod-green:
+    build:
+      context: Web-Backend/sapiv
+      dockerfile: Dockerfile-prod
+    container_name: sapiv-webbe-prod-green
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - '8001:3000'
+    networks:
+      - green
+
+  api-validator-green:
+    build: API_validator_server
+    container_name: sapiv-apivalidator-prod-green
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8071:3000"
+    networks:
+      - green
+
+  web-fe-prod-green:
+    build: Frontend/api_validator
+    container_name: sapiv-webfe-prod-green
+    depends_on:
+      - web-be-prod-green
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - '3001:3000'
+    networks:
+      - green
+
+networks:
+  green:
