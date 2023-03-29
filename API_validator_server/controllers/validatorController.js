@@ -13,8 +13,7 @@ const getApiList = async (req, res) => {
 };
 
 const createApiTestResult = async (req, res) => {
-  const { body } = req;
-  const { meta_id, action_id, response } = body;
+  const { meta_id, action_id, response } = req.body;
 
   try {
     const data = await validatorService.createApiTestResult(
@@ -31,16 +30,6 @@ const createApiTestResult = async (req, res) => {
   }
 };
 
-/* Deprecated */
-const helloWorld = (req, res) => {
-  try {
-    res.send({ status: "OK", data: "Hello World!" });
-  } catch (error) {
-    res
-      .status(error?.status || 500)
-      .send({ status: "FAILED", data: { error: error?.message || error } });
-  }
-};
 
 const getInferredSchema = (req, res) => {
   const { body } = req;
@@ -66,7 +55,6 @@ const getApiDiff = (req, res) => {
 /* ========== */
 
 module.exports = {
-  helloWorld,
   getInferredSchema,
   getApiList,
   createApiTestResult,

@@ -4,12 +4,6 @@ const actionService = require("../services/actionService");
 const getLogsByMetaId = async (req, res) => {
     const {metaId, startTime, endTime} = req.query;
 
-    if(metaId == null) {
-        return res
-        .status(400)
-        .send({ status: "FAILED", data: { error: "One of the following keys is missing or is empty in request parameter: 'metaId" } });
-    }
-
     try {
         const data = await logService.getLogsByMetaId(metaId, startTime, endTime);
 
@@ -48,7 +42,6 @@ const getResultByMetaId = async (req, res) => {
     const {metaId} = req.params;
     const {month, week, day, startTime, endTime} = req.query;
     
-
     let unit = "";
     let cycle = 1;
     if(month !== undefined ) {
@@ -66,12 +59,6 @@ const getResultByMetaId = async (req, res) => {
     }
 
 
-    if(metaId == null || startTime == null || endTime == null) {
-        return res
-        .status(400)
-        .send({ status: "FAILED", data: { error: "One of the following keys is missing or is empty in request parameter: 'resultId' , 'startTime' , 'endTime' " } });
-    }
-
     try {
         const data = await logService.getResultByMetaId(metaId, unit, cycle, startTime, endTime);
 
@@ -88,12 +75,6 @@ const getResultByMetaId = async (req, res) => {
 
 const getResultByAction = async (req, res) => {
     const {startTime, endTime} = req.query;
-
-    if(startTime === null || endTime === null) {
-        return res
-        .status(400)
-        .send({ status: "FAILED", data: { error: "One of the following keys is missing or is empty in request parameter: 'startTime' , 'endTime' " } });
-    }
 
     try {
         const data = await actionService.getActionsByDate(startTime, endTime);

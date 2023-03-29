@@ -2,16 +2,7 @@ const categoryService = require("../services/categoryService");
 
 const createNewCategory = async (req, res) => {
   const { body } = req;
-  if (!body.name || !body.note) {
-    res.status(400).send({
-      status: "FAILED",
-      data: {
-        error:
-          "One of the following keys is missing or is empty in request body: 'name', 'note'",
-      },
-    });
-    return;
-  }
+  
   const newCategory = {
     name: body.name,
     note: body.note,
@@ -46,12 +37,7 @@ const getOneCategory = async (req, res) => {
   const {
     params: { categoryId },
   } = req;
-  if (!categoryId) {
-    res.status(400).send({
-      status: "FAILED",
-      data: { error: "Parameter ':categoryId' can not be empty" },
-    });
-  }
+  
   try {
     const category = await categoryService.getOneCategory(categoryId);
     res.send({ status: "OK", data: category });
@@ -67,12 +53,7 @@ const updateOneCategory = async (req, res) => {
     body,
     params: { categoryId },
   } = req;
-  if (!categoryId) {
-    res.status(400).send({
-      status: "FAILED",
-      data: { error: "Parameter ':categoryId' can not be empty" },
-    });
-  }
+
   try {
     const updatedCategory = await categoryService.updateOneCategory(
       categoryId,
@@ -90,12 +71,7 @@ const deleteOneCategory = async (req, res) => {
   const {
     params: { categoryId },
   } = req;
-  if (!categoryId) {
-    res.status(400).send({
-      status: "FAILED",
-      data: { error: "Parameter ':categoryId' can not be empty" },
-    });
-  }
+ 
   try {
     await categoryService.deleteOneCategory(categoryId);
     res.status(204).send({ status: "OK" });

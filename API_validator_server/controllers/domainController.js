@@ -2,16 +2,7 @@ const domainService = require("../services/domainService");
 
 const createNewDomain = async (req, res) => {
   const { body } = req;
-  if (!body.name || !body.domain || !body.category_id) {
-    res.status(400).send({
-      status: "FAILED",
-      data: {
-        error:
-          "One of the following keys is missing or is empty in request body: 'name', 'domain', 'category_id'",
-      },
-    });
-    return;
-  }
+  
   const newDomain = {
     name: body.name,
     domain: body.domain,
@@ -31,19 +22,11 @@ const createNewDomain = async (req, res) => {
 };
 
 const getAllDomains = async (req, res) => {
-  const { body } = req;
-  if (!body.category_id) {
-    res.status(400).send({
-      status: "FAILED",
-      data: {
-        error:
-          "One of the following keys is missing or is empty in request body: 'category_id",
-      },
-    });
-    return;
-  }
+  const {category_id} = req.query;
+  
+
   try {
-    const allDomains = await domainService.getAllDomains(body.category_id);
+    const allDomains = await domainService.getAllDomains(category_id);
     res.send({ status: "OK", data: allDomains });
   } catch (error) {
     res
@@ -77,12 +60,7 @@ const updateOneDomain = async (req, res) => {
     body,
     params: { domainId },
   } = req;
-  if (!domainId) {
-    res.status(400).send({
-      status: "FAILED",
-      data: { error: "Parameter ':domainId' can not be empty" },
-    });
-  }
+  
   try {
     const updatedDomain = await domainService.updateOneDomain(domainId, body);
     res.send({
@@ -100,12 +78,7 @@ const deleteOneDomain = async (req, res) => {
   const {
     params: { domainId },
   } = req;
-  if (!domainId) {
-    res.status(400).send({
-      status: "FAILED",
-      data: { error: "Parameter ':domainId' can not be empty" },
-    });
-  }
+  
   try {
     await domainService.deleteOneDomain(domainId);
     res.status(204).send({ status: "OK" });
