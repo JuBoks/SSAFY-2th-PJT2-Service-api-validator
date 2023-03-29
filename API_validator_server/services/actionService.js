@@ -16,13 +16,13 @@ const saveAction = async () => {
 
 };
 
-const updateAction = async (body) => {
+const updateAction = async (action_id, pass, fail) => {
     const conn = await pool.getConnection();
-    const {action_id, pass, fail} = body;
-    try {
-      const action_id1 = await action.updateAction(conn, action_id, pass, fail);
 
-      return action_id1;
+    try {
+      const res_action_id = await action.updateAction(conn, action_id, pass, fail);
+
+      return res_action_id;
     }
     catch(error) {
       throw error;
