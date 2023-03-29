@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
@@ -8,16 +8,34 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TabControl from "@/components/TabControl";
 import Playground from "@/components/Playground";
+import {GetLogs} from "@/util/api"
+import auth from "@/util/auth";
 
 export default function PostPage() {
   const router = useRouter();
   const id = router.query.id;
+  const [testData, setTestData] = useState(null);
+  
+  const dates = [];
+  
+  try{
+    auth.currentUser.getIdToken(true).then((token) => {
+      GetLogs(token, new Date(0).toISOString(), new Date().toISOString(), id).then((result) => {
+        dates.push(...result.data.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+    })
+  } catch{(e) => {
+    console.log(e);
+  }}
 
-  const [expanded, setExpanded] = useState("panel1");
+  // const [expanded, setExpanded] = useState("panel1");
 
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+  // const handleChange = (panel) => (event, newExpanded) => {
+  //   setExpanded(newExpanded ? panel : false);
+  // };
 
   return (
     <Box>
@@ -33,7 +51,9 @@ export default function PostPage() {
           <Box display="flex" flexDirection="row" mt={5}>
             <Box mr={4}>
               <Typography variant="h5">API {id} : PASS</Typography>
-              <Playground />
+              <Playground 
+                dates = {dates}
+              />
               <Button variant="outlined">Set Criterion</Button>
               <TabControl />
               <Typography variant="h6">Artifacts</Typography>
