@@ -10,10 +10,10 @@ export class UpdateUserDto {
     @ApiProperty()
     @IsOptional()
     @IsEnum(USER_STATE)
-    state?: number;
+    state?: USER_STATE;
 
     @ApiProperty()
     @IsOptional()
     @IsEnum(USER_TYPE)
-    type?: number;
+    type?: USER_TYPE;
 }

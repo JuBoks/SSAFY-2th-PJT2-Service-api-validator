@@ -17,5 +17,5 @@ export class CreateUserDto {
 
     @ApiProperty()
     @IsEnum(USER_TYPE)
-    type: number;
+    type: USER_TYPE;
 }

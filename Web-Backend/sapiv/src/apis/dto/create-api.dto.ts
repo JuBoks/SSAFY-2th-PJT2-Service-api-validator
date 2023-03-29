@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { API_METHOD } from 'src/common/constants';
 
 export class CreateApiDto {
     
@@ -8,8 +9,8 @@ export class CreateApiDto {
     domain_id: number;
     
     @ApiProperty()
-    @IsNumber()
-    method: number;
+    @IsEnum(API_METHOD)
+    method: API_METHOD;
     
     @ApiProperty()
     @IsString()
