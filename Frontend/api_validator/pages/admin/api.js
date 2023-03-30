@@ -8,7 +8,6 @@ import { GetApisAllTestcase } from "@/util/api";
 import Loading from "@/components/common/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "@/util/auth";
-import Router from "next/router";
 
 export default function adminAPI() {
   const [apis, setApis] = useState(null);

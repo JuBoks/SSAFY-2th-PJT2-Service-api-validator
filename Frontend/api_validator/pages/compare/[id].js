@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,6 +12,8 @@ import {GetLogs} from "@/util/api"
 import auth from "@/util/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import Loading from "@/components/common/Loading";
+import { diffString } from "json-diff"
+import JSONDiff from '@/util/JSONDiff';
 
 export default function PostPage() {
   const router = useRouter();
@@ -20,12 +22,13 @@ export default function PostPage() {
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = useState('');
 
   const getDate1 = (val) => {
     for (let index = 0; index < testData.length; index++) {
       if(testData[index].created_at === val){
         setIndex1(index);
+        jsondiff(testData[index], testData[index2]);
+        
       }
     }
   }
@@ -33,7 +36,16 @@ export default function PostPage() {
     for (let index = 0; index < testData.length; index++) {
       if(testData[index].created_at === val){
         setIndex2(index);
+        jsondiff(testData[index1], testData[index]);
       }
+    }
+  }
+
+  const jsondiff = (json1, json2) => {
+    if(index1 > -1 && index2 > -1){
+      console.log(json1.content.response);
+      console.log(json2.content.response);
+      console.log(diffString(json1.content.response, json2.content.response,  { color: true, keepUnchangedValues: true, sort: true}));
     }
   }
 
@@ -62,25 +74,6 @@ export default function PostPage() {
     })
   }, [router.isReady])
 
-  // try{
-  //   auth.currentUser.getIdToken(true).then((token) => {
-  //     GetLogs(token, new Date(0).toISOString(), new Date().toISOString(), id).then((result) => {
-  //       dates.push(...result.data.data);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     })
-  //   })
-  // } catch{(e) => {
-  //   console.log(e);
-  // }}
-
-  // const [expanded, setExpanded] = useState("panel1");
-
-  // const handleChange = (panel) => (event, newExpanded) => {
-  //   setExpanded(newExpanded ? panel : false);
-  // };
-
   if (loading) {
     return(<Loading/>)
   }
@@ -93,6 +86,11 @@ export default function PostPage() {
         <Box component="main" m={5} sx={{ height: "100vh" }}>
           <Toolbar />
           <Typography variant="h4">API Compare</Typography>
+          <JSONDiff 
+            json1 = {testData? testData[index1] : {}}
+            json2 = {testData? testData[index2].content.response : {}}
+
+          />
           <Typography variant="body1">
             Category : TV | Service : ssafy.com | Path : /user | Method : GET{" "}
           </Typography>
@@ -107,6 +105,7 @@ export default function PostPage() {
               <TabControl
                 json = {testData? testData[index1] : {}}
               />
+              
               <Typography variant="h6">Artifacts</Typography>
               <img src="https://picsum.photos/500/300" />
               <Typography variant="body1">- Random Image</Typography>
