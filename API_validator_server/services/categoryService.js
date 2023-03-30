@@ -9,6 +9,7 @@ const createNewCategory = async (newCategory) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -49,6 +50,7 @@ const updateOneCategory = async (categoryId, changes) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -60,6 +62,7 @@ const deleteOneCategory = async (categoryId) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };

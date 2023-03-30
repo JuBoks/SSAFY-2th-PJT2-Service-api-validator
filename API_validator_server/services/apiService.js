@@ -9,6 +9,7 @@ const createNewApi = async (newApi) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -45,6 +46,7 @@ const updateOneApi = async (apiId, changes) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -56,6 +58,7 @@ const deleteOneApi = async (apiId) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
