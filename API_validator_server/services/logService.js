@@ -44,8 +44,7 @@ const getLogsByMetaId = async (metaId, startTime, endTime) => {
     }
     finally {
         conn.release();
-    }
-
+      }
 }
 
 const getLogByResultId = async (resultId) => {
@@ -81,7 +80,7 @@ const getLogByResultId = async (resultId) => {
     }
     finally {
         conn.release();
-    }
+      }
 }
 
 const getResultByUser = async (userId, unit, cycle, startTime, endTime) => {
@@ -140,7 +139,7 @@ const getResultByUser = async (userId, unit, cycle, startTime, endTime) => {
     }
     finally {
         conn.release();
-    }
+      }
 }
 
 const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
@@ -199,7 +198,7 @@ const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
     }
     finally {
         conn.release();
-    }
+      }
 }
 
 module.exports = {

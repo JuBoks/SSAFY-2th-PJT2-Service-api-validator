@@ -14,6 +14,10 @@ const saveAction = async () => {
   catch(error) {
     throw error;
   }
+  finally {
+    conn.commit();
+    conn.release();
+  }
 
 };
 
@@ -34,6 +38,7 @@ const updateAction = async (action_id, pass, fail) => {
       throw error;
     }
     finally {
+      conn.commit();
       conn.release();
     }
     
@@ -50,7 +55,9 @@ const getActionsByDate = async (startTime, endTime) => {
     catch(error) {
       throw error;
     }
-  
+    finally {
+      conn.release();
+    }
 };
 
 

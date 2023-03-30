@@ -9,6 +9,7 @@ const createNewDomain = async (newDomain) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -20,6 +21,9 @@ const getAllDomains = async (categoryId) => {
     return allDomains;
   } catch (error) {
     throw error;
+  }
+  finally {
+    conn.release();
   }
 };
 
@@ -43,6 +47,7 @@ const updateOneDomain = async (domainId, changes) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -54,6 +59,7 @@ const deleteOneDomain = async (domainId) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
