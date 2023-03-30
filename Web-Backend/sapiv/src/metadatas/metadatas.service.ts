@@ -69,7 +69,7 @@ export class MetadatasService {
 
   async remove(id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.delete<Metadata>(process.env.VALIDATOR_METADATA, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.delete<Metadata>(process.env.VALIDATOR_METADATA + `/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
