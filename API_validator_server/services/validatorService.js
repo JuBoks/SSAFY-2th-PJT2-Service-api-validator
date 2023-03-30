@@ -149,7 +149,7 @@ const getApiList = async () => {
       return acc;
     }, []);
 
-    conn.release();
+    conn.commit();
 
     return result;
   } catch (error) {

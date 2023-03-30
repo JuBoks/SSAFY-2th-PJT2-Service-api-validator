@@ -15,6 +15,7 @@ const createNewMetadata = async (newMeta) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -51,6 +52,7 @@ const updateOneMetadata = async (metaId, changes) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
@@ -62,6 +64,7 @@ const deleteOneMetadata = async (metaId) => {
   } catch (error) {
     throw error;
   } finally {
+    conn.commit();
     conn.release();
   }
 };
