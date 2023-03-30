@@ -16,7 +16,6 @@ const bull = (
 );
 
 export default function OutlinedCard(props) {
-  console.log(props) 
   return (
     <Card variant="outlined" sx={{ minWidth: 275 }}>
       <CardContent>
