@@ -81,11 +81,10 @@ export const PostApis = async (idToken, domain_id, method, resources) => {
     },
   };
   const reqData = {
-
     domain_id,
     method,
-    resources
-  }
+    resources,
+  };
   const res = await api.post("/apis", reqData, headers);
   return res;
 };
@@ -108,8 +107,8 @@ export const PostApisTest = async (idToken, url, methods) => {
   };
   const reqData = {
     url,
-    methods
-  }
+    methods,
+  };
   const res = await api.post("/apis/test", reqData, headers);
   return res;
 };
@@ -124,7 +123,13 @@ export const GetApisId = async (idToken, id) => {
   return res;
 };
 
-export const PatchApisId = async (idToken, id, domain_id, method, resources) => {
+export const PatchApisId = async (
+  idToken,
+  id,
+  domain_id,
+  method,
+  resources
+) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -133,7 +138,7 @@ export const PatchApisId = async (idToken, id, domain_id, method, resources) => 
   const reqData = {
     domain_id,
     method,
-    resources
+    resources,
   };
   const res = await api.patch(`/apis/${id}`, reqData, headers);
   return res;
@@ -166,8 +171,8 @@ export const PostFavorites = async (idToken, apis) => {
     },
   };
   const reqData = {
-    apis
-  };  
+    apis,
+  };
   const res = await api.post(`/favorites`, reqData, headers);
   return res;
 };
@@ -182,7 +187,12 @@ export const GetFavorites = async (idToken) => {
   return res;
 };
 
-export const GetFavoritesTestTermStartEnd = async (idToken, term, start, end) => {
+export const GetFavoritesTestTermStartEnd = async (
+  idToken,
+  term,
+  start,
+  end
+) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -210,8 +220,8 @@ export const PostCategories = async (idToken, name, note) => {
   };
   const reqData = {
     name,
-    note
-  };  
+    note,
+  };
   const res = await api.post(`/categories`, reqData, headers);
   return res;
 };
@@ -225,7 +235,7 @@ export const GetCategories = async (idToken) => {
 
   const res = await api.get(`/categories`, headers);
   return res;
-}
+};
 
 export const GetCategoriesId = async (idToken, id) => {
   const headers = {
@@ -236,7 +246,7 @@ export const GetCategoriesId = async (idToken, id) => {
 
   const res = await api.get(`/categories/${id}`, headers);
   return res;
-}
+};
 
 export const PatchCategoriesId = async (idToken, id, name, note) => {
   const headers = {
@@ -246,8 +256,8 @@ export const PatchCategoriesId = async (idToken, id, name, note) => {
   };
   const reqData = {
     name,
-    note
-  };  
+    note,
+  };
   const res = await api.patch(`/categories/${id}`, reqData, headers);
   return res;
 };
@@ -271,8 +281,8 @@ export const PostDomains = async (idToken, category_id, name, domain) => {
   const reqData = {
     category_id,
     name,
-    domain
-  };  
+    domain,
+  };
   const res = await api.post(`/domains`, reqData, headers);
   return res;
 };
@@ -299,7 +309,13 @@ export const GetDomainsId = async (idToken, id) => {
   return res;
 };
 
-export const PatchDomainsId = async (idToken, id, category_id, name, domain) => {
+export const PatchDomainsId = async (
+  idToken,
+  id,
+  category_id,
+  name,
+  domain
+) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -308,8 +324,8 @@ export const PatchDomainsId = async (idToken, id, category_id, name, domain) => 
   const reqData = {
     category_id,
     name,
-    domain
-  };  
+    domain,
+  };
   const res = await api.patch(`/domains/${id}`, reqData, headers);
   return res;
 };
@@ -325,7 +341,15 @@ export const DeleteDomainsId = async (idToken, id) => {
   return res;
 };
 
-export const PostMetadatas = async (idToken, api_id, header, params, body, name, cycle_time) => {
+export const PostMetadatas = async (
+  idToken,
+  api_id,
+  header,
+  params,
+  body,
+  name,
+  cycle_time
+) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -337,8 +361,8 @@ export const PostMetadatas = async (idToken, api_id, header, params, body, name,
     params,
     body,
     name,
-    cycle_time
-  };  
+    cycle_time,
+  };
   const res = await api.post(`/metadatas`, reqData, headers);
   return res;
 };
@@ -370,8 +394,8 @@ export const PostMetadatasExpectId = async (idToken, id, response) => {
     },
   };
   const reqData = {
-    response
-  };  
+    response,
+  };
   const res = await api.post(`/metadatas/expect/${id}`, reqData, headers);
   return res;
 };
@@ -386,7 +410,16 @@ export const GetMetadatasId = async (idToken, id) => {
   return res;
 };
 
-export const PatchMetadatasId = async (idToken, id, api_id, header, params, body, name, cycle_time) => {
+export const PatchMetadatasId = async (
+  idToken,
+  id,
+  api_id,
+  header,
+  params,
+  body,
+  name,
+  cycle_time
+) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -398,8 +431,8 @@ export const PatchMetadatasId = async (idToken, id, api_id, header, params, body
     params,
     body,
     name,
-    cycle_time
-  };  
+    cycle_time,
+  };
   const res = await api.patch(`/metadatas/${id}`, reqData, headers);
   return res;
 };
@@ -421,8 +454,8 @@ export const PostAlerts = async (idToken, apis) => {
     },
   };
   const reqData = {
-    apis
-  };  
+    apis,
+  };
   const res = await api.post(`/alerts`, reqData, headers);
   return res;
 };
@@ -460,18 +493,21 @@ export const DeleteAlertsId = async (idToken, id) => {
   return res;
 };
 
-export const GetLogs= async (idToken, startTime, endTime, metaId) => {
+export const GetLogs = async (idToken, startTime, endTime, metaId) => {
   const headers = {
     headers: {
       idtoken: idToken,
     },
   };
 
-  const res = await api.get(`/logs/?startTime=${startTime}&endTime=${endTime}&metaId=${metaId}`, headers);
+  const res = await api.get(
+    `/logs/?startTime=${startTime}&endTime=${endTime}&metaId=${metaId}`,
+    headers
+  );
   return res;
 };
 
-export const GetLogsId= async (idToken, id) => {
+export const GetLogsId = async (idToken, id) => {
   const headers = {
     headers: {
       idtoken: idToken,
@@ -482,31 +518,39 @@ export const GetLogsId= async (idToken, id) => {
   return res;
 };
 
-export const GetLogsGraphAction= async (idToken, startTime, endTime) => {
+export const GetLogsGraphAction = async (idToken, startTime, endTime) => {
   const headers = {
     headers: {
       idtoken: idToken,
     },
   };
 
-  const res = await api.get(`/logs/graph/action?startTime=${startTime}&endTime=${endTime}`, headers);
+  const res = await api.get(
+    `/logs/graph/action?startTime=${startTime}&endTime=${endTime}`,
+    headers
+  );
   return res;
 };
 
-export const GetLogsGraphMetadatasId= async (idToken, id, startTime, endTime, month, week, day) => {
+export const GetLogsGraphMetadatasId = async (
+  idToken,
+  id,
+  startTime,
+  endTime,
+  month,
+  week,
+  day
+) => {
   let query;
-    if(month){
-      query = `month=${month}`;
-    }
-    else if(week){
-      query = `week=${week}`;
-    }
-    else if(day){
-      query = `day=${day}`;
-    }
-    else{
-      query = `day=1`;
-    }
+  if (month) {
+    query = `month=${month}`;
+  } else if (week) {
+    query = `week=${week}`;
+  } else if (day) {
+    query = `day=${day}`;
+  } else {
+    query = `day=1`;
+  }
 
   const headers = {
     headers: {
@@ -514,6 +558,9 @@ export const GetLogsGraphMetadatasId= async (idToken, id, startTime, endTime, mo
     },
   };
 
-  const res = await api.get(`/logs/graph/metadatas/${id}?startTime=${startTime}&endTime=${endTime}&${query}`, headers);
+  const res = await api.get(
+    `/logs/graph/metadatas/${id}?startTime=${startTime}&endTime=${endTime}&${query}`,
+    headers
+  );
   return res;
 };

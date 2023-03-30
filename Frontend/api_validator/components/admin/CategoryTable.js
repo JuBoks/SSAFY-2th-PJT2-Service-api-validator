@@ -12,6 +12,8 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@mui/material";
+import { DeleteCategoriesId } from "@/util/api";
+import auth from "@/util/auth";
 
 function createData(id, name, note) {
   return { id, name, note };
@@ -27,8 +29,10 @@ export default function CategoryTable(props) {
     );
   }
 
-  const handleDeleteClick = (event) => {
-    console.log(event);
+  const handelDeleteClick = async (id, e) => {
+    const idToken = localStorage.getItem("idToken");
+    await DeleteCategoriesId(idToken, id);
+    location.reload();
   };
 
   return (
@@ -55,10 +59,10 @@ export default function CategoryTable(props) {
               <TableCell>{row.note}</TableCell>
               <TableCell>
                 <Box>
-                  <Button id={row.id}>
+                  <Button>
                     <EditIcon color="disabled" />
                   </Button>
-                  <Button>
+                  <Button onClick={(e) => handelDeleteClick(row.id, e)}>
                     <DeleteIcon color="disabled" />
                   </Button>
                 </Box>
