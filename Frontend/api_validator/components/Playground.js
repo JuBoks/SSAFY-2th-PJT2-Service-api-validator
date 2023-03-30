@@ -3,8 +3,9 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 export default function Playground(props) {
+
   const defaultProps = {
-    options: props.dates,
+    options: props.testData ? props.testData : [],
     getOptionLabel: (option) => option.created_at,
   };
   // console.log(props.dates);
@@ -20,7 +21,7 @@ export default function Playground(props) {
       // value={value}
       onChange={(event,newValue) => {
         setValue(newValue);
-        console.log(value);
+        props.getDate(newValue.created_at);
       }}
       id="disable-close-on-select"
       sx={{ width: 300 }}
