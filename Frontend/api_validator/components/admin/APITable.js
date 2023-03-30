@@ -7,9 +7,9 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
 import Router from "next/router";
 import { methodList } from "@/constants/methodList";
-import { DeleteFavoritesId, GetCategories } from "@/util/api";
-import auth from "@/util/auth";
+import { DeleteMetadatasId, GetCategories } from "@/util/api";
 import CategoryTable from "./CategoryTable";
+import auth from "@/util/auth";
 
 const style = {
   position: "absolute",
@@ -23,8 +23,8 @@ const style = {
   p: 4,
 };
 
-function createdRow(id, name, category, domain, path, method, interval) {
-  return { id, name, category, domain, path, method, interval };
+function createdRow(index, id, name, category, domain, path, method, interval) {
+  return { index, id, name, category, domain, path, method, interval };
 }
 
 function handleNewClick() {
@@ -33,6 +33,7 @@ function handleNewClick() {
 
 export default function APITable(props) {
   const { data } = props;
+
   const [openDetail, setOpenDetail] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -49,36 +50,43 @@ export default function APITable(props) {
   const [categories, setCategories] = useState(null);
 
   const handleApiDelete = async (e, cellValues) => {
-    const metaId = cellValues.row.id;
-    const idToken = await auth.currentUser.getIdToken(true);
-    await DeleteFavoritesId(idToken, metaId);
-    location.reload();
+    try {
+      const metaId = cellValues.row.id;
+      console.log(metaId);
+      const idToken = await auth.currentUser.getIdToken(true);
+      const response = await DeleteMetadatasId(idToken, metaId);
+      location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleGetCategories = async () => {
-    const idToken = await auth.currentUser.getIdToken(true);
+  const handleGetCategories = async (idToken) => {
     const response = await GetCategories(idToken);
     return response.data.data;
   };
 
   const handleOpenDetail = (e, cellValues) => {
-    const metadata = data[cellValues.row.id - 1];
-    console.log(metadata);
+    const metadata = data[cellValues.row.index];
+    const header = JSON.stringify(metadata.metadata_header, null, "\t");
+    const body = JSON.stringify(metadata.metadata_body, null, "\t");
+    const params = JSON.stringify(metadata.metadata_params, null, "\t");
     setMetadataName(metadata.metadata_name);
     setMetadataCategory(metadata.category_name);
     setMetadataDomain(metadata.domain_domain);
     setMetadataResource(metadata.api_resources);
     setMetadataMethod(methodList[metadata.api_method]);
-    setMetadataHeader(metadata.metadata_header);
-    setMetadataBody(metadata.metadata_body);
-    setMetadataParam(metadata.metadata_params);
+    setMetadataHeader(header);
+    setMetadataBody(body);
+    setMetadataParam(params);
     setMetadataInterval(metadata.metadata_cycle_time);
     setOpenDetail(true);
   };
   const handleCloseDetail = () => setOpenDetail(false);
 
   const handleOpenEdit = async () => {
-    const response = await handleGetCategories();
+    const idToken = localStorage.getItem("idToken");
+    const response = await handleGetCategories(idToken);
     setCategories(response);
     setOpenEdit(true);
   };
@@ -152,8 +160,9 @@ export default function APITable(props) {
   ];
 
   if (data) {
-    rows = data.map((item) =>
+    rows = data.map((item, index) =>
       createdRow(
+        index,
         item.metadata_meta_id,
         item.metadata_name,
         item.category_name,
@@ -218,15 +227,15 @@ export default function APITable(props) {
           <Typography variant="h5" mt={2}>
             Header
           </Typography>
-          <Paper>{metadataHeader}</Paper>
+          <Paper className={styles.paper}>{metadataHeader}</Paper>
           <Typography variant="h5" mt={2}>
             Body
           </Typography>
-          <Paper>{metadataBody}</Paper>
+          <Paper className={styles.paper}>{metadataBody}</Paper>
           <Typography variant="h5" mt={2}>
             Param
           </Typography>
-          <Paper>{metadataParam}</Paper>
+          <Paper className={styles.paper}>{metadataParam}</Paper>
         </Box>
       </Modal>
 
