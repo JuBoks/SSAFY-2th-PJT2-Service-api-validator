@@ -21,6 +21,7 @@ export default function PostPage() {
   const [testData, setTestData] = useState(null);
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(0);
+  const [diff, setDiff] = useState('');
   const [loading, setLoading] = useState(false);
 
   const getDate1 = (val) => {
@@ -45,7 +46,8 @@ export default function PostPage() {
     if(index1 > -1 && index2 > -1){
       console.log(json1.content.response);
       console.log(json2.content.response);
-      console.log(diffString(json1.content.response, json2.content.response,  { color: true, keepUnchangedValues: true, sort: true}));
+      console.log(diffString(json1.content.response, json2.content));
+      setDiff(diffString(json1.content.response, json2.content));
     }
   }
 
@@ -86,11 +88,11 @@ export default function PostPage() {
         <Box component="main" m={5} sx={{ height: "100vh" }}>
           <Toolbar />
           <Typography variant="h4">API Compare</Typography>
-          <JSONDiff 
+          {/* <JSONDiff 
             json1 = {testData? testData[index1] : {}}
             json2 = {testData? testData[index2].content.response : {}}
 
-          />
+          /> */}
           <Typography variant="body1">
             Category : TV | Service : ssafy.com | Path : /user | Method : GET{" "}
           </Typography>

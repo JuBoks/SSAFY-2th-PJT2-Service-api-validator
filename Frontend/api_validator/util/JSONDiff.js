@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function JSONDiff({ json1, json2 }) {
-  const [diff, setDiff] = useState(null);
+function JSONDiff(props) {
+  const text = props.text;
 
-  const compareJSON = () => {
-    const jsondiffpatch = require('jsondiffpatch').create();
-    const diffObject = jsondiffpatch.diff(json1, json2);
-    const diffHTML = require('jsondiffpatch').formatters.annotated.format(diffObject, json1);
-    setDiff(diffHTML);
-  };
+  const lines = text.split("\n");
+
+  const html = lines.map((line, index) => {
+    if (line.startsWith("-")) {
+      return <p key={index} className="colored minus">{line.slice(1)}</p>;
+    }
+    else if (line.startsWith("+")){
+      return <p key={index} className="coloredplus">{line.slice(1)}</p>;
+    } 
+    else {
+      return <p key={index}>{line}</p>;
+    }
+  });
 
   return (
-    <div>
-      <button onClick={compareJSON}>Compare JSON</button>
-      {diff && <div dangerouslySetInnerHTML={{ __html: diff }}></div>}
+    <div className="container">
+      <div className="content">{html}</div>
     </div>
   );
 }
+
 
 export default JSONDiff;
