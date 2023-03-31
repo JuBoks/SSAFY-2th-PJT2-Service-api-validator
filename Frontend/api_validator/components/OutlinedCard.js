@@ -15,12 +15,12 @@ const bull = (
   </Box>
 );
 
-export default function OutlinedCard() {
+export default function OutlinedCard(props) {
   return (
     <Card variant="outlined" sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Word of the Day
+          {props.json ? JSON.stringify(props.json) : []}
         </Typography>
       </CardContent>
       <CardActions>

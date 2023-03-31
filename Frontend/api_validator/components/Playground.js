@@ -2,19 +2,27 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function Playground() {
+export default function Playground(props) {
+
   const defaultProps = {
-    options: top100Films,
-    getOptionLabel: (option) => option.date,
+    options: props.testData ? props.testData : [],
+    getOptionLabel: (option) => option.created_at,
   };
+  // console.log(props.dates);
   const flatProps = {
-    options: top100Films.map((option) => option.date),
+    // options: props.dates.map((option) => option.date),
   };
-  const [value, setValue] = React.useState(null);
+  const [value, setValue] = React.useState('');
+  // console.log(value);
 
   return (
     <Autocomplete
       {...defaultProps}
+      // value={value}
+      onChange={(event,newValue) => {
+        setValue(newValue);
+        props.getDate(newValue.created_at);
+      }}
       id="disable-close-on-select"
       sx={{ width: 300 }}
       renderInput={(params) => (

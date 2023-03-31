@@ -106,8 +106,8 @@ export default function Main() {
       await signInWithEmailAndPassword(auth, email, pw);
       await updatePassword(user, newPw);
 
-      alert("정상적으로 변경되었습니다.");
-      Router.push("/profile");
+      alert("비밀번호가 정상적으로 변경되었습니다. 다시 로그인해주세요.");
+      Router.push("/");
     } catch (error) {
       console.log(error);
       if (error.code === "auth/wrong-password") {

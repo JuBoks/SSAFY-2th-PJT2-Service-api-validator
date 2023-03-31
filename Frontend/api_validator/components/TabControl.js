@@ -6,8 +6,12 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import OutlinedCard from "./OutlinedCard";
 
-export default function TabControl() {
+export default function TabControl(props) {
   const [value, setValue] = React.useState("1");
+  const flatProps = {
+    json: props.json && props.json.content ? props.json.content.response : [],
+    schema: props.json && props.json.content ? props.json.content.schema : []
+  };
 
   const tabListAPI = [
     {
@@ -19,15 +23,18 @@ export default function TabControl() {
       value: "2",
     },
   ];
-
   const tabPanelListAPI = [
     {
       value: "1",
-      content: <OutlinedCard />,
+      content: <OutlinedCard
+      json= {flatProps.json}
+      />,
     },
     {
       value: "2",
-      content: <OutlinedCard />,
+      content: <OutlinedCard
+      json= {flatProps.schema}
+       />,
     },
   ];
 
