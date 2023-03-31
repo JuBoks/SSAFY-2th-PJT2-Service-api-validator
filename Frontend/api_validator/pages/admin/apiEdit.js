@@ -21,6 +21,7 @@ import {
   GetCategories,
   GetDomains,
   GetDomainsId,
+  GetMetadatasId,
   PostMetadatas,
 } from "@/util/api";
 import { onAuthStateChanged } from "firebase/auth";
@@ -28,6 +29,7 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import APIinfoTable from "@/components/admin/APIinfoTable";
+import Router, { useRouter } from "next/router";
 
 const json = {
   1: "Snow",
@@ -63,6 +65,10 @@ TabPanel.propTypes = {
 };
 
 export default function APIedit() {
+  const router = useRouter();
+  const selectedApiId = router.query.id;
+  const isEdit = router.query.isEdit;
+
   const [apiName, setApiName] = useState("");
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
@@ -149,15 +155,20 @@ export default function APIedit() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     onAuthStateChanged(auth, (user) => {
       const getCategories = async () => {
-        console.log(location);
         setLoading(true);
         try {
           const idToken = await auth.currentUser.getIdToken(true);
           localStorage.setItem("idToken", idToken);
           const response = await GetCategories(idToken);
           setCategories(response.data.data);
+
+          if (isEdit) {
+            const response = await GetMetadatasId(idToken, selectedApiId);
+            console.log(response);
+          }
         } catch (error) {
           console.log(error);
           alert(error);
@@ -185,7 +196,7 @@ export default function APIedit() {
           <Toolbar />
           <Box className={styles.main}>
             <Typography className={styles.text} variant="h3">
-              API 추가/편집
+              {isEdit ? "API 편집" : "API 추가"}
             </Typography>
             <Typography
               className={styles.text}
@@ -280,7 +291,11 @@ export default function APIedit() {
             <Divider />
             <Typography variant="h5">Response</Typography>
             <Paper>Hello</Paper>
-            <Button onClick={handleSaveClick}>Save</Button>
+            {isEdit ? (
+              <Button>Change</Button>
+            ) : (
+              <Button onClick={handleSaveClick}>Save</Button>
+            )}
           </Box>
         </Box>
       </Box>

@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { Box, Button, Typography, Modal, Divider, Paper } from "@mui/material";
+import Router from "next/router";
+import {
+  Box,
+  Button,
+  Typography,
+  Modal,
+  Divider,
+  Paper,
+  Link,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
-import Router from "next/router";
 import { methodList } from "@/constants/methodList";
 import { DeleteMetadatasId, GetCategories } from "@/util/api";
 import CategoryTable from "./CategoryTable";
@@ -92,7 +100,10 @@ export default function APITable(props) {
   };
 
   const handleEditClick = (e, cellValues) => {
-    navigate("/admin/apiEdit", cellValues);
+    Router.push({
+      pathname: "/admin/apiEdit",
+      query: { isEdit: true, id: cellValues.id },
+    });
   };
 
   const handleCloseEdit = () => {
@@ -145,7 +156,7 @@ export default function APITable(props) {
               <ViewListIcon color="disabled" />
             </Button>
             <Button
-              onClick={(event) => {
+              onClick={(e) => {
                 handleEditClick(e, cellValues);
               }}
             >
@@ -248,8 +259,8 @@ export default function APITable(props) {
         <Box sx={style}>
           <Box>
             <Typography variant="h6">Category 변경</Typography>
-            <Divider />
-            <CategoryTable data={categories} />
+            <Divider sx={{ marginBottom: 3 }} />
+            <CategoryTable data={categories} setData={setCategories} />
           </Box>
         </Box>
       </Modal>
