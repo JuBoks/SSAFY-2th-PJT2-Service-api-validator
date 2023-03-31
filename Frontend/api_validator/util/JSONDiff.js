@@ -1,16 +1,19 @@
 import React from 'react';
+import styles from '@/styles/Diff.module.css'
 
 function JSONDiff(props) {
-  const text = props.text;
+  const text = props.diff;
 
+  console.log(text);
+  if(!text) return;
   const lines = text.split("\n");
 
   const html = lines.map((line, index) => {
     if (line.startsWith("-")) {
-      return <p key={index} className="colored minus">{line.slice(1)}</p>;
+      return <p key={index} className={styles.colored}>{line}</p>;
     }
     else if (line.startsWith("+")){
-      return <p key={index} className="coloredplus">{line.slice(1)}</p>;
+      return <p key={index} className={styles.colored}>{line}</p>;
     } 
     else {
       return <p key={index}>{line}</p>;
@@ -18,7 +21,7 @@ function JSONDiff(props) {
   });
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <div className="content">{html}</div>
     </div>
   );

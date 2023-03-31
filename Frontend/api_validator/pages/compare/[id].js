@@ -44,9 +44,6 @@ export default function PostPage() {
 
   const jsondiff = (json1, json2) => {
     if(index1 > -1 && index2 > -1){
-      console.log(json1.content.response);
-      console.log(json2.content.response);
-      console.log(diffString(json1.content.response, json2.content));
       setDiff(diffString(json1.content.response, json2.content));
     }
   }
@@ -88,11 +85,10 @@ export default function PostPage() {
         <Box component="main" m={5} sx={{ height: "100vh" }}>
           <Toolbar />
           <Typography variant="h4">API Compare</Typography>
-          {/* <JSONDiff 
-            json1 = {testData? testData[index1] : {}}
-            json2 = {testData? testData[index2].content.response : {}}
+          <JSONDiff 
+            diff = {diff}
 
-          /> */}
+          />
           <Typography variant="body1">
             Category : TV | Service : ssafy.com | Path : /user | Method : GET{" "}
           </Typography>
