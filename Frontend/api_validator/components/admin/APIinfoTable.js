@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { jsonToRow } from "@/util/JsonToRow";
+import { jsonToRow } from "@/util/jsonToRow";
 import rowToJson from "@/util/rowToJson";
 
 const createRow = (id, key, value) => {
