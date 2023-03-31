@@ -24,7 +24,6 @@ import {
   PatchCategoriesId,
   PostCategories,
 } from "@/util/api";
-import auth from "@/util/auth";
 
 function createData(id, name, note) {
   return { id, name, note };
@@ -54,9 +53,9 @@ export default function CategoryTable(props) {
     setCategoryNote("");
 
     setIsEdit(false);
-    setOpenNewCategory(true);
+    setOpenDialog(true);
   };
-  const handleDialogClose = () => setOpenNewCategory(false);
+  const handleDialogClose = () => setOpenDialog(false);
 
   const handleAddClick = async () => {
     const idToken = localStorage.getItem("idToken");
