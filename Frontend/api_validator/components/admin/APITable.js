@@ -90,6 +90,11 @@ export default function APITable(props) {
     setCategories(response);
     setOpenEdit(true);
   };
+
+  const handleEditClick = (e, cellValues) => {
+    navigate("/admin/apiEdit", cellValues);
+  };
+
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
@@ -141,7 +146,7 @@ export default function APITable(props) {
             </Button>
             <Button
               onClick={(event) => {
-                handleClick(event, cellValues);
+                handleEditClick(e, cellValues);
               }}
             >
               <EditIcon color="disabled" />
