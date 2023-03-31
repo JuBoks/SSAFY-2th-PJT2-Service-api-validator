@@ -32,11 +32,8 @@ pipeline {
     }
 
     stage('Add Db on Network') {
-      steps{
-        script {
-            sh(returnStdout: true, script: "docker network connect db-webbe-validator-webfe_dev sapiv-db-dev")
-          }
-        }
+      steps {
+        sh(returnStdout: true, script: "docker network connect db-webbe-validator-webfe_dev sapiv-db-dev")
       }
     }
 
