@@ -2,12 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom, catchError } from 'rxjs';
+import { DataSource } from 'typeorm';
 import { DomainDto } from './dto/domain.dto';
 import { Domain } from './entities/domain.entity';
 
 @Injectable()
 export class DomainsService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, private dataSource: DataSource) {}
 
   async create(createDomainDto: DomainDto) {
     const { data } = await firstValueFrom(
@@ -25,7 +26,7 @@ export class DomainsService {
 
   async findAll(id : number) {
     const { data } = await firstValueFrom(
-      this.httpService.get<Domain[]>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}, params: {categoryId: id}} ).pipe(
+      this.httpService.get<Domain[]>(process.env.VALIDATOR_DOMAIN, {headers: {chk: process.env.SERVER_KEY}, params: {category_id: id}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
@@ -77,5 +78,11 @@ export class DomainsService {
       ),
     );
     return data;
+  }
+
+  async listAll(): Promise<Domain[]>{
+    return await this.dataSource
+    .getRepository(Domain)
+    .find();
   }
 }
