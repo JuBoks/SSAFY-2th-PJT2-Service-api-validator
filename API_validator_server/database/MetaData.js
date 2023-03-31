@@ -30,8 +30,7 @@ const getMetadatasCnt = async (conn) => {
   } catch (error) {
     throw { status: 500, message: error };
   }
-
-}
+};
 
 const getAllMetadatas = async (conn, apiId) => {
   try {
@@ -117,7 +116,7 @@ const createExpectResponse = async (conn, metaId, dataId, response) => {
 const updateResponseIdInMetadata = async (conn, metaId, responseId) => {
   try {
     let sql = "UPDATE tbl_metadata SET response_id = ? WHERE meta_id = ?";
-    let params = [metaId, responseId];
+    let params = [responseId, metaId];
     let [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {
@@ -133,5 +132,5 @@ module.exports = {
   updateResponseIdInMetadata,
   updateOneMetadata,
   deleteOneMetadata,
-  getMetadatasCnt
+  getMetadatasCnt,
 };
