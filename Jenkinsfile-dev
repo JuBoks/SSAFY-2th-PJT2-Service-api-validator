@@ -5,32 +5,15 @@ pipeline {
     stage('Remove') {
       steps {
         script {
-          // 개발용 컨테이너 삭제
-          def sapiv_webfe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webfe-dev')
-          def sapiv_webbe_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-webbe-dev')
-          def sapiv_apivalidator_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-apivalidator-dev')
-          def sapiv_db_dev = sh(returnStdout: true, script: 'docker ps -a -q -f name=sapiv-db-dev')
+          // Network에서 DB제거
+          def NETWORK = sh(returnStdout: true, script: "docker network ls | grep db-webbe-validator-webfe_dev | awk '{if(NR>0) print \$2}'")
+          if(NETWORK.trim().length() > 0) {
+            sh(returnStdout: false, script: "docker network disconnect db-webbe-validator-webfe_dev sapiv-db-dev")
+            println("Deleting DB Container from Network... dev")
+          }
 
-          if (sapiv_webfe_dev.length() > 0) {
-            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webfe_dev)
-          }
-          if (sapiv_webbe_dev.length() > 0) {
-            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_webbe_dev)
-          }
-          if (sapiv_apivalidator_dev.length() > 0) {
-            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_apivalidator_dev)
-          }
-          if (sapiv_db_dev.length() > 0) {
-            sh(returnStdout: false, script: 'docker rm -f ' + sapiv_db_dev)
-          }
+          sh(returnStdout: false, script: "docker-compose -f docker-compose-dev.yml down --rmi all")
         }
-      }
-    }
-
-    stage('Config') {
-      steps {
-        // 개발서버
-        sh 'docker-compose -f docker-compose-dev.yml --env-file .env.dbdev config'
       }
     }
 
@@ -48,17 +31,9 @@ pipeline {
       }
     }
 
-    stage('Run prescript') {
+    stage('Add Db on Network') {
       steps {
-        script {
-          sleep 10
-          
-          def envDev = readFile('.env.dbdev').trim().split('\n')
-          withEnv(envDev.toList()) {
-            def pwd = env.MYSQL_ROOT_PASSWORD
-            sh(returnStdout: true, script: "docker exec -i sapiv-db-dev mysql -uroot -p${pwd} -e \"SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));\"")
-          }
-        }
+        sh(returnStdout: true, script: "docker network connect db-webbe-validator-webfe_dev sapiv-db-dev")
       }
     }
 
