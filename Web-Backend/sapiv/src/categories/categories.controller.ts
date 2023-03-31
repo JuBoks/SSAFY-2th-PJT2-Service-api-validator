@@ -27,6 +27,12 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
+  @Get('all/list')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, TestCase))
+  listAll() {
+    return this.categoriesService.listAll();
+  }
+
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, TestCase))
   findOne(@Param('id') id: string) {

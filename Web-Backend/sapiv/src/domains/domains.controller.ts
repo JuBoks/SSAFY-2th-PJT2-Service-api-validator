@@ -44,4 +44,10 @@ export class DomainsController {
   remove(@Param('id') id: string) {
     return this.domainsService.remove(+id);
   }
+
+  @Get('all/list')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, TestCase))
+  listAll() {
+    return this.domainsService.listAll();
+  }
 }

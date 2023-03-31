@@ -2,12 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable} from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom, catchError } from 'rxjs';
+import { DataSource } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
 import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, private dataSource: DataSource) {}
   async create(createCategoryDto: CategoryDto, request) {
     const { data } = await firstValueFrom(
       this.httpService.post<Category[]>(process.env.VALIDATOR_CATEGORY, createCategoryDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
@@ -76,5 +77,11 @@ export class CategoriesService {
       ),
     );
     return data;
+  }
+
+  async listAll(): Promise<Category[]>{
+    return await this.dataSource
+    .getRepository(Category)
+    .find();
   }
 }

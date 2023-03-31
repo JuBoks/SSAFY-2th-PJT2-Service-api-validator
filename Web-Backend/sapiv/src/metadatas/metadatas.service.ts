@@ -83,7 +83,7 @@ export class MetadatasService {
 
   async test(id: number){
     const { data } = await firstValueFrom(
-      this.httpService.post<any>(process.env.VALIDATOR_METADATA + '/${id}/test', {headers: {chk: process.env.SERVER_KEY}} ).pipe(
+      this.httpService.post<any>(process.env.VALIDATOR_METADATA + `/${id}/test`, '', {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,

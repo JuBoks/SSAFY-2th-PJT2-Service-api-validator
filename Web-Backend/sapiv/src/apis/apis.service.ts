@@ -58,6 +58,12 @@ export class ApisService {
     return data;
   }
 
+  async listAll(): Promise<Api[]>{
+    return await this.dataSource
+    .getRepository(Api)
+    .find();
+  }
+
   async findOne(id: number) {
     const { data } = await firstValueFrom(
       this.httpService.get<Api>(process.env.VALIDATOR_API+`/${id}`, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
@@ -123,5 +129,32 @@ export class ApisService {
     "metadata.cycle_time",
     "metadata.last_req_time"])
     .getRawMany();
+  }
+
+  async testCaseOne(id : number): Promise<TestCase> {
+    return await this.dataSource
+    .createQueryBuilder()
+    .from(Metadata, "metadata")
+    .leftJoinAndSelect(Api, "api", "api.api_id = metadata.api_id")
+    .leftJoinAndSelect(Domain, "domain", "domain.domain_id = api.domain_id")
+    .leftJoinAndSelect(Category, "category", "category.category_id = domain.category_id")
+    .where("metadata.meta_id = :id")
+    .andWhere("metadata.state = 0")
+    .andWhere("category.state = 0")
+    .andWhere("domain.state = 0")
+    .andWhere("api.state = 0")
+    .setParameter("id", id)
+    .select(["metadata.meta_id",
+    "category.name",
+    "domain.domain", 
+    "api.resources",
+    "api.method",
+    "metadata.header",
+    "metadata.params",
+    "metadata.body",
+    "metadata.name", 
+    "metadata.cycle_time",
+    "metadata.last_req_time"])
+    .getRawOne();
   }
 }
