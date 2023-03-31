@@ -47,4 +47,14 @@ export class ApisController {
   testCaseAll(){
     return this.apisService.testCaseAll();
   }
+
+  @Get('all/testcase/:id')
+  testCaseOne(@Param('id') id: string){
+    return this.apisService.testCaseOne(+id);
+  }
+
+  @Get('all/list')
+  listAll(){
+    return this.apisService.listAll();
+  }
 }
