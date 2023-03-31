@@ -4,8 +4,6 @@ services:
       context: Web-Backend/sapiv
       dockerfile: Dockerfile-dev
     container_name: sapiv-webbe-dev
-    depends_on:
-      - db-dev
     restart: always
     environment:
       - TZ=Asia/Seoul
@@ -17,8 +15,6 @@ services:
   api-validator:
     build: API_validator_server
     container_name: sapiv-apivalidator-dev
-    depends_on:
-      - db-dev
     restart: always
     environment:
       - TZ=Asia/Seoul
