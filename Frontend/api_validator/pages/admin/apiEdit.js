@@ -15,7 +15,14 @@ import {
 import { methodList } from "@/constants/methodList";
 import { cycleList } from "@/constants/cycleList";
 import auth from "@/util/auth";
-import { GetApis, GetCategories, GetDomains } from "@/util/api";
+import {
+  GetApis,
+  GetApisId,
+  GetCategories,
+  GetDomains,
+  GetDomainsId,
+  PostMetadatas,
+} from "@/util/api";
 import { onAuthStateChanged } from "firebase/auth";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
@@ -58,9 +65,14 @@ TabPanel.propTypes = {
 export default function APIedit() {
   const [apiName, setApiName] = useState("");
   const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState("");
   const [domains, setDomains] = useState([]);
+  const [domain, setDomain] = useState("");
   const [apis, setApis] = useState([]);
   const [resources, setResources] = useState("");
+  const [method, setMethod] = useState();
+  const [apiId, setApiId] = useState();
+  const [interval, setInterval] = useState(0);
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [header, setHeader] = useState({});
@@ -78,6 +90,7 @@ export default function APIedit() {
   const handleCategoryChange = async (val) => {
     const idToken = localStorage.getItem("idToken");
     const categoryId = val.category_id;
+    setCategory(val.name);
     const response = await GetDomains(idToken, categoryId);
     setDomains(response.data.data);
   };
@@ -85,18 +98,60 @@ export default function APIedit() {
   const handleDomainChange = async (val) => {
     const idToken = localStorage.getItem("idToken");
     const domainId = val.domain_id;
+    setDomain(val.domain);
     const response = await GetApis(idToken, domainId);
     setApis(response.data.data);
-    console.log(response.data.data);
   };
 
-  const handlePathChange = async (val) => {
+  const handlePathChange = (val) => {
     setResources(val.resources);
+  };
+
+  const handleMethodChange = (val) => {
+    setApiId(val.api_id);
+    setMethod(val.method);
+  };
+
+  const handleIntervalChange = (val) => {
+    setInterval(val);
+  };
+
+  const handleTestClick = (e) => {
+    console.log(apiName);
+    console.log(category);
+    console.log(domain);
+    console.log(resources);
+    console.log(method);
+    console.log(interval);
+    console.log(header);
+    console.log(body);
+    console.log(param);
+  };
+
+  const handleSaveClick = async (e) => {
+    console.log(apiId);
+    console.log(header);
+    console.log(body);
+    console.log(param);
+    console.log(apiName);
+    console.log(interval);
+    const idToken = localStorage.getItem("idToken");
+    const response = await PostMetadatas(
+      idToken,
+      apiId,
+      header,
+      param,
+      body,
+      apiName,
+      interval
+    );
+    console.log(response);
   };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       const getCategories = async () => {
+        console.log(location);
         setLoading(true);
         try {
           const idToken = await auth.currentUser.getIdToken(true);
@@ -124,7 +179,7 @@ export default function APIedit() {
   return (
     <>
       <Header />
-      <Box display="flex">
+      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
         <Nav isAdmin={true} isAdminPage={true} />
         <Box width="80%">
           <Toolbar />
@@ -159,7 +214,7 @@ export default function APIedit() {
               <Autocomplete
                 sx={{ width: 300 }}
                 options={domains}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.domain}
                 disableClearable
                 onChange={(event, newValue) => handleDomainChange(newValue)}
                 renderInput={(params) => (
@@ -185,6 +240,7 @@ export default function APIedit() {
                 )}
                 getOptionLabel={(option) => methodList[option.method]}
                 disableClearable
+                onChange={(event, newValue) => handleMethodChange(newValue)}
                 renderInput={(params) => (
                   <TextField {...params} label="Method" variant="standard" />
                 )}
@@ -193,6 +249,7 @@ export default function APIedit() {
                 sx={{ width: 100 }}
                 options={cycleList}
                 disableClearable
+                onChange={(event, newValue) => handleIntervalChange(newValue)}
                 renderInput={(params) => (
                   <TextField {...params} label="Interval" variant="standard" />
                 )}
@@ -217,6 +274,13 @@ export default function APIedit() {
                 <APIinfoTable data={param} setData={setParam} />
               </TabPanel>
             </Box>
+            <Box>
+              <Button onClick={handleTestClick}>Test</Button>
+            </Box>
+            <Divider />
+            <Typography variant="h5">Response</Typography>
+            <Paper>Hello</Paper>
+            <Button onClick={handleSaveClick}>Save</Button>
           </Box>
         </Box>
       </Box>
