@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://j8s002.p.ssafy.io/api",
+  baseURL: process.env.NEXT_PUBLIC_WEB_BECKEND_ADDRESS,
 });
 
 export const GetUsers = async (idToken) => {
