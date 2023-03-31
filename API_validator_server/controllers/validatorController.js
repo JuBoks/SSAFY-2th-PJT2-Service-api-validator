@@ -1,4 +1,5 @@
 const validatorService = require("../services/validatorService");
+const extractRootSchema = require("../apiInference/extractRootSchema");
 
 const getApiList = async (req, res) => {
   try {
@@ -38,7 +39,7 @@ const getInferredSchema = (req, res) => {
   */
   // 자료형 추론
   try {
-    const schema = validatorService.inferSchema(body, Array.isArray(body));
+    const schema = extractRootSchema(body);
     console.log(schema);
     res.status(201).send({ status: "OK", data: schema });
   } catch (error) {

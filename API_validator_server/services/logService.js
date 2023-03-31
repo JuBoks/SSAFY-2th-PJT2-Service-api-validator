@@ -55,7 +55,9 @@ const getLogByResultId = async (resultId) => {
 
         let schema ="";
         if(data.result_data_id !== data.expect_data_id) {
-            schema = testLog.getDataById(conn, data.result_data_id);
+            schema = await testLog.getDataById(conn, data.result_data_id);
+            schema = schema.result_data;
+            console.log(schema);
         }
         else {
             schema = data.critic_schema;

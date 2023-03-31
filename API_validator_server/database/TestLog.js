@@ -44,7 +44,7 @@ const getDataById = async(conn, dataId) => {
         let params = [dataId];
         let [rows, fields] = await conn.query(sql, params); 
 
-        return rows;
+        return rows[0];
     }
     catch (error) {
         throw error;
