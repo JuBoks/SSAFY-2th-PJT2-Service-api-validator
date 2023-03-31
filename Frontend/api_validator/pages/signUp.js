@@ -95,6 +95,7 @@ const SignUp = () => {
       const res = await PostUsers(reqData);
       alert("회원가입 완료");
       router.push("/");
+      setIsRegistering(false);
     } catch (err) {
       console.log(err);
       alert(err);
@@ -191,7 +192,11 @@ const SignUp = () => {
               size="large"
               sx={{ mt: 3, mb: 2 }}
             >
-              {isRegistering ? <CircularProgress /> : "Create Account"}
+              {isRegistering ? (
+                <CircularProgress color="inherit" />
+              ) : (
+                "Create Account"
+              )}
             </Button>
 
             <Grid container>
