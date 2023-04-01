@@ -149,7 +149,7 @@ export default function DomainTable(props) {
       </Table>
 
       <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>{isEdit ? "Category 변경" : "Category 생성"}</DialogTitle>
+        <DialogTitle>{isEdit ? "Domain 변경" : "Domain 생성"}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
