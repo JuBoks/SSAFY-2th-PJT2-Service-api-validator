@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { ApiHeader } from '@nestjs/swagger';
 import { ApisService } from './apis.service';
 import { CreateApiDto } from './dto/create-api.dto';
@@ -7,7 +7,7 @@ import { UpdateApiDto } from './dto/update-api.dto';
 
 @Controller('apis')
 @ApiHeader({
-  name: 'uid',
+  name: 'idtoken',
   description: 'Custom header',
 })
 export class ApisController {
@@ -20,15 +20,12 @@ export class ApisController {
 
   @Post('test')
   async test(@Body() testApiDto: TestApiDto, @Res({ passthrough: true }) res: Response) {
-    
-    let result =  await this.apisService.test(testApiDto);
-    
-    return result;
+    return this.apisService.test(testApiDto);
   }
 
   @Get()
-  findAll() {
-    return this.apisService.findAll();
+  findAll(@Query('domainId') id: string) {
+    return this.apisService.findAll(+id);
   }
 
   @Get(':id')
@@ -44,5 +41,20 @@ export class ApisController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.apisService.remove(+id);
+  }
+
+  @Get('all/testcase')
+  testCaseAll(){
+    return this.apisService.testCaseAll();
+  }
+
+  @Get('all/testcase/:id')
+  testCaseOne(@Param('id') id: string){
+    return this.apisService.testCaseOne(+id);
+  }
+
+  @Get('all/list')
+  listAll(){
+    return this.apisService.listAll();
   }
 }

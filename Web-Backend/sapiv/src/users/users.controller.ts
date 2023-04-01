@@ -4,12 +4,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AllowUnauthorizedRequest } from 'src/common/guard/allow-unauthorized-request';
 import { ApiHeader } from '@nestjs/swagger';
-
-
+import { CustomRequest } from 'src/common/custromrequest';
+import { CheckPolicies } from 'src/common/guard/policies-guard';
+import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Action } from 'src/casl/action';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 @ApiHeader({
-  name: 'uid',
+  name: 'idtoken',
   description: 'Custom header',
 })
 export class UsersController {
@@ -22,8 +25,14 @@ export class UsersController {
   }
 
   @Get()
-  findOne(@Req() request: Request) {
-    return this.usersService.findOne(request.headers['uid']);
+  findOne(@Req() request: CustomRequest) {
+    return this.usersService.findOne(request.user.uid);
+  }
+
+  @Get('/authorize')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, User))
+  findAll() {
+    return this.usersService.findAll(undefined);
   }
 
   @Get('/duplicate/:email')
@@ -37,13 +46,16 @@ export class UsersController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @Patch()
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Update, User))
+  async updateAdmin(@Body() updateUserDto: UpdateUserDto, @Req() request: CustomRequest){
+    
+    return this.usersService.update(updateUserDto, request);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    
+  @Delete(':uid')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, User))
+  remove(@Param('uid') uid: string) {
+    return this.usersService.remove(uid);
   }
 }

@@ -1,0 +1,67 @@
+.profileInfo {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.profileInfo .icon {
+  color: #6f6f6a;
+  font-size: 100px;
+}
+
+.profileInfo .group {
+  margin-top: 50px;
+}
+
+.profileInfo .group .item {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.profileInfo .group .item .startIcon {
+  color: #6f6f6a;
+  margin-right: 10px;
+}
+
+.profileInfo .button {
+  margin: 10px;
+  width: 200px;
+}
+
+.text {
+  color: #6f6f6a;
+  margin: 10px;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profileInfo .info {
+  margin-top: 100px;
+}
+
+.edit .main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 40px;
+  margin-left: 60px;
+  width: 500px;
+}
+
+.edit .item {
+  margin: 10px;
+}
+
+.edit .card {
+  margin-top: 50px;
+}

@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { User } from './entities/user.entity';
+import { CustomRequest } from 'src/common/custromrequest';
 
 
 @Injectable()
@@ -26,7 +27,8 @@ export class UsersService {
       });
 
       await auth.setCustomUserClaims(userInfo.uid, {
-        state: 0, type: createUserDto.type
+        state: 0,
+        type: createUserDto.type
       });
       
     } catch(error){
@@ -38,13 +40,42 @@ export class UsersService {
     return userInfo.uid;
   }
 
-  async findAll(): Promise<void> {
+  async findAll(nextPageToken: any){
     const auth = getAuth(this.firebase);
-    let userInfo = auth.getUser('YFONccXiUTRaXCAHEziRdfvzO8A3')
-    .then((userRecord) => {
-      console.log(userRecord);
-    })
-    return await userInfo;
+    let listUsersResult;
+    const userList = [];
+    try{
+      if(!nextPageToken){
+        listUsersResult = await auth.listUsers(1000);  
+      }
+      else{
+        listUsersResult = await auth.listUsers(1000, nextPageToken);
+      }
+    }
+    catch(error){
+      throw new HttpException(
+        error.message,
+        HttpStatus.BAD_REQUEST
+      )
+    }
+    listUsersResult.users.forEach((userRecord) => {
+      const {uid, email, displayName, customClaims, disabled} = userRecord.toJSON();
+      if(!disabled){
+        const user = {
+          uid,
+          email,
+          name: displayName,
+          state: customClaims.state,
+          type: customClaims.type,
+        }
+        userList.push(user);
+      }
+    });
+    if (listUsersResult.pageToken) {
+      // List next batch of users.
+      return userList.concat(this.findAll(listUsersResult.pageToken));
+    }
+    return userList;
   }
 
   async findByEmail(email: string) {
@@ -66,21 +97,82 @@ export class UsersService {
     .then((UserRecord) => {
       return {
         uid: UserRecord.uid,
+        email: UserRecord.email,
         state: UserRecord.customClaims.state,
         type: UserRecord.customClaims.type,
       }
     })
     .catch(() => {
-
       return null;
     })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async verify(idToken: string): Promise<string | undefined>{
+    const auth = getAuth(this.firebase);
+    return auth.verifyIdToken(idToken)
+    .then((decodedToken) => {
+      return decodedToken.uid;
+    })
+    .catch(() => {
+      return '';
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+
+
+  async update(updateUserDto: UpdateUserDto, request: CustomRequest) {
+    if(updateUserDto.state && updateUserDto.state >= request.user.state){
+      throw new HttpException(
+        "허가되지 않은 행동입니다.",
+        HttpStatus.UNAUTHORIZED
+      );
+    }
+    if(updateUserDto.type && updateUserDto.uid !== request.user.uid){
+      throw new HttpException(
+        "허가되지 않은 행동입니다.",
+        HttpStatus.UNAUTHORIZED
+      );
+    }    
+    const auth = getAuth(this.firebase);
+    try{
+      const user = await auth.getUser(updateUserDto.uid);
+      if(user.uid !== request.user.uid && user.customClaims.state >= request.user.state){
+        throw new HttpException(
+          "허가되지 않은 행동입니다.",
+          HttpStatus.UNAUTHORIZED
+        );
+      }       
+      if(!updateUserDto.state){
+        updateUserDto.state = user.customClaims.state;
+      }
+      if(!updateUserDto.type){
+        updateUserDto.type = user.customClaims.type;
+      }
+      await auth.setCustomUserClaims(updateUserDto.uid, {state: updateUserDto.state, type: updateUserDto.type});
+    }
+    catch(error){
+      throw new HttpException(
+        error.message,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    
+    return "success";
+  }
+
+  async remove(uid: string): Promise<string | undefined>{
+    const auth = getAuth(this.firebase);
+    return auth.updateUser(uid, {
+      disabled: true,
+    })
+    .then(() => {
+      return "success";
+    })
+    .catch((error) => {
+      throw new HttpException(
+        error.message,
+        HttpStatus.NOT_MODIFIED
+      )
+    });
   }
 }

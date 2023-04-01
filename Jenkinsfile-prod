@@ -1,0 +1,102 @@
+pipeline { 
+  agent any
+
+  stages {
+    stage('Health Check') {
+      steps{
+        script {
+          // BLUE 체크
+          BLUE_EXIST = sh(returnStdout: true, script: "curl -s 'http://127.0.0.1:3000' > /dev/null || curl -s 'http://127.0.0.1:8000' > /dev/null || curl -s 'http://127.0.0.1:8070' > /dev/null && echo 'true' || echo 'false'")
+          BLUE_EXIST = BLUE_EXIST.trim()
+
+          BEFORE_COLOR = ''
+          AFTER_COLOR = ''
+          if(BLUE_EXIST.equals('true')) {
+            BEFORE_COLOR = 'blue'
+            AFTER_COLOR = 'green'
+          } else {
+            BEFORE_COLOR = 'green'
+            AFTER_COLOR = 'blue'
+          }
+
+          println("BEFORE_COLOR: ${BEFORE_COLOR} // AFTER_COLOR: ${AFTER_COLOR}")
+        }
+      }
+    }
+
+    stage('Config') {
+      steps {
+        script {
+          sh(returnStdout: false, script: "docker-compose -f docker-compose-prod.${AFTER_COLOR}.yml --env-file .env.dbprod config")
+        }
+      }
+    }
+
+    stage('Build') {
+      steps {
+        script {
+          sh(returnStdout: false, script: "docker-compose -f docker-compose-prod.${AFTER_COLOR}.yml build")
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        script {
+          sh(returnStdout: false, script: "docker-compose -f docker-compose-prod.${AFTER_COLOR}.yml up -d")
+        }
+      }
+    }
+
+    stage('Health Check And Remove') {
+      steps{
+        script {
+          // SLEEP 10sec
+          sh(returnStdout: false, script: 'sleep 10')
+
+          def IS_DONE = "";
+          if(BLUE_EXIST.equals('true')) {
+            // GREEN에 배포됐는지 확인
+            IS_DONE = sh(returnStdout: true, script: "curl -s 'http://127.0.0.1:3001' > /dev/null || curl -s 'http://127.0.0.1:8001' > /dev/null || curl -s 'http://127.0.0.1:8071' > /dev/null && echo 'true' || echo 'false'")
+          } else {
+            // BLUE에 배포됐는지 확인
+            IS_DONE = sh(returnStdout: true, script: "curl -s 'http://127.0.0.1:3000' > /dev/null || curl -s 'http://127.0.0.1:8000' > /dev/null || curl -s 'http://127.0.0.1:8070' > /dev/null && echo 'true' || echo 'false'")
+          }
+          IS_DONE = IS_DONE.trim()
+          println("IS_DONE: ${IS_DONE}")
+
+          if(IS_DONE.equals('true')) {
+            // Network에서 DB제거
+            def NETWORK = sh(returnStdout: true, script: "docker network ls | grep db-webbe-validator-webfe_${BEFORE_COLOR} | awk '{if(NR>0) print \$2}'")
+            if(NETWORK.trim().length() > 0) {
+              sh(returnStdout: false, script: "docker network disconnect db-webbe-validator-webfe_${BEFORE_COLOR} sapiv-db-prod")
+              println("Deleting DB Container from Network... ${BEFORE_COLOR}")
+            }
+
+            sh(returnStdout: false, script: "docker-compose -f docker-compose-prod.${BEFORE_COLOR}.yml down --rmi all")
+
+            println("Shutting down... ${BEFORE_COLOR}")
+          } else {
+            println("Can't shut down... ${BEFORE_COLOR}")
+          }
+        }
+      }
+    }
+
+    stage('Add Db on Network') {
+      steps{
+        script {
+          if(BLUE_EXIST.equals('true')) {
+            // GREEN에 DB추가
+            sh(returnStdout: true, script: "docker network connect db-webbe-validator-webfe_green sapiv-db-prod")
+          } else {
+            // BLUE에 DB추가
+            sh(returnStdout: true, script: "docker network connect db-webbe-validator-webfe_blue sapiv-db-prod")
+          }
+        }
+      }
+    }
+
+  }
+
+}

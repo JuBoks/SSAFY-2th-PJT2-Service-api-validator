@@ -1,82 +1,63 @@
-import Head from "next/head";
+import React, { useState } from "react";
 import router from "next/router";
-import { Grid, Box, Typography, TextField, Link, Button } from "@mui/material";
-import Copyright from "@/components/Copyright.js";
-import styles from "@/styles/login.module.css";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Link,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import Copyright from "../components/Copyright.js";
+import styles from "../styles/login.module.css";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../util/auth";
-import IndexLogo from "@/components/IndexLogo.js";
-import axios from "axios";
+import IndexLogo from "../components/IndexLogo";
+import { GetUsers } from "@/util/api.js";
 
 export default function Home() {
-  const url = "http://70.12.246.220:3000";
-
-  const GetUsers = async (userUid) => {
-    const res = await axios.get(url + "/users", {
-      headers: {
-        uid: userUid,
-      },
-    });
-  };
+  const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    try {
+      event.preventDefault();
+      setIsLoggingIn(true);
+      const data = new FormData(event.currentTarget);
+      const res = await signInWithEmailAndPassword(
+        auth,
+        data.get("email"),
+        data.get("password")
+      );
+      const idToken = await auth.currentUser.getIdToken(true);
+      const userData = await GetUsers(idToken);
 
-    signInWithEmailAndPassword(auth, data.get("email"), data.get("password"))
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const userUid = userCredential.user.uid;
-        const userData = GetUsers(userUid);
-        console.log(userData);
-        alert("Login Success");
+      const userState = userData.data.state;
+      if (userState === 0) {
+        alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+      } else {
         router.push("/home");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert("Login Fail\n" + errorMessage);
-        console.log(error);
-      });
-  };
-  axios
-    .post(
-      url + "/apis/test",
-      {
-        url: "http://j8s002.p.ssafy.io:8088/api/example-v1",
-        method: "GET",
-      },
-      {
-        headers: {
-          uid: "YFONccXiUTRaXCAHEziRdfvzO8A3",
-        },
       }
-    )
-    .then((res) => {
-      console.log("get");
-      console.log(res);
-    });
+      isLoggingIn(false);
+    } catch (err) {
+      setIsError(true);
+      setErrorMsg("아이디 또는 비밀번호를 잘못 입력했습니다.");
+      console.log(err);
+      setIsLoggingIn(false);
+    }
+  };
 
   return (
     <>
-      <Head>
-        <title>Samsung API Validator</title>
-        <meta name="description" content="samsung API validator" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Grid container>
         <Grid item xs={7}>
           <IndexLogo />
         </Grid>
         <Grid item xs={5}>
-          <Box className={styles["right-box"]}>
-            <Typography
-              component="h1"
-              variant="h4"
-              style={{ color: "#5A5A5F" }}
-            >
+          <Box className={styles.right}>
+            <Typography component="h1" variant="h4" className={styles.text}>
               Login
             </Typography>
 
@@ -101,9 +82,11 @@ export default function Home() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={isError}
+                helperText={errorMsg}
               />
 
-              <Link href="#" variant="body1">
+              <Link href="/findPwd" variant="body1" underline="none">
                 Forgot password?
               </Link>
 
@@ -114,7 +97,7 @@ export default function Home() {
                 size="large"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Login
+                {isLoggingIn ? <CircularProgress color="inherit" /> : "Login"}
               </Button>
 
               <Grid container>
@@ -122,7 +105,7 @@ export default function Home() {
                   Not a Member?
                 </Typography>
 
-                <Link href="/signUp" variant="body1" mx={2}>
+                <Link href="/signUp" variant="body1" mx={2} underline="none">
                   {"Create account now"}
                 </Link>
               </Grid>

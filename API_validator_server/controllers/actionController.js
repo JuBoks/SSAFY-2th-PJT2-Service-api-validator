@@ -14,13 +14,13 @@ const saveAction = async (req, res) => {
 };
 
 const updateAction = async (req, res) => {
-  const { body } = req;
+  const { action_id, pass, fail } = req.body;
 
   try {
-    const action_id = await actionService.updateAction(body);
+    const res_action_id = await actionService.updateAction(action_id, pass, fail);
 
     //예외 처리. 해당 action_id 가 없을 경우
-    if(action_id===-1) {
+    if(res_action_id===-1) {
       res
       .status(204)
       .send({ status: "No Content", data: "action_id is wrong."  });

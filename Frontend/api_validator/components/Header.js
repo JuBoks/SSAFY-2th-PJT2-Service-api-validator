@@ -1,7 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -11,7 +10,7 @@ import logo from "@/public/images/logo_black.png";
 
 export default function Header() {
   return (
-    <AppBar style={{ backgroundColor: "white", zIndex: 1 }}>
+    <AppBar style={{ backgroundColor: "white", zIndex: 20 }}>
       <Toolbar>
         <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />

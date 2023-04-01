@@ -1,0 +1,29 @@
+.main {
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.text {
+  color: #6f6f6a;
+}
+
+.table {
+  margin-top: 50px;
+}
+
+.dataGrid {
+  margin-top: 50px;
+  width: 100%;
+}
+
+.toolbar {
+  margin: 10px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.paper {
+  white-space: pre-wrap;
+}
