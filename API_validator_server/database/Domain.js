@@ -63,16 +63,11 @@ const updateOneDomain = async (conn, domainId, changes) => {
         message: `Can't find domain with the id '${domainId}'`,
       };
     }
-    let target = rows;
     sql = `SELECT * From tbl_domain WHERE domain = ? and category_id = ? and state = 0`;
     params = [changes.domain, changes.category_id];
     [rows, _] = await conn.query(sql, params);
-    if (
-      rows.length &&
-      !(
-        target.domain === rows.domain && target.category_id === rows.category_id
-      )
-    ) {
+    let target = rows[0];
+    if (rows.length && target.name === changes.name) {
       throw {
         status: 400,
         message: `Domain '${changes.domain}' already exists`,

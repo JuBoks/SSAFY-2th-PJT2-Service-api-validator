@@ -59,7 +59,8 @@ const updateOneCategory = async (conn, categoryId, changes) => {
     sql = `SELECT * From tbl_category WHERE name = ? and state = 0`;
     params = [changes.name];
     [rows, _] = await conn.query(sql, params);
-    if (rows.length) {
+    let target = rows[0];
+    if (rows.length && target.note === changes.note) {
       throw {
         status: 400,
         message: `Category with the name '${changes.name}' already exists`,
