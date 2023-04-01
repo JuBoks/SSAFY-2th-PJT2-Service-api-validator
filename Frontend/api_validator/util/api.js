@@ -99,17 +99,27 @@ export const GetApis = async (idToken, domainId) => {
   return res;
 };
 
-export const PostApisTest = async (idToken, url, methods) => {
-  const headers = {
+export const PostApisTest = async (
+  idToken,
+  url,
+  method,
+  headers,
+  params,
+  data
+) => {
+  const reqHeaders = {
     headers: {
       idtoken: idToken,
     },
   };
   const reqData = {
     url,
-    methods,
+    headers,
+    params,
+    data,
+    method,
   };
-  const res = await api.post("/apis/test", reqData, headers);
+  const res = await api.post("/apis/test", reqData, reqHeaders);
   return res;
 };
 
