@@ -131,6 +131,7 @@ export default function APITable(props) {
     const idToken = localStorage.getItem("idToken");
     const response = await handleGetCategories(idToken);
     setCategories(response);
+    setDomains(null);
     setOpenDomain(true);
   };
   const handleDomainModalClose = () => setOpenDomain(false);
@@ -139,6 +140,7 @@ export default function APITable(props) {
     const idToken = localStorage.getItem("idToken");
     const response = await handleGetCategories(idToken);
     setCategories(response);
+    setPaths(null);
     setOpenPath(true);
   };
 
