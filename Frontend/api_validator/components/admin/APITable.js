@@ -8,6 +8,8 @@ import {
   Divider,
   Paper,
   Link,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,9 +17,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
 import { methodList } from "@/constants/methodList";
-import { DeleteMetadatasId, GetCategories } from "@/util/api";
+import { DeleteMetadatasId, GetCategories, GetDomains } from "@/util/api";
 import CategoryTable from "./CategoryTable";
 import auth from "@/util/auth";
+import DomainTable from "./DomainTable";
 
 const style = {
   position: "absolute",
@@ -43,7 +46,8 @@ export default function APITable(props) {
   const { data } = props;
 
   const [openDetail, setOpenDetail] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openService, setOpenService] = useState(false);
 
   const [metadataName, setMetadataName] = useState(null);
   const [metadataCategory, setMetadataCategory] = useState(null);
@@ -56,6 +60,9 @@ export default function APITable(props) {
   const [metadataInterval, setMetadataInterval] = useState(null);
 
   const [categories, setCategories] = useState(null);
+  const [domains, setDomains] = useState(null);
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleApiDelete = async (e, cellValues) => {
     try {
@@ -90,13 +97,14 @@ export default function APITable(props) {
     setMetadataInterval(metadata.metadata_cycle_time);
     setOpenDetail(true);
   };
+
   const handleCloseDetail = () => setOpenDetail(false);
 
-  const handleOpenEdit = async () => {
+  const handleCategoryModalOpen = async () => {
     const idToken = localStorage.getItem("idToken");
     const response = await handleGetCategories(idToken);
     setCategories(response);
-    setOpenEdit(true);
+    setOpenCategory(true);
   };
 
   const handleEditClick = (e, cellValues) => {
@@ -106,8 +114,23 @@ export default function APITable(props) {
     });
   };
 
-  const handleCloseEdit = () => {
-    setOpenEdit(false);
+  const handleCategoryModalClose = () => {
+    setOpenCategory(false);
+  };
+
+  const handleServiceModalOpen = async () => {
+    const idToken = localStorage.getItem("idToken");
+    const response = await handleGetCategories(idToken);
+    setCategories(response);
+    setOpenService(true);
+  };
+  const handleServiceModalClose = () => setOpenService(false);
+
+  const handleCategoryChange = async (newValue) => {
+    setSelectedCategory(newValue);
+    const idToken = localStorage.getItem("idToken");
+    const response = await GetDomains(idToken, newValue.category_id);
+    setDomains(response.data.data);
   };
 
   let rows = [];
@@ -193,8 +216,8 @@ export default function APITable(props) {
   function CustomToolbar() {
     return (
       <Box>
-        <Button onClick={handleOpenEdit}>Category Edit</Button>
-        <Button>Service Edit</Button>
+        <Button onClick={handleCategoryModalOpen}>Category Edit</Button>
+        <Button onClick={handleServiceModalOpen}>Domain Edit</Button>
         <Button>Path Edit</Button>
         <Button onClick={handleNewClick}>+ New</Button>
       </Box>
@@ -255,12 +278,39 @@ export default function APITable(props) {
         </Box>
       </Modal>
 
-      <Modal open={openEdit} onClose={handleCloseEdit}>
+      <Modal open={openCategory} onClose={handleCategoryModalClose}>
         <Box sx={style}>
           <Box>
             <Typography variant="h6">Category 변경</Typography>
             <Divider sx={{ marginBottom: 3 }} />
             <CategoryTable data={categories} setData={setCategories} />
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={openService} onClose={handleServiceModalClose}>
+        <Box sx={style}>
+          <Box>
+            <Typography variant="h6">Domain 변경</Typography>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Box display="flex">
+              <Typography vairant="subtitle1">Category : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                onChange={(event, newValue) => handleCategoryChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" variant="standard" />
+                )}
+              />
+            </Box>
+            <DomainTable
+              data={domains}
+              setData={setDomains}
+              selectedCategory={selectedCategory}
+            />
           </Box>
         </Box>
       </Modal>
