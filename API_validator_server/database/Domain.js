@@ -20,13 +20,12 @@ const createNewDomain = async (conn, newDomain) => {
 
 const getAllDomains = async (conn, categoryId) => {
   try {
-    if(categoryId) {
+    if (categoryId) {
       let sql = "SELECT * FROM tbl_domain WHERE category_id = ? and state = 0";
       let params = [categoryId];
       let [rows, _] = await conn.query(sql, params);
       return rows;
-    }
-    else {
+    } else {
       let sql = "SELECT * FROM tbl_domain WHERE state = 0";
       let [rows, _] = await conn.query(sql);
       return rows;
@@ -64,10 +63,16 @@ const updateOneDomain = async (conn, domainId, changes) => {
         message: `Can't find domain with the id '${domainId}'`,
       };
     }
+    let target = rows;
     sql = `SELECT * From tbl_domain WHERE domain = ? and category_id = ? and state = 0`;
     params = [changes.domain, changes.category_id];
     [rows, _] = await conn.query(sql, params);
-    if (rows.length) {
+    if (
+      rows.length &&
+      !(
+        target.domain === rows.domain && target.category_id === rows.category_id
+      )
+    ) {
       throw {
         status: 400,
         message: `Domain '${changes.domain}' already exists`,
