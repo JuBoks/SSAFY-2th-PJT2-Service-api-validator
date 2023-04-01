@@ -17,10 +17,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
 import { methodList } from "@/constants/methodList";
-import { DeleteMetadatasId, GetCategories, GetDomains } from "@/util/api";
+import {
+  DeleteMetadatasId,
+  GetApis,
+  GetCategories,
+  GetDomains,
+} from "@/util/api";
 import CategoryTable from "./CategoryTable";
 import auth from "@/util/auth";
 import DomainTable from "./DomainTable";
+import PathTable from "./PathTable";
 
 const style = {
   position: "absolute",
@@ -47,7 +53,8 @@ export default function APITable(props) {
 
   const [openDetail, setOpenDetail] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
-  const [openService, setOpenService] = useState(false);
+  const [openDomain, setOpenDomain] = useState(false);
+  const [openPath, setOpenPath] = useState(false);
 
   const [metadataName, setMetadataName] = useState(null);
   const [metadataCategory, setMetadataCategory] = useState(null);
@@ -61,8 +68,10 @@ export default function APITable(props) {
 
   const [categories, setCategories] = useState(null);
   const [domains, setDomains] = useState(null);
+  const [paths, setPaths] = useState();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedDomain, setSelectedDomain] = useState();
 
   const handleApiDelete = async (e, cellValues) => {
     try {
@@ -118,19 +127,36 @@ export default function APITable(props) {
     setOpenCategory(false);
   };
 
-  const handleServiceModalOpen = async () => {
+  const handleDomainModalOpen = async () => {
     const idToken = localStorage.getItem("idToken");
     const response = await handleGetCategories(idToken);
     setCategories(response);
-    setOpenService(true);
+    setOpenDomain(true);
   };
-  const handleServiceModalClose = () => setOpenService(false);
+  const handleDomainModalClose = () => setOpenDomain(false);
+
+  const handlePathModalOpen = async () => {
+    const idToken = localStorage.getItem("idToken");
+    const response = await handleGetCategories(idToken);
+    setCategories(response);
+    setOpenPath(true);
+  };
+
+  const handlePathModalClose = () => setOpenPath(false);
 
   const handleCategoryChange = async (newValue) => {
-    setSelectedCategory(newValue);
     const idToken = localStorage.getItem("idToken");
     const response = await GetDomains(idToken, newValue.category_id);
+    setSelectedCategory(newValue);
     setDomains(response.data.data);
+  };
+
+  const handleDomainChange = async (newValue) => {
+    const idToken = localStorage.getItem("idToken");
+    const domainId = newValue.domain_id;
+    const response = await GetApis(idToken, domainId);
+    setSelectedDomain(newValue);
+    setPaths(response.data.data);
   };
 
   let rows = [];
@@ -217,9 +243,9 @@ export default function APITable(props) {
     return (
       <Box>
         <Button onClick={handleCategoryModalOpen}>Category Edit</Button>
-        <Button onClick={handleServiceModalOpen}>Domain Edit</Button>
-        <Button>Path Edit</Button>
-        <Button onClick={handleNewClick}>+ New</Button>
+        <Button onClick={handleDomainModalOpen}>Domain Edit</Button>
+        <Button onClick={handlePathModalOpen}>Path Edit</Button>
+        <Button onClick={handleNewClick}>+ New API</Button>
       </Box>
     );
   }
@@ -288,7 +314,7 @@ export default function APITable(props) {
         </Box>
       </Modal>
 
-      <Modal open={openService} onClose={handleServiceModalClose}>
+      <Modal open={openDomain} onClose={handleDomainModalClose}>
         <Box sx={style}>
           <Box>
             <Typography variant="h6">Domain 변경</Typography>
@@ -310,6 +336,46 @@ export default function APITable(props) {
               data={domains}
               setData={setDomains}
               selectedCategory={selectedCategory}
+            />
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={openPath} onClose={handlePathModalClose}>
+        <Box sx={style}>
+          <Box>
+            <Typography variant="h6">Path 변경</Typography>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Box display="flex">
+              <Typography vairant="subtitle1">Category : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                onChange={(event, newValue) => handleCategoryChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" variant="standard" />
+                )}
+              />
+            </Box>
+            <Box display="flex">
+              <Typography vairant="subtitle1">Domain : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={domains}
+                getOptionLabel={(option) => option.domain}
+                disableClearable
+                onChange={(event, newValue) => handleDomainChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Domain" variant="standard" />
+                )}
+              />
+            </Box>
+            <PathTable
+              data={paths}
+              setData={setPaths}
+              selectedDomain={selectedDomain}
             />
           </Box>
         </Box>
