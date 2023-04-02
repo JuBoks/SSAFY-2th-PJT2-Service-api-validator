@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
 import {
@@ -10,17 +10,49 @@ import {
   TextField,
 } from "@mui/material";
 import styles from "@/styles/APIs.module.css";
-import APIResultTable from "@/components/APIResultTable";
+import APIResultTable from "@/components/APIs/APIResultTable";
 import { resultRows, resultColumns } from "@/constants/ResultListSample";
-import { testTimeList } from "@/constants/testTimeSample";
+import { onAuthStateChanged } from "firebase/auth";
+import Router from "next/router";
+import auth from "@/util/auth";
+import { GetApisAllTestcase, GetUsers } from "@/util/api";
+import Loading from "@/components/common/Loading";
 
 export default function APIs() {
+  const [metadatas, setMetadatas] = useState();
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const idToken = await auth.currentUser.getIdToken(true);
+        const UserData = await GetUsers(idToken);
+        localStorage.setItem("idToken", idToken);
+
+        const getMetadatas = async () => {
+          setLoading(true);
+          const response = await GetApisAllTestcase(idToken);
+          console.log(response.data);
+          setMetadatas(response.data);
+          setLoading(false);
+        };
+
+        getMetadatas();
+      } else {
+        Router.push("/");
+      }
+    });
+  }, []);
+
+  if (loading) return <Loading />;
+
   return (
     <>
       <Header />
       <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
         <Nav isAdmin={true} />
-        <Box display="flex" flexDirection="column">
+        <Box width="85%">
           <Toolbar />
           <Box className={styles.main}>
             <Typography className={styles.text} variant="h3">
@@ -29,37 +61,7 @@ export default function APIs() {
             <Typography className={styles.text} mt={2} variant="subtitle1">
               API Test 결과를 확인해보세요.
             </Typography>
-            <Box mt={3} mb={3}>
-              <Paper elevation={1} sx={{ padding: 2 }}>
-                <Box display="flex">
-                  <Typography variant="subtitle1" mr={3}>
-                    Date :
-                  </Typography>
-                  <Autocomplete
-                    sx={{ width: 200, marginRight: 3 }}
-                    options={testTimeList}
-                    value={testTimeList[0]}
-                    disableClearable
-                    renderInput={(params) => (
-                      <TextField {...params} variant="standard" />
-                    )}
-                  />
-                  <Typography variant="subtitle1" mr={3}>
-                    Total : 100
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="green">
-                    Pass : 80
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="Red">
-                    Fail : 10
-                  </Typography>
-                  <Typography variant="subtitle1" color="blue">
-                    N/E : 10
-                  </Typography>
-                </Box>
-              </Paper>
-            </Box>
-            <APIResultTable columns={resultColumns} rows={resultRows} />
+            <APIResultTable data={metadatas} />
           </Box>
         </Box>
       </Box>

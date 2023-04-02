@@ -78,10 +78,15 @@ export default function APIedit() {
   const [apiName, setApiName] = useState("");
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
+  const [categoryVal, setCategoryVal] = useState();
+
   const [domains, setDomains] = useState([]);
   const [domain, setDomain] = useState("");
+  const [domainVal, setDomainVal] = useState();
+
   const [apis, setApis] = useState([]);
-  const [path, setPath] = useState();
+  const [api, setApi] = useState();
+
   const [resources, setResources] = useState("");
   const [method, setMethod] = useState();
   const [apiId, setApiId] = useState();
@@ -135,7 +140,6 @@ export default function APIedit() {
     try {
       const idToken = localStorage.getItem("idToken");
       const url = domain + resources;
-
       const response = await PostApisTest(
         idToken,
         url,
@@ -190,7 +194,8 @@ export default function APIedit() {
         apiName,
         interval
       );
-      console.log(response);
+      alert("API 수정이 완료되었습니다.");
+      Router.push("/admin/api");
     } catch (error) {
       console.log(error);
       alert(error);
@@ -220,10 +225,13 @@ export default function APIedit() {
             const categoryData = (await GetCategoriesId(idToken, categoryId))
               .data.data;
             setApiId(responseData.api_id);
-            setCategory(categoryData);
-            setDomain(domainData);
-            setPath(apiData);
-            setMethod(apiData);
+            setCategory(categoryData.name);
+            setCategoryVal(categoryData);
+            setDomain(domainData.domain);
+            setDomainVal(domainData);
+            setApi(apiData);
+            setResources(apiData.resources);
+            setMethod(apiData.method);
             setHeader(responseData.header);
             setBody(responseData.body);
             setParam(responseData.params);
@@ -279,7 +287,7 @@ export default function APIedit() {
               <Autocomplete
                 sx={{ width: 300 }}
                 options={categories}
-                value={category}
+                value={categoryVal}
                 getOptionLabel={(option) => option.name}
                 disableClearable
                 onChange={(event, newValue) => handleCategoryChange(newValue)}
@@ -290,7 +298,7 @@ export default function APIedit() {
               <Autocomplete
                 sx={{ width: 300 }}
                 options={domains}
-                value={domain}
+                value={domainVal}
                 getOptionLabel={(option) => option.domain}
                 disableClearable
                 onChange={(event, newValue) => handleDomainChange(newValue)}
@@ -301,7 +309,7 @@ export default function APIedit() {
               <Autocomplete
                 sx={{ width: 300 }}
                 options={apis}
-                value={path}
+                value={api}
                 getOptionLabel={(option) => option.resources}
                 disableClearable
                 onChange={(event, newValue) => handlePathChange(newValue)}
@@ -316,7 +324,7 @@ export default function APIedit() {
                 options={apis.filter(
                   (option) => option.resources === resources
                 )}
-                value={method}
+                value={api}
                 getOptionLabel={(option) => methodList[option.method]}
                 disableClearable
                 onChange={(event, newValue) => handleMethodChange(newValue)}

@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import styles from "@/styles/APIs.module.css";
-import APIResultTable from "@/components/APIResultTable";
+import APIResultTable from "@/components/APIs/APIResultTable";
 import { resultRows, resultColumns } from "@/constants/ResultListSample";
 import { testTimeList } from "@/constants/testTimeSample";
 
