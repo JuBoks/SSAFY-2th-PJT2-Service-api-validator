@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header.js";
 import Nav from "@/components/Nav.js";
-import {
-  Box,
-  Typography,
-  Toolbar,
-} from "@mui/material";
+import { Box, Typography, Toolbar } from "@mui/material";
 import styles from "@/styles/APIs.module.css";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "@/util/auth";
-import { GetFavorites, GetUsers } from "@/util/api";
+import { GetAlerts, GetFavorites, GetUsers } from "@/util/api";
 import Loading from "@/components/common/Loading";
 import FavoriteTable from "@/components/favorite/FavoriteTable";
 
 export default function Favorite() {
   const [favorites, setFavorites] = useState();
+  const [alerts, setAlerts] = useState();
 
   const [loading, setLoading] = useState(false);
 
@@ -25,14 +22,20 @@ export default function Favorite() {
         const UserData = await GetUsers(idToken);
         localStorage.setItem("idToken", idToken);
 
-        const getFavorites = async () => {
+        const getData = async () => {
           setLoading(true);
           const response = await GetFavorites(idToken);
+          const alertData = (await GetAlerts(idToken)).data;
+          const alertList = {};
+          alertData.forEach((item) => {
+            alertList[item.metadata_meta_id] = item;
+          });
+          setAlerts(alertList);
           setFavorites(response.data);
           setLoading(false);
         };
 
-        getFavorites();
+        getData();
       } else {
         Router.push("/");
       }
@@ -53,9 +56,13 @@ export default function Favorite() {
               Favorite API
             </Typography>
             <Typography className={styles.text} mt={2} variant="subtitle1">
-              Favorite API Test 결과를 확인해보세요.
+              나만의 모니터링 API를 관리해보세요.
             </Typography>
-            <FavoriteTable data={favorites}/>
+            <FavoriteTable
+              data={favorites}
+              alerts={alerts}
+              setAlerts={setAlerts}
+            />
           </Box>
         </Box>
       </Box>
