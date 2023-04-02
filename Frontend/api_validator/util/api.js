@@ -174,6 +174,16 @@ export const GetApisAllTestcase = async (idToken) => {
   return res;
 };
 
+export const GetApisAllTestcaseId = async (idToken, id) => {
+  const headers = {
+    headers: {
+      idtoken: idToken,
+    },
+  };
+  const res = await api.get(`/apis/all/testcase` + `/${id}`, headers);
+  return res;
+};
+
 export const PostFavorites = async (idToken, apis) => {
   const headers = {
     headers: {

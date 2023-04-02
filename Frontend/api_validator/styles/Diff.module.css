@@ -1,20 +1,41 @@
 .container {
     display: flex;
+    overflow-y: auto;
+    overflow-x: clip;
+    max-height: 50vh;
+    position: relative;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    width: 100%;
+    margin-right: 8px;
   }
+
+.bigcontainer{
+  display: flex;
+  position: relative;
+}
   
 .text {
     flex: 1;
     margin-right: 20px;
+    width: 100%;
+    
   }
   
-.colored {
-    background-color: yellow;
+.minus {
+    background-color: #f9d7dc;
+    margin-right: 10px;
+  }
+
+.plus {
+    background-color: #ddfbe6;
+    margin-right: 10px;
   }
   
 .bar {
     width: 8px;
     background-color: grey;
-    position: fixed;
+    position: absolute;
+    height: 100%;
     right: 0;
-    height: 100vh;
   }

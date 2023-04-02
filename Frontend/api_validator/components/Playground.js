@@ -4,6 +4,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 export default function Playground(props) {
 
+  if(!props.testData) return;
   const defaultProps = {
     options: props.testData ? props.testData : [],
     getOptionLabel: (option) => option.created_at,
@@ -18,9 +19,10 @@ export default function Playground(props) {
   return (
     <Autocomplete
       {...defaultProps}
-      // value={value}
+      defaultValue={props.value}
       onChange={(event,newValue) => {
         setValue(newValue);
+        if(!newValue) return;
         props.getDate(newValue.created_at);
       }}
       id="disable-close-on-select"
