@@ -10,7 +10,7 @@ export default function TabControl(props) {
   const [value, setValue] = React.useState("1");
   const flatProps = {
     json: props.json && props.json.content ? props.json.content.response : [],
-    schema: props.json && props.json.content ? props.json.content.schema : []
+    schema: props.json && props.json.content ? props.json.content.schema : [],
   };
 
   const tabListAPI = [
@@ -26,15 +26,11 @@ export default function TabControl(props) {
   const tabPanelListAPI = [
     {
       value: "1",
-      content: <OutlinedCard
-      json= {flatProps.json}
-      />,
+      content: <OutlinedCard json={flatProps.json} />,
     },
     {
       value: "2",
-      content: <OutlinedCard
-      json= {flatProps.schema}
-       />,
+      content: <OutlinedCard json={flatProps.schema} />,
     },
   ];
 
