@@ -1,18 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import React, { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
 import { methodList } from "@/constants/methodList";
 import { Box, Button, Divider, Modal, Paper, Typography } from "@mui/material";
 import styles from "@/styles/APIs.module.css";
-import {
-  DeleteFavoritesId,
-  GetFavorites,
-  GetLogs,
-  PostFavorites,
-} from "@/util/api";
+import { GetLogs } from "@/util/api";
 import { MetadataChart } from "../ChartJS/MetadataChart";
 import Router from "next/router";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import StarIcon from "@mui/icons-material/Star";
+import { GridActionsCellItem } from "@mui/x-data-grid";
 
 const createRow = (
   index,
@@ -40,8 +34,8 @@ const createRow = (
   };
 };
 
-export default function APIResultTable(props) {
-  const { data, favorites, setFavorites } = props;
+export default function FavoriteTable(props) {
+  const { data } = props;
 
   const now = new Date().toISOString();
   const yesterday = new Date(
@@ -65,45 +59,7 @@ export default function APIResultTable(props) {
 
   const [openDetail, setOpenDetail] = useState(false);
 
-  const handleAddFavorite = useCallback((id) => async () => {
-    const idToken = localStorage.getItem("idToken");
-    if (favorites[id]) {
-      await DeleteFavoritesId(idToken, id);
-      const favoritesData = await GetFavorites(idToken);
-      const favoriteList = {};
-      favoritesData.data.forEach((item) => {
-        favoriteList[item.metadata_meta_id] = item;
-      });
-      setFavorites(favoriteList);
-    } else {
-      await PostFavorites(idToken, [id]);
-      const favoritesData = await GetFavorites(idToken);
-      const favoriteList = {};
-      favoritesData.data.forEach((item) => {
-        favoriteList[item.metadata_meta_id] = item;
-      });
-      setFavorites(favoriteList);
-    }
-  });
-
   const columns = [
-    {
-      field: "actions",
-      type: "actions",
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={
-            favorites[params.id] ? (
-              <StarIcon color="warning" />
-            ) : (
-              <StarBorderIcon color="warning" />
-            )
-          }
-          label="Favorite"
-          onClick={handleAddFavorite(params.id)}
-        />,
-      ],
-    },
     { field: "index", headerName: "No.", width: 80 },
     { field: "metadataName", headerName: "Name", width: 250 },
     { field: "categoryName", headerName: "Category", width: 250 },

@@ -15,11 +15,12 @@ import { resultRows, resultColumns } from "@/constants/ResultListSample";
 import { onAuthStateChanged } from "firebase/auth";
 import Router from "next/router";
 import auth from "@/util/auth";
-import { GetApisAllTestcase, GetUsers } from "@/util/api";
+import { GetApisAllTestcase, GetFavorites, GetUsers } from "@/util/api";
 import Loading from "@/components/common/Loading";
 
 export default function APIs() {
   const [metadatas, setMetadatas] = useState();
+  const [favorites, setFavorites] = useState();
 
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +34,12 @@ export default function APIs() {
         const getMetadatas = async () => {
           setLoading(true);
           const response = await GetApisAllTestcase(idToken);
-          console.log(response.data);
+          const favoritesData = await GetFavorites(idToken);
+          const favoriteList = {};
+          favoritesData.data.forEach((item) => {
+            favoriteList[item.metadata_meta_id] = item;
+          });
+          setFavorites(favoriteList);
           setMetadatas(response.data);
           setLoading(false);
         };
@@ -61,7 +67,11 @@ export default function APIs() {
             <Typography className={styles.text} mt={2} variant="subtitle1">
               API Test 결과를 확인해보세요.
             </Typography>
-            <APIResultTable data={metadatas} />
+            <APIResultTable
+              data={metadatas}
+              favorites={favorites}
+              setFavorites={setFavorites}
+            />
           </Box>
         </Box>
       </Box>
