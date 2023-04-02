@@ -31,7 +31,7 @@ const labels = [
   "2022.02.30",
 ];
 
-export const sampleData = {
+export const apiTestSample = {
   labels,
   datasets: [
     {

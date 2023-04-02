@@ -15,7 +15,22 @@
   transform: translate(-50%, -50%);
   width: 80%;
   height: 80%;
+  overflow: scroll;
   background-color: white;
   box-shadow: 24;
   padding: 4;
+}
+
+.paper {
+  white-space: pre-wrap;
+}
+
+.stacked-chart {
+  width: 90%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
 }
