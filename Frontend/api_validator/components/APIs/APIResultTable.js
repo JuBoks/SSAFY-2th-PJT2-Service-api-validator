@@ -65,7 +65,7 @@ export default function APIResultTable(props) {
 
   const [openDetail, setOpenDetail] = useState(false);
 
-  const handleAddFavorite = useCallback((id) => async () => {
+  const handleFavorite = useCallback((id) => async () => {
     const idToken = localStorage.getItem("idToken");
     if (favorites[id]) {
       await DeleteFavoritesId(idToken, id);
@@ -100,7 +100,7 @@ export default function APIResultTable(props) {
             )
           }
           label="Favorite"
-          onClick={handleAddFavorite(params.id)}
+          onClick={handleFavorite(params.id)}
         />,
       ],
     },

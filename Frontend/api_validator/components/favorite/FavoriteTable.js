@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { methodList } from "@/constants/methodList";
 import { Box, Button, Divider, Modal, Paper, Typography } from "@mui/material";
 import styles from "@/styles/APIs.module.css";
-import { GetLogs } from "@/util/api";
+import { DeleteAlertsId, GetLogs, PostAlerts } from "@/util/api";
 import { MetadataChart } from "../ChartJS/MetadataChart";
 import Router from "next/router";
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import EmailIcon from "@mui/icons-material/Email";
+import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
+import { GetAlerts } from "@/util/api";
 
 const createRow = (
   index,
@@ -35,7 +38,7 @@ const createRow = (
 };
 
 export default function FavoriteTable(props) {
-  const { data } = props;
+  const { data, alerts, setAlerts } = props;
 
   const now = new Date().toISOString();
   const yesterday = new Date(
@@ -59,7 +62,45 @@ export default function FavoriteTable(props) {
 
   const [openDetail, setOpenDetail] = useState(false);
 
+  const handleEmail = useCallback((id) => async () => {
+    const idToken = localStorage.getItem("idToken");
+    if (alerts[id]) {
+      await DeleteAlertsId(idToken, id);
+      const alertData = (await GetAlerts(idToken)).data;
+      const alertList = {};
+      alertData.forEach((item) => {
+        alertList[item.metadata_meta_id] = item;
+      });
+      setAlerts(alertList);
+    } else {
+      await PostAlerts(idToken, [id]);
+      const alertData = (await GetAlerts(idToken)).data;
+      const alertList = {};
+      alertData.forEach((item) => {
+        alertList[item.metadata_meta_id] = item;
+      });
+      setAlerts(alertList);
+    }
+  });
+
   const columns = [
+    {
+      field: "actions",
+      type: "actions",
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={
+            alerts[params.id] ? (
+              <MarkEmailReadIcon color="info" />
+            ) : (
+              <EmailIcon color="info" />
+            )
+          }
+          label="Email"
+          onClick={handleEmail(params.id)}
+        />,
+      ],
+    },
     { field: "index", headerName: "No.", width: 80 },
     { field: "metadataName", headerName: "Name", width: 250 },
     { field: "categoryName", headerName: "Category", width: 250 },
