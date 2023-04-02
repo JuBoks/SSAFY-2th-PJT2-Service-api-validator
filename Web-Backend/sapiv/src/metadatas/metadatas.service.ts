@@ -55,7 +55,7 @@ export class MetadatasService {
 
   async update(id: number, updateMetadataDto: MetadataDto) {
     const { data } = await firstValueFrom(
-      this.httpService.put<Metadata>(process.env.VALIDATOR_METADATA, updateMetadataDto, {headers: {chk: process.env.SERVER_KEY}, params: {metaId: id}} ).pipe(
+      this.httpService.put<Metadata>(process.env.VALIDATOR_METADATA + `/${id}`, updateMetadataDto, {headers: {chk: process.env.SERVER_KEY}} ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
