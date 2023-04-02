@@ -6,7 +6,7 @@ function JSONDiff(props) {
   const containerRef = useRef(null);
   const textRef = useRef(null);
   const text = props.json;
-  const lines = text.split("\n");
+  const lines = text ? text.split("\n") : [];
   const elementsRef = useRef(lines.map(() => createRef()));
   const barRef = useRef(null);
   const rootRef = useRef(null);
