@@ -52,7 +52,7 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       }
     } else {
       //정답지 없으면 예외처리
-      throw error;
+      throw new Error("No valid response answer.");
     }
 
     //las req time 업데이트
@@ -66,8 +66,9 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       expect_response.response_id,
       JSON.stringify(response),
       result,
-      (testMessage!==null && Object.keys(testMessage) > 0 )?testMessage:null
+      (testMessage!==null && Object.keys(testMessage).length > 0 )? JSON.stringify(testMessage):null
     ];
+
 
     //테스트 테이블에 저장
     const result_id = await Validator.createTestResult(conn, data);

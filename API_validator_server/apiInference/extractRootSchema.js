@@ -1,3 +1,5 @@
+const _ = require('underscore'); 
+
 const extractRootSchema = (root) => {
 
   const arrayCheck = (data, isArray) => {
@@ -23,7 +25,7 @@ const extractRootSchema = (root) => {
         
         if(isArray) {
           for(let i = 0; i< key; i++) {
-            if(JSON.stringify(schema[i]) === JSON.stringify(schema[key])) {
+            if(_.isEqual(schema[i], schema[key])) {
               schema.splice(key,1);
               break;
             }
