@@ -9,7 +9,7 @@ import { GetUsers } from "@/util/api";
 import { StackedBarChart } from "@/components/ChartJS/StackedBarChart";
 import { PieChart } from "@/components/ChartJS/PieChart";
 import styles from "@/styles/Home.module.css";
-import { sampleData } from "@/constants/apiTestSample.js";
+import { apiTestSample } from "@/constants/apiTestSample.js";
 import { ResultDayData } from "@/constants/apiTestResultSampleDay";
 import StickyHeadTable from "@/components/MUI/StickyHeadTable";
 import { resultRows, resultColumns } from "@/constants/ResultListSample";
@@ -61,7 +61,7 @@ export default function Main() {
             <Box display="flex" mt={3}>
               <Paper className={styles["stacked-chart-paper"]} elevation={1}>
                 <Box className={styles["stacked-chart"]}>
-                  <StackedBarChart data={sampleData} />
+                  <StackedBarChart data={apiTestSample} />
                 </Box>
               </Paper>
               <Paper className={styles["pie-chart-paper"]} elevation={1}>
@@ -77,7 +77,7 @@ export default function Main() {
             <Box display="flex" mt={3}>
               <Paper className={styles["stacked-chart-paper"]} elevation={1}>
                 <Box className={styles["stacked-chart"]}>
-                  <StackedBarChart data={sampleData} />
+                  <StackedBarChart data={apiTestSample} />
                 </Box>
               </Paper>
               <Paper className={styles["pie-chart-paper"]} elevation={1}>
