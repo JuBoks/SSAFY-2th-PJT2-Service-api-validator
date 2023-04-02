@@ -11,7 +11,12 @@ import {
 import { Bar } from "react-chartjs-2";
 import { GetLogsGraphMetadatasId } from "@/util/api";
 import { apiTestSample } from "@/constants/apiTestSample";
-import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -101,8 +106,8 @@ export function MetadataChart(props) {
   }, [unit]);
 
   return (
-    <Box display="flex" flexDirection="column" width="100%" height="100%">
-      <Box display="flex" flexDirection="row-reverse">
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box display="flex" height={20} flexDirection="row-reverse">
         <ToggleButtonGroup
           value={unit}
           exclusive
@@ -117,7 +122,7 @@ export function MetadataChart(props) {
       {loading ? (
         <></>
       ) : (
-        <Box width="100%">
+        <Box width="100%" height="90%" display="flex" justifyContent="center">
           <Bar options={options} data={data} />
         </Box>
       )}

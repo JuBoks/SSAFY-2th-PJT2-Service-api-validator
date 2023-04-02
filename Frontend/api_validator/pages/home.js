@@ -13,8 +13,14 @@ import { apiTestSample } from "@/constants/apiTestSample.js";
 import { ResultDayData } from "@/constants/apiTestResultSampleDay";
 import StickyHeadTable from "@/components/MUI/StickyHeadTable";
 import { resultRows, resultColumns } from "@/constants/ResultListSample";
+import { MetadataChart } from "@/components/ChartJS/MetadataChart";
 
 export default function Main() {
+  const now = new Date().toISOString();
+  const threeMonthAgo = new Date(
+    new Date().setMonth(new Date().getMonth() - 3)
+  ).toISOString();
+
   const [isAuthorize, setIsAuthorize] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [state, setState] = useState(false);
@@ -25,9 +31,9 @@ export default function Main() {
       if (user) {
         const token = await auth.currentUser.getIdToken(true);
         const res = await GetUsers(token);
+        localStorage.setItem("idToken", token);
 
         setState(res.data.state);
-        console.log(token);
 
         if (res.data.state === 0) {
           setIsAuthorize(false);
@@ -54,22 +60,22 @@ export default function Main() {
       <Header />
       <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
         <Nav isAdmin={isAdmin} />
-        <Box m={3}>
+        <Box m={3} width="85%">
           <Toolbar />
-          <Box className={styles["chart-box"]}>
-            <Typography variant="h6">Favorite API Chart</Typography>
-            <Box display="flex" mt={3}>
-              <Paper className={styles["stacked-chart-paper"]} elevation={1}>
-                <Box className={styles["stacked-chart"]}>
-                  <StackedBarChart data={apiTestSample} />
-                </Box>
-              </Paper>
-              <Paper className={styles["pie-chart-paper"]} elevation={1}>
-                <Box className={styles["pie-chart"]}>
-                  <PieChart data={ResultDayData} title="2023.02.30" />
-                </Box>
-              </Paper>
-            </Box>
+          <Box width="100%" display="flex">
+            <Paper className={styles["stacked-chart-paper"]} elevation={1}>
+              <MetadataChart
+                title="All API Chart"
+                metaId={1}
+                startTime={threeMonthAgo}
+                endTime={now}
+              />
+            </Paper>
+            <Paper className={styles["pie-chart-paper"]} elevation={1}>
+              <Box className={styles["pie-chart"]}>
+                <PieChart data={ResultDayData} title="2023.02.30" />
+              </Box>
+            </Paper>
           </Box>
 
           <Box className={styles["chart-box"]} mt={5}>
