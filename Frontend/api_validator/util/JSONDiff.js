@@ -1,12 +1,12 @@
-import React, { useRef, useLayoutEffect, useEffect, createRef } from "react";
-import { createRoot } from "react-dom/client";
-import styles from "@/styles/Diff.module.css";
+import React, { useRef, useLayoutEffect, useEffect, createRef } from 'react';
+import {createRoot} from 'react-dom/client';
+import styles from '@/styles/Diff.module.css'
 
 function JSONDiff(props) {
   const containerRef = useRef(null);
   const textRef = useRef(null);
-  const text = JSON.stringify(props.json, null, "\t");
-  const lines = text ? text.split("\n") : [];
+  const text = props.json;
+  const lines = text && typeof(text) === 'string' ? text.split("\n") : [];
   const elementsRef = useRef(lines.map(() => createRef()));
   const barRef = useRef(null);
   const rootRef = useRef(null);

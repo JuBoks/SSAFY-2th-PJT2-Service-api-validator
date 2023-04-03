@@ -24,13 +24,18 @@ import { diffString } from "json-diff"
 export default function PostPage() {
   const router = useRouter();
   const id = router.query.id;
-  const [testData, setTestData] = useState(null);
+  const [testData, setTestData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [metaData, setMetaData] = useState(null);
   const [expanded, setExpanded] = useState("panel1");
+  const [expanded2, setExpanded2] = useState("panel2");
   const [index, setIndex] = useState(0);
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
+  };
+  
+  const handleErrorChange = (panel) => (event, newExpanded) => {
+    setExpanded2(newExpanded ? panel : false);
   };
 
   useEffect(() => {
@@ -44,7 +49,15 @@ export default function PostPage() {
           try {
             const res = await GetLogs(idToken, new Date(0).toISOString(), new Date().toISOString(), id);
             setTestData(res.data.data);
+            let idx = 0;
+            for (const it of res.data.data) {
+              if(it.result_id == router.query.result_id){
+                setIndex(idx);
+              }
+              idx += 1;
+            }
             const metadata = await GetApisAllTestcaseId(idToken, id);
+            
             setMetaData(metadata);
             console.log(res.data.data);
           } catch (error) {
@@ -60,7 +73,7 @@ export default function PostPage() {
         router.push("/");
       }
     })
-  }, [router.isReady])
+  }, [router.isReady, router.query.result_id])
   
   if (loading) {
     return(<Loading/>)
@@ -76,9 +89,9 @@ export default function PostPage() {
   return (
     <Box>
       <Header />
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", width: "100%" }}>
         <Nav />
-        <Box component="main" m={5} sx={{ height: "100vh" }}>
+        <Box component="main" m={5} sx={{ height: "100vh", width: "100%" }}>
           <Toolbar />
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h4">API Test Result</Typography>
@@ -96,7 +109,7 @@ export default function PostPage() {
           <Playground 
             testData = {testData}
             getDate= {getDate}
-            value = {testData? testData[0]: {}}
+            value = {testData? testData[index]: {}}
           />
           <Box mt={5} mb={5}>
             <Accordion
@@ -116,20 +129,51 @@ export default function PostPage() {
                 <Box display="flex" flexDirection="row" m={3}>
                   <Box>
                     <Typography variant="h6">Header</Typography>
-                    <OutlinedCard content={metaData ? metaData.data.metadata_header : ""}/>
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_header) : ""}/>
                     <Typography variant="h6">Body</Typography>
-                    <OutlinedCard content={metaData ? metaData.data.metadata_body : ""} />
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_body) : ""} />
                     <Typography variant="h6">Params</Typography>
-                    <OutlinedCard content={metaData ? metaData.data.metadata_params : ""}/>
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_params) : ""}/>
+                  </Box>
+                  <BarChart />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              expanded={expanded2 === "panel2"}
+              onChange={handleErrorChange("panel2")}
+            >
+              <AccordionSummary
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                expandIcon={
+                  <ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />
+                }
+              >
+                <Typography>Error Message</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box display="flex" flexDirection="row" m={3}>
+                  <Box>
+                    <Typography variant="h6">Header</Typography>
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_header) : ""}/>
+                    <Typography variant="h6">Body</Typography>
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_body) : ""} />
+                    <Typography variant="h6">Params</Typography>
+                    <OutlinedCard content={metaData ? JSON.stringify(metaData.data.metadata_params) : ""}/>
                   </Box>
                   <BarChart />
                 </Box>
               </AccordionDetails>
             </Accordion>
           </Box>
-          <Box display="flex" flexDirection="row">
-            <Box mr={4}>
-              <Typography variant="h5">API {id} : {testData && testData[index] ? !testData[index].content.result? "PASS" : "FAIL" : ""}</Typography>
+          <Box display="flex" flexDirection="row" sx={{ width: "100%" }}>
+            <Box mr={4} sx={{ width: "50%" }}>
+              <Box display="flex">
+              <Typography variant="h5">API {id} : </Typography>
+              <Typography ml={1} variant="h5" color={testData && testData[index] && !testData[index].content.result ? "red" : "green"} >{testData && testData[index] ? !testData[index].content.result? "FAIL" : "PASS" : ""}</Typography>
+
+              </Box>
               <TabControl 
                 json = {testData && testData[index] ? diffString(testData[index].content.response, testData[index].content.response, {full: true}) : ''}
                 schema = {testData && testData[index] ? diffString(testData[index].content.schema, testData[index].content.schema, {full: true}) : ''}
@@ -137,11 +181,11 @@ export default function PostPage() {
               <Typography variant="h6">Artifacts</Typography>
               <ImageList json = {testData && testData[index] ? testData[index].content.response : {}}></ImageList>
             </Box>
-            <Box ml={4}>
+            <Box ml={4} sx={{ width: "50%" }}>
               <Typography variant="h5">Criterion</Typography>
               <TabControl 
-                json = {testData && testData[index] ? diffString(testData[index].content['critic-response'], testData[index].content.response, {full: true}) : ''}
-                schema = {testData && testData[index] ? diffString(testData[index].content['critic-schema'], testData[index].content.schema, {full: true}) : ''}
+                json = {testData && testData[index] ? diffString(testData[index].content['critic-response'], testData[index].content['critic-response'], {full: true}) : ''}
+                schema = {testData && testData[index] ? diffString(testData[index].content['critic-schema'], testData[index].content['critic-schema'], {full: true}) : ''}
               />
               <Typography variant="h6">Artifacts</Typography>
               <ImageList json = {testData && testData[index] ? testData[index].content['critic-response'] : {}}></ImageList>

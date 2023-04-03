@@ -20,6 +20,7 @@ export default function Playground(props) {
     <Autocomplete
       {...defaultProps}
       defaultValue={props.value}
+      value={props.value}
       onChange={(event,newValue) => {
         setValue(newValue);
         if(!newValue) return;
