@@ -56,7 +56,7 @@ export default function APIs() {
   return (
     <>
       <Header />
-      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
+      <Box display="flex">
         <Nav isAdmin={true} />
         <Box width="85%">
           <Toolbar />

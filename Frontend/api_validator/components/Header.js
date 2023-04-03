@@ -7,14 +7,15 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import logo from "@/public/images/logo_black.png";
+import Router from "next/router";
 
 export default function Header() {
   return (
     <AppBar style={{ backgroundColor: "white", zIndex: 20 }}>
       <Toolbar>
-        <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }}>
+        {/* <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Image
             src={logo}
@@ -24,9 +25,9 @@ export default function Header() {
         </Typography>
         <IconButton
           size="large"
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
+          onClick={(e) => {
+            Router.push("/profile");
+          }}
         >
           <AccountCircle fontSize="large" />
         </IconButton>

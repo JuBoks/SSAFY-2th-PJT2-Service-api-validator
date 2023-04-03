@@ -95,7 +95,7 @@ export default function Main() {
   return isAuthorize ? (
     <>
       <Header />
-      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
+      <Box display="flex">
         <Nav isAdmin={isAdmin} />
         <Box width="80%">
           <Toolbar />
@@ -130,7 +130,7 @@ export default function Main() {
             </Paper>
           </Box>
 
-          <Box m={1} width="100%">
+          <Box m={1} mt={5} width="100%">
             <Typography variant="h5" mb={1}>
               Favorite API
             </Typography>
@@ -141,7 +141,7 @@ export default function Main() {
             />
           </Box>
 
-          <Box m={1} width="100%">
+          <Box m={1} mt={15} width="100%">
             <Typography variant="h5" mb={1}>
               All API
             </Typography>
