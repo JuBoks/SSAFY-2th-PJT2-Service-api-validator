@@ -21,7 +21,7 @@ export default function APIDetailModal(props) {
         <Box m={2}>
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">API 상세정보</Typography>
-            <Button onClick={() => Router.push("/apis/" + metaId)}>
+            <Button onClick={() => Router.push("/apis/" + datas.metaId)}>
               {"> More Detail"}
             </Button>
           </Box>
