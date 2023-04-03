@@ -147,7 +147,8 @@ export class AlertsService {
           path: `${metadata.api_resources}`,
           domain: `${metadata.domain_domain}`,
           category: `${metadata.category_category_name}`,
-          id: `${metadata.metadata_meta_id}`
+          id: `${metadata.metadata_meta_id}`,
+          nano: `${metadata.name}`
         }
       })
       .then(() => {})
