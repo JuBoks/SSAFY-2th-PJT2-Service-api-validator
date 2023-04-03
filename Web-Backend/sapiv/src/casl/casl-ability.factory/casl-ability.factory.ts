@@ -42,6 +42,7 @@ export class CaslAbilityFactory {
     if(user.state <= 2 && user.state > 0){
       can(Action.Manage, Favorite);
       can(Action.Manage, Alert);
+      can(Action.Read, TestCase);
     }
 
 
