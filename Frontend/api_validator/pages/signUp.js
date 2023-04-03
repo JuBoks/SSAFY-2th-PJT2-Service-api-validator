@@ -83,7 +83,6 @@ const SignUp = () => {
         return;
       }
 
-      const idToken = await auth.currentUser.getIdToken(true);
       const data = new FormData(event.target);
       const reqData = {
         name: data.get("username"),

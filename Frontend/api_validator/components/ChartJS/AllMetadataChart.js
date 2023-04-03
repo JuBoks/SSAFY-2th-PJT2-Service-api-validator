@@ -9,7 +9,6 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { GetLogsGraphMetadatasId } from "@/util/api";
 import { apiTestSample } from "@/constants/apiTestSample";
 import {
   Box,
@@ -17,6 +16,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { GetLogsGraphAction } from "@/util/api";
 
 ChartJS.register(
   CategoryScale,
@@ -27,15 +27,15 @@ ChartJS.register(
   Legend
 );
 
-export function MetadataChart(props) {
-  const { title, metaId, startTime, endTime } = props;
+export function AllMetadataChart(props) {
+  const { title, startTime, endTime } = props;
 
   const labels = [];
   const passData = [];
   const failData = [];
 
+  const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
-  const [unit, setUnit] = useState("day");
 
   const [loading, setLoading] = useState(false);
 
@@ -66,21 +66,12 @@ export function MetadataChart(props) {
 
       const idToken = localStorage.getItem("idToken");
 
-      const response = await GetLogsGraphMetadatasId(
-        idToken,
-        metaId,
-        startTime,
-        endTime,
-        unit === "month" ? 1 : null,
-        unit === "week" ? 1 : null,
-        unit === "day" ? 1 : null
-      );
-      const datas = response.data.data;
+      const datas = (await GetLogsGraphAction(idToken, startTime, endTime)).data
+        .data;
 
       datas.map((item) => {
-        labels.push(item.count_date);
-
-        if (item.pass_cnt === 0 && item.fail_cnt) {
+        labels.push(item.created_at);
+        if (item.pass_cnt === 0 && item.fail_cnt === 0) {
           passData.push(0);
           failData.push(0);
         } else {
@@ -113,26 +104,14 @@ export function MetadataChart(props) {
     };
 
     getData();
-  }, [unit]);
+  }, []);
 
   return (
-    <Box width="100%" display="flex" flexDirection="column">
-      <Box display="flex" height={20} flexDirection="row-reverse">
-        <ToggleButtonGroup
-          value={unit}
-          exclusive
-          onChange={(event, newValue) => setUnit(newValue)}
-          aria-label="Time Unit"
-        >
-          <ToggleButton value="month">월</ToggleButton>
-          <ToggleButton value="week">주</ToggleButton>
-          <ToggleButton value="day">일</ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
+    <Box height="100%" display="flex" flexDirection="column">
       {loading ? (
         <></>
       ) : (
-        <Box width="100%" height="90%" display="flex" justifyContent="center">
+        <Box width="100%" height="100%" display="flex" justifyContent="center">
           <Bar options={options} data={data} />
         </Box>
       )}

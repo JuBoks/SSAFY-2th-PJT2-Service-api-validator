@@ -10,6 +10,7 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import EmailIcon from "@mui/icons-material/Email";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import { GetAlerts } from "@/util/api";
+import APIDetailModal from "../APIs/APIDetailModal";
 
 const createRow = (
   index,
@@ -48,6 +49,11 @@ export default function FavoriteTable(props) {
     new Date().setMonth(new Date().getMonth() - 3)
   ).toISOString();
 
+  const getRowClassName = (params) => {
+    return styles.rowHover; // CSS 클래스 이름
+  };
+
+  const [datas, setDatas] = useState({});
   const [metadataName, setMetadataName] = useState();
   const [testResult, setTestResult] = useState("None");
   const [category, setCategory] = useState();
@@ -132,26 +138,44 @@ export default function FavoriteTable(props) {
     const response = await GetLogs(idToken, yesterday, now, val.row.id);
 
     const testResults = response.data.data;
+    let testResult = "";
+    let testDate = "";
     if (
       testResults.length !== 0 &&
-      testResults[testResult.length - 1].content.result
+      testResults[testResults.length - 1].content.result
     ) {
-      setTestResult("Pass");
-      setTestDate(testResults[testResult.length - 1].created_at);
+      testResult = "Pass";
+      testDate = testResults[testResults.length - 1].created_at;
     } else {
-      setTestResult("Fail");
-      setTestDate(testResults[testResult.length - 1].created_at);
+      testResult = "Fail";
+      testDate = testResults[testResults.length - 1].created_at;
     }
 
-    setMetadataName(val.row.metadataName);
-    setCategory(val.row.categoryName);
-    setDomain(val.row.domain);
-    setPath(val.row.path);
-    setMethod(val.row.method);
-    setHeader(val.row.header);
-    setBody(val.row.body);
-    setParams(val.row.params);
-    setMetaId(val.row.id);
+    const metadataName = val.row.metadataName;
+    const category = val.row.categoryName;
+    const domain = val.row.domain;
+    const path = val.row.path;
+    const method = val.row.method;
+    const header = val.row.header;
+    const body = val.row.body;
+    const params = val.row.params;
+    const metaId = val.row.id;
+
+    const tmpDatas = {
+      metadataName,
+      category,
+      domain,
+      path,
+      method,
+      header,
+      body,
+      params,
+      metaId,
+      testResult,
+      testDate,
+    };
+
+    setDatas(tmpDatas);
     setOpenDetail(true);
   };
 
@@ -166,48 +190,15 @@ export default function FavoriteTable(props) {
           initialState={{
             pagination: { paginationModel: { pageSize: 25, page: 0 } },
           }}
+          getRowClassName={getRowClassName}
         />
       </div>
 
-      <Modal open={openDetail} onClose={() => setOpenDetail(false)}>
-        <Box className={styles["detail-modal"]}>
-          <Box>
-            <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5">API 상세정보</Typography>
-              <Button onClick={() => Router.push("/apis/" + metaId)}>
-                {"> More Detail"}
-              </Button>
-            </Box>
-            <Divider />
-            <Typography variant="subtitle1">
-              Name : {metadataName} - {testResult}
-            </Typography>
-            <Typography variant="subtitle1">Date : {testDate}</Typography>
-            <Typography variant="subtitle1">Category : {category}</Typography>
-            <Typography variant="subtitle1">url : {domain + path}</Typography>
-            <Typography variant="subtitle1">Method : {method}</Typography>
-            <Typography variant="subtitle1">Header</Typography>
-            <Paper className={styles.paper}>
-              {JSON.stringify(header, null, "\t")}
-            </Paper>
-            <Typography variant="subtitle1">Body</Typography>
-            <Paper className={styles.paper}>
-              {JSON.stringify(body, null, "\t")}
-            </Paper>
-            <Typography variant="subtitle1">Params</Typography>
-            <Paper className={styles.paper}>
-              {JSON.stringify(params, null, "\t")}
-            </Paper>
-            <Box className={styles["stacked-chart"]}>
-              <MetadataChart
-                metaId={metaId}
-                startTime={threeMonthAgo}
-                endTime={now}
-              />
-            </Box>
-          </Box>
-        </Box>
-      </Modal>
+      <APIDetailModal
+        openDetail={openDetail}
+        setOpenDetail={setOpenDetail}
+        datas={datas}
+      />
     </div>
   );
 }

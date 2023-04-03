@@ -23,6 +23,7 @@ import {
   GetDomains,
   GetDomainsId,
   GetMetadatasId,
+  GetUsers,
   PatchApisId,
   PatchMetadatasId,
   PostApisTest,
@@ -91,7 +92,11 @@ export default function APIedit() {
   const [method, setMethod] = useState();
   const [apiId, setApiId] = useState();
   const [interval, setInterval] = useState(0);
+
+  const [isAuthorize, setIsAuthorize] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [tabValue, setTabValue] = useState(0);
   const [header, setHeader] = useState({});
   const [body, setBody] = useState({});
@@ -211,6 +216,7 @@ export default function APIedit() {
           const idToken = await auth.currentUser.getIdToken(true);
           localStorage.setItem("idToken", idToken);
           const response = await GetCategories(idToken);
+          const res = await GetUsers(idToken);
           setCategories(response.data.data);
 
           if (isEdit) {
@@ -240,6 +246,20 @@ export default function APIedit() {
             setInterval(responseData.cycle_time);
             console.log(responseData);
           }
+
+          if (res.data.state === 0) {
+            setIsAuthorize(false);
+            alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+            Router.push("/");
+          } else if (res.data.state === 1) {
+            setIsAuthorize(true);
+          } else if (res.data.state === 2) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          } else if (res.data.state === 3) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          }
         } catch (error) {
           console.log(error);
           alert(error);
@@ -262,7 +282,7 @@ export default function APIedit() {
     <>
       <Header />
       <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
-        <Nav isAdmin={true} isAdminPage={true} />
+        <Nav isAdmin={isAdmin} isAdminPage={true} />
         <Box width="80%">
           <Toolbar />
           <Box className={styles.main}>
