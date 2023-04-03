@@ -55,7 +55,8 @@ const getLogByResultId = async (resultId) => {
 
         let schema ="";
         if(data.result_data_id !== data.expect_data_id) {
-            schema = testLog.getDataById(conn, data.result_data_id);
+            schema = await testLog.getDataById(conn, data.result_data_id);
+            schema = schema.result_data;
         }
         else {
             schema = data.critic_schema;
@@ -69,6 +70,7 @@ const getLogByResultId = async (resultId) => {
                 'critic-schema' : data.critic_schema,
                 result: data.result?true:false,
             },
+            messsage : data.message,
             "created_at" : data.created_at,
         };
         
