@@ -36,7 +36,7 @@ export default function PostPage() {
             <Typography variant="h4">API Result</Typography>
             <Button
               variant="contained"
-              onClick={() => router.push("/apis/compare/" + id)}
+              onClick={() => router.push("/compare/" + id)}
             >
               Compare
             </Button>

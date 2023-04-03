@@ -73,6 +73,10 @@ export default function APITable(props) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState();
 
+  const getRowClassName = (params) => {
+    return styles.rowHover; // CSS 클래스 이름
+  };
+
   const handleApiDelete = async (e, cellValues) => {
     try {
       const metaId = cellValues.row.id;
@@ -90,7 +94,7 @@ export default function APITable(props) {
     return response.data.data;
   };
 
-  const handleOpenDetail = (e, cellValues) => {
+  const handleOpenDetail = (cellValues) => {
     const metadata = data[cellValues.row.index];
     const header = JSON.stringify(metadata.metadata_header, null, "\t");
     const body = JSON.stringify(metadata.metadata_body, null, "\t");
@@ -201,13 +205,6 @@ export default function APITable(props) {
           <Box>
             <Button
               onClick={(e) => {
-                handleOpenDetail(e, cellValues);
-              }}
-            >
-              <ViewListIcon color="disabled" />
-            </Button>
-            <Button
-              onClick={(e) => {
                 handleEditClick(e, cellValues);
               }}
             >
@@ -268,8 +265,9 @@ export default function APITable(props) {
           toolbar: CustomToolbar,
         }}
         pageSizeOptions={[10]}
-        disableRowSelectionOnClick
+        onRowClick={(val) => handleOpenDetail(val)}
         autoHeight
+        getRowClassName={getRowClassName}
       />
 
       <Modal open={openDetail} onClose={handleCloseDetail}>

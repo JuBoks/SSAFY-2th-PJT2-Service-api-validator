@@ -13,13 +13,15 @@ export default function Favorite() {
   const [favorites, setFavorites] = useState();
   const [alerts, setAlerts] = useState();
 
+  const [isAuthorize, setIsAuthorize] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const idToken = await auth.currentUser.getIdToken(true);
-        const UserData = await GetUsers(idToken);
+        const res = await GetUsers(idToken);
         localStorage.setItem("idToken", idToken);
 
         const getData = async () => {
@@ -37,6 +39,20 @@ export default function Favorite() {
         };
 
         getData();
+
+        if (res.data.state === 0) {
+          setIsAuthorize(false);
+          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+          Router.push("/");
+        } else if (res.data.state === 1) {
+          setIsAuthorize(true);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        }
       } else {
         Router.push("/");
       }
@@ -49,7 +65,7 @@ export default function Favorite() {
     <>
       <Header />
       <Box display="flex">
-        <Nav isAdmin={true} />
+        <Nav isAdmin={isAdmin} />
         <Box width="85%">
           <Toolbar />
           <Box className={styles.main}>

@@ -79,8 +79,18 @@ export function MetadataChart(props) {
 
       datas.map((item) => {
         labels.push(item.count_date);
-        passData.push(item.pass_cnt);
-        failData.push(item.fail_cnt);
+
+        if (item.pass_cnt === 0 && item.fail_cnt) {
+          passData.push(0);
+          failData.push(0);
+        } else {
+          passData.push(
+            (item.pass_cnt / (item.pass_cnt + item.fail_cnt)) * 100
+          );
+          failData.push(
+            (item.fail_cnt / (item.pass_cnt + item.fail_cnt)) * 100
+          );
+        }
       });
 
       const result = {

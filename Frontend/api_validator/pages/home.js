@@ -25,8 +25,8 @@ import APIResultTable from "@/components/APIs/APIResultTable";
 
 export default function Main() {
   const now = new Date().toISOString();
-  const threeMonthAgo = new Date(
-    new Date().setMonth(new Date().getMonth() - 3)
+  const oneMonthAgo = new Date(
+    new Date().setMonth(new Date().getMonth() - 1)
   ).toISOString();
 
   const [metadatas, setMetadatas] = useState();
@@ -103,7 +103,7 @@ export default function Main() {
             <Paper className={styles["stacked-chart-paper"]} elevation={1}>
               <AllMetadataChart
                 title="All API Chart"
-                startTime={threeMonthAgo}
+                startTime={oneMonthAgo}
                 endTime={now}
               />
             </Paper>
@@ -119,13 +119,13 @@ export default function Main() {
               <MetadataChart
                 title="All API Chart"
                 metaId={1}
-                startTime={threeMonthAgo}
+                startTime={oneMonthAgo}
                 endTime={now}
               />
             </Paper>
             <Paper className={styles["pie-chart-paper"]} elevation={1}>
               <Box className={styles["pie-chart"]}>
-                <PieChart data={ResultDayData} title="2023.02.30" />
+                <AllMetadataPieChart />
               </Box>
             </Paper>
           </Box>

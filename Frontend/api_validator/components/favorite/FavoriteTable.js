@@ -48,6 +48,10 @@ export default function FavoriteTable(props) {
     new Date().setMonth(new Date().getMonth() - 3)
   ).toISOString();
 
+  const getRowClassName = (params) => {
+    return styles.rowHover; // CSS 클래스 이름
+  };
+
   const [metadataName, setMetadataName] = useState();
   const [testResult, setTestResult] = useState("None");
   const [category, setCategory] = useState();
@@ -166,6 +170,7 @@ export default function FavoriteTable(props) {
           initialState={{
             pagination: { paginationModel: { pageSize: 25, page: 0 } },
           }}
+          getRowClassName={getRowClassName}
         />
       </div>
 

@@ -35,7 +35,6 @@ export function AllMetadataChart(props) {
   const failData = [];
 
   const [data, setData] = useState(apiTestSample);
-  const [unit, setUnit] = useState("day");
 
   const [loading, setLoading] = useState(false);
 
@@ -71,8 +70,17 @@ export function AllMetadataChart(props) {
 
       datas.map((item) => {
         labels.push(item.created_at);
-        passData.push(item.pass_cnt);
-        failData.push(item.fail_cnt);
+        if (item.pass_cnt === 0 && item.fail_cnt === 0) {
+          passData.push(0);
+          failData.push(0);
+        } else {
+          passData.push(
+            (item.pass_cnt / (item.pass_cnt + item.fail_cnt)) * 100
+          );
+          failData.push(
+            (item.fail_cnt / (item.pass_cnt + item.fail_cnt)) * 100
+          );
+        }
       });
 
       const result = {
@@ -95,7 +103,7 @@ export function AllMetadataChart(props) {
     };
 
     getData();
-  }, [unit]);
+  }, []);
 
   return (
     <Box height="100%" display="flex" flexDirection="column">
