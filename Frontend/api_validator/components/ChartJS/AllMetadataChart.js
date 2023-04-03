@@ -34,6 +34,7 @@ export function AllMetadataChart(props) {
   const passData = [];
   const failData = [];
 
+  const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
 
   const [loading, setLoading] = useState(false);
