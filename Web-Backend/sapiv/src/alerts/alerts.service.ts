@@ -141,14 +141,14 @@ export class AlertsService {
         context: {
           // Data to be sent to template engine.
           msg: `${emailDto.msg}`,
-          link: `https://sapiv.site/apis/${metadata.metadata_meta_id}/?time=${metadata.time}`,
-          time: `${emailDto.created_at}`,
+          link: `https://sapiv.site/apis/${metadata.metadata_meta_id}?time=${emailDto.time}`,
+          time: `${emailDto.time}`,
           method: `${metadata.api_method == 0 ? 'GET' : metadata.api_method == 1 ? 'POST' : metadata.api_method == 2 ? 'PUT' : 'DELETE' }`,
           path: `${metadata.api_resources}`,
           domain: `${metadata.domain_domain}`,
-          category: `${metadata.category_category_name}`,
+          category: `${metadata.category_name}`,
           id: `${metadata.metadata_meta_id}`,
-          nano: `${metadata.name}`
+          name: `${metadata.metadata_name}`
         }
       })
       .then(() => {})
