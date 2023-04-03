@@ -17,11 +17,7 @@ export default function Header() {
           <MenuIcon />
         </IconButton> */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Image
-            src={logo}
-            style={{ width: "10%", height: "10%" }}
-            alt="logo"
-          />
+          <Image src={logo} style={{ width: 170, height: 40 }} alt="logo" />
         </Typography>
         <IconButton
           size="large"
