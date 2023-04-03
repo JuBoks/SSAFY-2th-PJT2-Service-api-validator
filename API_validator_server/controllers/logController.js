@@ -110,7 +110,6 @@ const getResultByAction = async (req, res) => {
 
     try {
         const data = await actionService.getActionsByDate(startTime, endTime);
-        console.log(data);
 
         res.status(200).send({ status: "OK", "data": data });
     }

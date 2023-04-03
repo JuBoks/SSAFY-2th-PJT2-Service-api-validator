@@ -126,6 +126,7 @@ metadataController.testMetadata);
 
 router.post("/metadatas/:metaId/expect",
   param('metaId').exists().isInt(),
+  body('response').exists(),
   validationCheck,
   metadataController.createExpectResponse
 );

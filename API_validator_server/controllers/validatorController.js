@@ -6,7 +6,6 @@ const getApiList = async (req, res) => {
     const data = await validatorService.getApiList();
     res.status(200).send(data);
   } catch (error) {
-    console.log(error);
     res
       .status(error?.status || 500)
       .send({ status: "FAILED", data: { error: error?.message || error } });
@@ -24,7 +23,6 @@ const createApiTestResult = async (req, res) => {
     );
     res.status(200).send(data);
   } catch (error) {
-    console.log(error);
     res
       .status(error?.status || 500)
       .send({ status: "FAILED", data: { error: error?.message || error } });

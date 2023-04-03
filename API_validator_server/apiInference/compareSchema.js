@@ -56,7 +56,6 @@ const compareRootSchema = (source, criteria) => {
                 let object= {};
                 object[el] = final_changes;
 
-                console.log("바뀐 내용",final_changes);
                 all_changes.push(object);
               }
             }
