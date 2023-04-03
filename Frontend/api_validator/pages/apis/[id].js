@@ -59,7 +59,6 @@ export default function PostPage() {
             const metadata = await GetApisAllTestcaseId(idToken, id);
             
             setMetaData(metadata);
-            console.log(res.data.data);
           } catch (error) {
             console.log(error.message);
           }

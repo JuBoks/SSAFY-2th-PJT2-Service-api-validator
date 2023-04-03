@@ -9,8 +9,8 @@ import OutlinedCard from "./OutlinedCard";
 export default function TabControl(props) {
   const [value, setValue] = React.useState("1");
   const flatProps = {
-    json: props.json && props.json.content ? props.json.content.response : [],
-    schema: props.json && props.json.content ? props.json.content.schema : [],
+    json: props.json,
+    schema: props.schema,
   };
 
   const tabListAPI = [
