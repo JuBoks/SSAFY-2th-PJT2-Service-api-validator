@@ -7,14 +7,12 @@ import {
   Modal,
   Divider,
   Paper,
-  Link,
   Autocomplete,
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
 import { methodList } from "@/constants/methodList";
 import {
@@ -38,6 +36,7 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  overflow: "scroll",
 };
 
 function createdRow(index, id, name, category, domain, path, method, interval) {
@@ -272,35 +271,80 @@ export default function APITable(props) {
 
       <Modal open={openDetail} onClose={handleCloseDetail}>
         <Box sx={style}>
-          <Typography variant="h6">{metadataName}</Typography>
-          <Typography variant="subtitle1" mt={2}>
-            Category : {metadataCategory}
-          </Typography>
-          <Box display="flex" mt={2}>
-            <Typography variant="subtitle1" mr={2}>
-              {metadataMethod}
+          <Typography variant="h5">API 상세정보</Typography>
+          <Divider />
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Name :
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" ml={1}>
+              {metadataName}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Category :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataCategory}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              url :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
               {metadataDomain}
               {metadataResource}
             </Typography>
           </Box>
-          <Typography variant="subtitle1" mt={2}>
-            Interval : {metadataInterval}
-          </Typography>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Method :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataMethod}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Interval :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataInterval}
+            </Typography>
+          </Box>
           <Divider />
-          <Typography variant="h5" mt={2}>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
             Header
           </Typography>
-          <Paper className={styles.paper}>{metadataHeader}</Paper>
-          <Typography variant="h5" mt={2}>
+          <Paper
+            className={styles.paper}
+            sx={{ height: 200 }}
+            variant="outlined"
+          >
+            {metadataHeader}
+          </Paper>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
             Body
           </Typography>
-          <Paper className={styles.paper}>{metadataBody}</Paper>
-          <Typography variant="h5" mt={2}>
-            Param
+          <Paper
+            className={styles.paper}
+            variant="outlined"
+            sx={{ height: 200 }}
+          >
+            {metadataBody}
+          </Paper>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+            Params
           </Typography>
-          <Paper className={styles.paper}>{metadataParam}</Paper>
+          <Paper
+            className={styles.paper}
+            variant="outlined"
+            sx={{ height: 200 }}
+          >
+            {metadataParam}
+          </Paper>
         </Box>
       </Modal>
 

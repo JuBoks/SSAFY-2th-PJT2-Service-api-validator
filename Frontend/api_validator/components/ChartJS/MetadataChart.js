@@ -116,7 +116,7 @@ export function MetadataChart(props) {
   }, [unit]);
 
   return (
-    <Box height="100%" display="flex" flexDirection="column">
+    <Box width="100%" display="flex" flexDirection="column">
       <Box display="flex" height={20} flexDirection="row-reverse">
         <ToggleButtonGroup
           value={unit}
