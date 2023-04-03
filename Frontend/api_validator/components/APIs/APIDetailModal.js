@@ -27,7 +27,7 @@ export default function APIDetailModal(props) {
           </Box>
           <Divider />
           <Box display="flex" mb={2}>
-            <Box width="50%">
+            <Box width="40%">
               <Box mt={1} mb={1} display="flex">
                 <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                   Name :
@@ -82,7 +82,11 @@ export default function APIDetailModal(props) {
                 </Typography>
               </Box>
             </Box>
-            <Paper className={styles["stacked-chart"]} width="50%">
+            <Paper
+              className={styles["stacked-chart"]}
+              width="60%"
+              variant="outlined"
+            >
               <MetadataChart
                 metaId={datas.metaId}
                 startTime={threeMonthAgo}

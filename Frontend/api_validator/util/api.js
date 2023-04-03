@@ -538,7 +538,24 @@ export const GetLogsId = async (idToken, id) => {
   return res;
 };
 
-export const GetLogsGraphAction = async (idToken, startTime, endTime) => {
+export const GetLogsGraphAction = async (
+  idToken,
+  startTime,
+  endTime,
+  month,
+  week,
+  day
+) => {
+  let query;
+  if (month) {
+    query = `month=${month}`;
+  } else if (week) {
+    query = `week=${week}`;
+  } else if (day) {
+    query = `day=${day}`;
+  } else {
+    query = `day=1`;
+  }
   const headers = {
     headers: {
       idtoken: idToken,
@@ -546,7 +563,7 @@ export const GetLogsGraphAction = async (idToken, startTime, endTime) => {
   };
 
   const res = await api.get(
-    `/logs/graph/action?startTime=${startTime}&endTime=${endTime}`,
+    `/logs/graph/action?startTime=${startTime}&endTime=${endTime}&${query}`,
     headers
   );
   return res;

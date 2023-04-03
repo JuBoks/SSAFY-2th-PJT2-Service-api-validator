@@ -18,7 +18,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { GetLogsGraphAction } from "@/util/api";
+import { GetFavoritesTestTermStartEnd, GetLogsGraphAction } from "@/util/api";
 import { cycleList } from "@/constants/cycleList";
 
 ChartJS.register(
@@ -30,24 +30,23 @@ ChartJS.register(
   Legend
 );
 
-export function AllMetadataChart(props) {
+export function FavoriteChart(props) {
   const { title } = props;
 
   const labels = [];
   const passData = [];
   const failData = [];
-  const notExecuteData = [];
 
   const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
-  const [unit, setUnit] = useState("day");
+  const [unit, setUnit] = useState(24);
 
   const [loading, setLoading] = useState(false);
 
-  const now = new Date().toISOString();
-  const startTime = new Date(
-    new Date().setMonth(new Date().getMonth() - intervalTime)
-  ).toISOString();
+  const now = Math.floor(new Date().getTime() / 1000.0);
+  const startTime = Math.floor(
+    new Date(new Date().setMonth(new Date().getMonth() - intervalTime) / 1000.0)
+  );
 
   const options = {
     plugins: {
@@ -79,42 +78,22 @@ export function AllMetadataChart(props) {
       const idToken = localStorage.getItem("idToken");
 
       const datas = (
-        await GetLogsGraphAction(
-          idToken,
-          startTime,
-          now,
-          unit === "month" ? 1 : null,
-          unit === "week" ? 1 : null,
-          unit === "day" ? 1 : null
-        )
-      ).data.data;
+        await GetFavoritesTestTermStartEnd(idToken, unit, startTime, now)
+      ).data;
 
       datas.map((item) => {
-        labels.push(item.count_date);
-        if (
-          item.pass_cnt === 0 &&
-          item.fail_cnt === 0 &&
-          item.unexcuted_cnt === 0
-        ) {
+        const passCnt = parseInt(item.pass_cnt);
+        const failCnt = parseInt(item.fail_cnt);
+        let unitTime = 10;
+        if (unit === 672) unitTime = 7;
+
+        labels.push(item.time.substr(0, unitTime));
+        if (item.pass_cnt === 0 && item.fail_cnt === 0) {
           passData.push(0);
           failData.push(0);
-          notExecuteData.push(0);
         } else {
-          passData.push(
-            (item.pass_cnt /
-              (item.pass_cnt + item.fail_cnt + item.unexcuted_cnt)) *
-              100
-          );
-          failData.push(
-            (item.fail_cnt /
-              (item.pass_cnt + item.fail_cnt + item.unexcuted_cnt)) *
-              100
-          );
-          notExecuteData.push(
-            (item.unexcuted_cnt /
-              (item.pass_cnt + item.fail_cnt + item.unexcuted_cnt)) *
-              100
-          );
+          passData.push((passCnt / (passCnt + failCnt)) * 100);
+          failData.push((failCnt / (passCnt + failCnt)) * 100);
         }
       });
 
@@ -130,11 +109,6 @@ export function AllMetadataChart(props) {
             label: "Fail",
             data: failData,
             backgroundColor: "rgb(255, 99, 132)",
-          },
-          {
-            label: "N/E",
-            data: notExecuteData,
-            backgroundColor: "rgb(53, 162, 235)",
           },
         ],
       };
@@ -165,9 +139,9 @@ export function AllMetadataChart(props) {
           onChange={(event, newValue) => setUnit(newValue)}
           aria-label="Time Unit"
         >
-          <ToggleButton value="month">월</ToggleButton>
-          <ToggleButton value="week">주</ToggleButton>
-          <ToggleButton value="day">일</ToggleButton>
+          <ToggleButton value={672}>월</ToggleButton>
+          <ToggleButton value={168}>주</ToggleButton>
+          <ToggleButton value={24}>일</ToggleButton>
         </ToggleButtonGroup>
       </Box>
       {loading ? (

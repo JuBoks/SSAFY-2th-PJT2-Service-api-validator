@@ -181,7 +181,7 @@ export default function FavoriteTable(props) {
 
   return (
     <div style={{ width: "100%" }}>
-      <div style={{ height: 350, width: "100%" }}>
+      <div style={{ width: "100%" }}>
         <DataGrid
           autoHeight
           columns={columns}
