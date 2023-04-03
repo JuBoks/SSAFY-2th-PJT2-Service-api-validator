@@ -71,11 +71,11 @@ const getApiList = async (conn) => {
   }
 };
 
-const updateMetaRequestTime = async (conn, meta_id) => {
+const updateMetaRequestTime = async (conn, meta_id, now_date) => {
   try {
     let sql =
-      "UPDATE tbl_metadata SET last_req_time = UNIX_TIMESTAMP(NOW()) WHERE (meta_id = ?);";
-    let params = [meta_id];
+      "UPDATE tbl_metadata SET last_req_time = UNIX_TIMESTAMP(?) WHERE (meta_id = ?);";
+    let params = [now_date, meta_id];
     const [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {

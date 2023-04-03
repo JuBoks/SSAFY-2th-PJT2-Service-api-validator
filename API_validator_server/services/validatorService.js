@@ -2,6 +2,8 @@ const Validator = require("../database/Validator");
 const pool = require("../database/utils");
 const extractRootSchema = require("../apiInference/extractRootSchema");
 const compareSchema = require("../apiInference/compareSchema");
+const axios = require("axios");
+require("dotenv").config();
 
 const isEmpty = (object) => {
   return Object.keys(object).length === 0;
@@ -12,6 +14,7 @@ const createApiTestResult = async (meta_id, action_id, response) => {
 
   //response 자료형 추론하기
   const schema = extractRootSchema(response);
+  const now_date = new Date().toISOString().substring(0,10);
 
   try {
     //트랜잭션 시작
@@ -56,9 +59,8 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     }
 
     //las req time 업데이트
-    await Validator.updateMetaRequestTime(conn, meta_id);
+    await Validator.updateMetaRequestTime(conn, meta_id, now_date);
 
-    //fix. 여기에 에러메시지도 추가해야함
     const data = [
       meta_id,
       data_id,
@@ -66,12 +68,17 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       expect_response.response_id,
       JSON.stringify(response),
       result,
-      (testMessage!==null && Object.keys(testMessage).length > 0 )? JSON.stringify(testMessage):null
+      (result)?null:JSON.stringify(testMessage)
     ];
 
 
     //테스트 테이블에 저장
     const result_id = await Validator.createTestResult(conn, data);
+
+    //fail 이면 백엔드 서버에게 전송
+    if(!result) {
+      const pass = await submitErrorToWebServer(meta_id, result_id, now_date, testMessage);
+    }
 
     await conn.commit();
 
@@ -83,6 +90,22 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     conn.release();
   }
 };
+
+const submitErrorToWebServer = async (meta_id, result_id, now_date, errorMessage) => {
+  await axios({
+    url : process.env.BACKEND_SERVER+`/alerts/${meta_id}`,
+    method : "post",
+    headers : {chk : process.env.CHECK},
+    data: {
+      result_id : result_id,
+	    time: now_date,
+	    msg: errorMessage
+    }
+  })
+  .catch(error => {
+    throw new Error("cannot post web backend server.");
+  })
+}
 
 const getApiList = async () => {
   const conn = await pool.getConnection();
