@@ -24,7 +24,6 @@ import {
   GetDomainsId,
   GetMetadatasId,
   GetUsers,
-  PatchApisId,
   PatchMetadatasId,
   PostApisTest,
   PostMetadatas,
@@ -37,6 +36,7 @@ import Tab from "@mui/material/Tab";
 import APIinfoTable from "@/components/admin/APIinfoTable";
 import Router, { useRouter } from "next/router";
 import { Route } from "react-router-dom";
+import Loading from "@/components/common/Loading";
 
 const json = {
   1: "Snow",
@@ -57,7 +57,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box mt={1}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -103,6 +103,8 @@ export default function APIedit() {
   const [param, setParam] = useState({});
   const [responseJson, setResponseJson] = useState();
   const [metaId, setMetaId] = useState();
+
+  const [openResponse, setOpenResponse] = useState("hidden");
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -154,8 +156,10 @@ export default function APIedit() {
         body
       );
       setResponseJson(response);
+      setOpenResponse("visible");
     } catch (error) {
       console.log(error);
+      setOpenResponse("hidden");
       alert(error);
     }
   };
@@ -271,17 +275,13 @@ export default function APIedit() {
   }, []);
 
   if (loading) {
-    return (
-      <>
-        <div>대기 중</div>
-      </>
-    );
+    return <Loading />;
   }
 
   return (
     <>
       <Header />
-      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
+      <Box display="flex">
         <Nav isAdmin={isAdmin} isAdminPage={true} />
         <Box width="80%">
           <Toolbar />
@@ -297,15 +297,17 @@ export default function APIedit() {
             >
               API를 추가하거나 편집이 가능합니다.
             </Typography>
+            <Divider />
             <Box mt={3} display="flex">
               <TextField
                 label="Name"
                 variant="standard"
                 value={apiName}
                 onChange={handleNameChange}
+                sx={{ width: 250, marginRight: 3 }}
               />
               <Autocomplete
-                sx={{ width: 300 }}
+                sx={{ width: 300, marginRight: 3 }}
                 options={categories}
                 value={categoryVal}
                 getOptionLabel={(option) => option.name}
@@ -316,7 +318,7 @@ export default function APIedit() {
                 )}
               />
               <Autocomplete
-                sx={{ width: 300 }}
+                sx={{ width: 300, marginRight: 3 }}
                 options={domains}
                 value={domainVal}
                 getOptionLabel={(option) => option.domain}
@@ -338,9 +340,9 @@ export default function APIedit() {
                 )}
               />
             </Box>
-            <Box mt={3} display="flex">
+            <Box mt={3} mb={3} display="flex">
               <Autocomplete
-                sx={{ width: 100 }}
+                sx={{ width: 100, marginRight: 3 }}
                 options={apis.filter(
                   (option) => option.resources === resources
                 )}
@@ -382,19 +384,49 @@ export default function APIedit() {
                 <APIinfoTable data={param} setData={setParam} />
               </TabPanel>
             </Box>
-            <Box>
-              <Button onClick={handleTestClick}>Test</Button>
+            <Box display="flex" flexDirection="row-reverse" mt={1} mb={1}>
+              <Button
+                onClick={handleTestClick}
+                variant="contained"
+                size="large"
+              >
+                API Test
+              </Button>
             </Box>
+
             <Divider />
-            <Typography variant="h5">Response</Typography>
-            <Paper className={styles.paper}>
-              {JSON.stringify(responseJson, null, "\t")}
-            </Paper>
-            {isEdit ? (
-              <Button onClick={handleChangeClick}>Change</Button>
-            ) : (
-              <Button onClick={handleSaveClick}>Save</Button>
-            )}
+
+            <Box visibility={openResponse}>
+              <Typography variant="h5" mt={2} mb={2}>
+                Response
+              </Typography>
+              <Paper
+                variant="outlined"
+                className={styles.paper}
+                sx={{ height: 300, overflow: "scroll" }}
+              >
+                {JSON.stringify(responseJson, null, "\t")}
+              </Paper>
+              <Box mt={2} mb={2} display="flex" flexDirection="row-reverse">
+                {isEdit ? (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleChangeClick}
+                  >
+                    Change
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleSaveClick}
+                  >
+                    Save
+                  </Button>
+                )}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>
