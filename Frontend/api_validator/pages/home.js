@@ -102,7 +102,7 @@ export default function Main() {
           <Box m={1} width="100%" display="flex">
             <Paper className={styles["stacked-chart-paper"]} elevation={1}>
               <AllMetadataChart
-                title="All API Chart"
+                title="Favorite API Chart"
                 startTime={oneMonthAgo}
                 endTime={now}
               />

@@ -9,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import auth from "@/util/auth";
 import { apiTestSample } from "@/constants/apiTestSample";
 import {
   Box,
@@ -16,7 +17,8 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { GetLogsGraphAction } from "@/util/api";
+import { GetFavoritesTestTermStartEnd, GetLogsGraphAction } from "@/util/api";
+import { onAuthStateChanged } from "firebase/auth";
 
 ChartJS.register(
   CategoryScale,
@@ -66,20 +68,21 @@ export function AllMetadataChart(props) {
 
       const idToken = localStorage.getItem("idToken");
 
-      const datas = (await GetLogsGraphAction(idToken, startTime, endTime)).data
-        .data;
-
+      const response = await GetFavoritesTestTermStartEnd(idToken, +intervalTime, Date.parse(startTime) / 1000 , Date.parse(endTime) / 1000);
+      const datas = response? response.data : [];
+      
       datas.map((item) => {
-        labels.push(item.created_at);
-        if (item.pass_cnt === 0 && item.fail_cnt === 0) {
+        labels.push(item.time);
+        
+        if (item.pass_cnt === 0 && item.fail_cnt) {
           passData.push(0);
           failData.push(0);
         } else {
           passData.push(
-            (item.pass_cnt / (item.pass_cnt + item.fail_cnt)) * 100
-          );
-          failData.push(
-            (item.fail_cnt / (item.pass_cnt + item.fail_cnt)) * 100
+            (+item.pass_cnt / (+item.pass_cnt + +item.fail_cnt)) * 100
+            );
+            failData.push(
+              (+item.fail_cnt / (+item.pass_cnt + +item.fail_cnt)) * 100
           );
         }
       });
@@ -104,7 +107,9 @@ export function AllMetadataChart(props) {
     };
 
     getData();
-  }, []);
+}, []);
+
+console.log(data);
 
   return (
     <Box height="100%" display="flex" flexDirection="column">

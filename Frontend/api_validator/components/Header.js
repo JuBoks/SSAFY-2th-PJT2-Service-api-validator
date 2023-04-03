@@ -16,11 +16,14 @@ export default function Header() {
         {/* <IconButton size="large" edge="start" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
         </IconButton> */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }}>
           <Image
             src={logo}
             style={{ width: "10%", height: "10%" }}
             alt="logo"
+            onClick={(e) => {
+              Router.push("/home");
+            }}
           />
         </Typography>
         <IconButton

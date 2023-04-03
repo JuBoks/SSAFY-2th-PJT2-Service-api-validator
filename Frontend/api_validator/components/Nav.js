@@ -34,7 +34,7 @@ function Nav({ isAdmin, isAdminPage }) {
     {
       text: "APIs",
       icon: <ArticleIcon />,
-      path: "/apis",
+      path: "/tcs",
     },
     {
       text: "Profile",

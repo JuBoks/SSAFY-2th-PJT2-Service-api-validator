@@ -5,7 +5,7 @@ export function ImageList({ json }) {
   return (
     <div>
       {imageUrls.map((url, index) => (
-        <><img key={url} src={url} alt="" /><p>이미지{index+1} : {url}</p></>
+        <div key={index}><img key={url} src={url} alt="" /><p>이미지{index+1} : {url}</p></div>
       ))}
     </div>
   );
