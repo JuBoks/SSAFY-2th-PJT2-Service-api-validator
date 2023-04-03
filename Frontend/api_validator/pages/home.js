@@ -22,6 +22,8 @@ import { AllMetadataChart } from "@/components/ChartJS/AllMetadataChart";
 import { AllMetadataPieChart } from "@/components/ChartJS/AllMetadataPieChart";
 import FavoriteTable from "@/components/favorite/FavoriteTable";
 import APIResultTable from "@/components/APIs/APIResultTable";
+import { FavoriteChart } from "@/components/ChartJS/FavoirteChart";
+import { FavoritePieChart } from "@/components/ChartJS/FavoritePieChart";
 
 export default function Main() {
   const now = new Date().toISOString();
@@ -100,14 +102,18 @@ export default function Main() {
         <Box width="80%">
           <Toolbar />
           <Box m={1} width="100%" display="flex">
-            <Paper className={styles["stacked-chart-paper"]} elevation={1}>
-              <AllMetadataChart
-                title="All API Chart"
-                startTime={oneMonthAgo}
-                endTime={now}
-              />
+            <Paper
+              className={styles["stacked-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <AllMetadataChart title="All API" />
             </Paper>
-            <Paper className={styles["pie-chart-paper"]} elevation={1}>
+            <Paper
+              className={styles["pie-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
               <Box className={styles["pie-chart"]}>
                 <AllMetadataPieChart />
               </Box>
@@ -115,17 +121,20 @@ export default function Main() {
           </Box>
 
           <Box m={1} width="100%" display="flex">
-            <Paper className={styles["stacked-chart-paper"]} elevation={1}>
-              <MetadataChart
-                title="All API Chart"
-                metaId={1}
-                startTime={oneMonthAgo}
-                endTime={now}
-              />
+            <Paper
+              className={styles["stacked-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <FavoriteChart title="Favoirte API" />
             </Paper>
-            <Paper className={styles["pie-chart-paper"]} elevation={1}>
+            <Paper
+              className={styles["pie-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
               <Box className={styles["pie-chart"]}>
-                <AllMetadataPieChart />
+                <FavoritePieChart />
               </Box>
             </Paper>
           </Box>
@@ -141,7 +150,7 @@ export default function Main() {
             />
           </Box>
 
-          <Box m={1} mt={15} width="100%">
+          <Box m={1} mt={5} width="100%">
             <Typography variant="h5" mb={1}>
               All API
             </Typography>

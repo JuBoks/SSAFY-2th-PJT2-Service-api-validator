@@ -12,11 +12,14 @@ import { Bar } from "react-chartjs-2";
 import { GetLogsGraphMetadatasId } from "@/util/api";
 import { apiTestSample } from "@/constants/apiTestSample";
 import {
+  Autocomplete,
   Box,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { cycleList } from "@/constants/cycleList";
 
 ChartJS.register(
   CategoryScale,
@@ -28,16 +31,24 @@ ChartJS.register(
 );
 
 export function MetadataChart(props) {
-  const { title, metaId, startTime, endTime } = props;
+  const { title, metaId } = props;
 
   const labels = [];
   const passData = [];
   const failData = [];
 
+  const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
   const [unit, setUnit] = useState("day");
 
   const [loading, setLoading] = useState(false);
+
+  const now = new Date().toISOString();
+  const startTime = new Date(
+    new Date().setMonth(new Date().getMonth() - intervalTime)
+  ).toISOString();
+
+  const handleIntervalChange = (newValue) => setIntervalTime(newValue);
 
   const options = {
     plugins: {
@@ -49,7 +60,7 @@ export function MetadataChart(props) {
         },
       },
     },
-    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         stacked: true,
@@ -70,7 +81,7 @@ export function MetadataChart(props) {
         idToken,
         metaId,
         startTime,
-        endTime,
+        now,
         unit === "month" ? 1 : null,
         unit === "week" ? 1 : null,
         unit === "day" ? 1 : null
@@ -113,11 +124,21 @@ export function MetadataChart(props) {
     };
 
     getData();
-  }, [unit]);
+  }, [unit, intervalTime]);
 
   return (
-    <Box width="100%" display="flex" flexDirection="column">
-      <Box display="flex" height={20} flexDirection="row-reverse">
+    <Box width="100%" height="100%" display="flex" flexDirection="column">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Autocomplete
+          sx={{ width: 150 }}
+          options={cycleList}
+          value={intervalTime}
+          getOptionLabel={(option) => option + " month"}
+          id="intervalTime"
+          disableClearable
+          onChange={(event, newValue) => handleIntervalChange(newValue)}
+          renderInput={(params) => <TextField {...params} variant="standard" />}
+        />
         <ToggleButtonGroup
           value={unit}
           exclusive
@@ -132,7 +153,7 @@ export function MetadataChart(props) {
       {loading ? (
         <></>
       ) : (
-        <Box width="100%" height="90%" display="flex" justifyContent="center">
+        <Box width="100%" height="100%" display="flex" justifyContent="center">
           <Bar options={options} data={data} />
         </Box>
       )}
