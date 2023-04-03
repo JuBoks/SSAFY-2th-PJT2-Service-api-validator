@@ -24,8 +24,8 @@ export class ApilogsController {
     return this.logsService.getLogByResultId(+id);
   }
   @Get('graph/action')
-  getResultByAction(@Query() timeDto: TimeDto) {
-    return this.logsService.getResultByAction(timeDto);
+  getResultByAction(@Query() resultDto: ResultDto) {
+    return this.logsService.getResultByAction(resultDto);
   }
   @Get('graph/metadatas/:id')
   getResultByMetaId(@Param('id') id: string, @Query() resultDto: ResultDto) {

@@ -67,9 +67,22 @@ export class ApilogsService {
     return data;
   }
 
-  async getResultByAction(timeDto: TimeDto) {
+  async getResultByAction(resultDto: ResultDto) {
+    let query;
+    if(resultDto.month){
+      query = `month=${resultDto.month}`;
+    }
+    else if(resultDto.week){
+      query = `week=${resultDto.week}`;
+    }
+    else if(resultDto.day){
+      query = `day=${resultDto.day}`;
+    }
+    else{
+      query = `day=1`;
+    }
     const { data } = await firstValueFrom(
-      this.httpService.get<any>(process.env.VALIDATOR_LOG + `/graph/action?startTime=${timeDto.startTime}&endTime=${timeDto.endTime}`, {headers: {chk: process.env.SERVER_KEY} } ).pipe(
+      this.httpService.get<any>(process.env.VALIDATOR_LOG + `/graph/action?startTime=${resultDto.startTime}&endTime=${resultDto.endTime}&${query}`, {headers: {chk: process.env.SERVER_KEY} } ).pipe(
         catchError((error: AxiosError) => {
           throw new HttpException(
             error.message,
