@@ -96,7 +96,7 @@ const testMetadata = async (metaId) => {
     }
     request.headers = metadata_data.header;
     request.params = metadata_data.params;
-    request.body = metadata_data.body;
+    request.data = metadata_data.body;
 
     await conn.commit();
   } catch (error) {
