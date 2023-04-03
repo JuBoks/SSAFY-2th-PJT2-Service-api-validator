@@ -99,7 +99,7 @@ const submitErrorToWebServer = async (meta_id, result_id, now_date, errorMessage
     data: {
       result_id : result_id,
 	    time: now_date,
-	    msg: errorMessage
+	    msg: JSON.stringify(errorMessage)
     }
   })
   .catch(error => {
