@@ -60,7 +60,7 @@ export default function PostPage() {
       );
     }
   };
-
+  
   useEffect(() => {
     if (!router.isReady) return;
     onAuthStateChanged(auth, async (user) => {
@@ -82,20 +82,20 @@ export default function PostPage() {
           } catch (error) {}
           setLoading(false);
         };
-
+        
         getLogs();
-      }
+      } 
       // login out
       else {
         router.push("/");
       }
     });
   }, [router.isReady]);
-
+  
   if (loading) {
     return <Loading />;
   }
-
+  
   function setCriterion(index) {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -128,9 +128,9 @@ export default function PostPage() {
   return (
     <Box>
       <Header />
-      <Box display="flex" width="80%">
+      <Box display="flex" width="100%">
         <Nav />
-        <Box component="main" m={5} width="80%">
+        <Box component="main" m={5} width="100%">
           <Toolbar />
           <Typography variant="h4">API Compare</Typography>
           <Typography variant="body1">
@@ -149,15 +149,11 @@ export default function PostPage() {
           </Typography>
           <Box display="flex" flexDirection="row" width="100%" mt={5}>
             <Box mr={4} width="50%">
-              <Typography variant="h5">
-                API {id} :{" "}
-                {testData && testData[index1]
-                  ? !testData[index1].content.result
-                    ? "PASS"
-                    : "FAIL"
-                  : ""}
-              </Typography>
-              <Playground
+              <Box display="flex">
+                <Typography variant="h5">API {id} : </Typography>
+                <Typography ml={1} variant="h5" color={testData && testData[index1] && !testData[index1].content.result ? "red" : "green"} >{testData && testData[index1] ? !testData[index1].content.result? "FAIL" : "PASS" : ""}</Typography>
+              </Box>
+              <Playground 
                 testData={testData}
                 getDate={getDate1}
                 value={testData ? testData[0] : {}}
@@ -188,15 +184,11 @@ export default function PostPage() {
               ></ImageList>
             </Box>
             <Box ml={4} width="50%">
-              <Typography variant="h5">
-                API {id} :{" "}
-                {testData && testData[index2]
-                  ? !testData[index2].content.result
-                    ? "PASS"
-                    : "FAIL"
-                  : ""}
-              </Typography>
-              <Playground
+            <Box display="flex">
+                <Typography variant="h5">API {id} : </Typography>
+                <Typography ml={1} variant="h5" color={testData && testData[index2] && !testData[index2].content.result ? "red" : "green"} >{testData && testData[index2] ? !testData[index2].content.result? "FAIL" : "PASS" : ""}</Typography>
+              </Box>
+              <Playground 
                 testData={testData}
                 getDate={getDate2}
                 value={testData ? testData[0] : {}}
@@ -204,7 +196,7 @@ export default function PostPage() {
               <Button variant="outlined" onClick={() => setCriterion(index2)}>
                 Set Criterion
               </Button>
-              <TabControl
+              <TabControl 
                 json={
                   testData && testData[index2]
                     ? diffString(

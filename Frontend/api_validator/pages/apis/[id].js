@@ -170,8 +170,8 @@ export default function PostPage() {
           <Box display="flex" flexDirection="row" sx={{ width: "100%" }}>
             <Box mr={4} sx={{ width: "50%" }}>
               <Box display="flex">
-              <Typography variant="h5">API {id} : </Typography>
-              <Typography ml={1} variant="h5" color={testData && testData[index] && !testData[index].content.result ? "red" : "green"} >{testData && testData[index] ? !testData[index].content.result? "FAIL" : "PASS" : ""}</Typography>
+                <Typography variant="h5">API {id} : </Typography>
+                <Typography ml={1} variant="h5" color={testData && testData[index] && !testData[index].content.result ? "red" : "green"} >{testData && testData[index] ? !testData[index].content.result? "FAIL" : "PASS" : ""}</Typography>
 
               </Box>
               <TabControl 
