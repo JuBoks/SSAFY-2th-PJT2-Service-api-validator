@@ -33,8 +33,13 @@ export class ApisService {
     let result;
     try{
       result = await axios.request(requestConfig);
+      return result.data;
     }
     catch(error){
+      console.log(error.reseponse);
+      if(error.response && error.response.status >= 400){
+        return error.response.data;
+      }
       throw new HttpException(
         "Fail",
         HttpStatus.FORBIDDEN
