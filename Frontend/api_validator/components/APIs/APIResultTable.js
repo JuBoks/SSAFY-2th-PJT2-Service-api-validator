@@ -145,10 +145,7 @@ export default function APIResultTable(props) {
     let testResult = "";
     let testDate = "";
     if (testResults.length !== 0) {
-      if (
-        testResults.length !== 0 &&
-        testResults[testResults.length - 1].content.result
-      ) {
+      if (testResults[testResults.length - 1].content.result) {
         testResult = "Pass";
         testDate = testResults[testResults.length - 1].created_at;
       } else {

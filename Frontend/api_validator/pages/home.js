@@ -101,7 +101,7 @@ export default function Main() {
         <Nav isAdmin={isAdmin} />
         <Box width="80%">
           <Toolbar />
-          <Box m={1} width="100%" display="flex">
+          <Box m={2} width="100%" display="flex">
             <Paper
               className={styles["stacked-chart-paper"]}
               elevation={1}
@@ -120,7 +120,7 @@ export default function Main() {
             </Paper>
           </Box>
 
-          <Box m={1} width="100%" display="flex">
+          <Box m={2} width="100%" display="flex">
             <Paper
               className={styles["stacked-chart-paper"]}
               elevation={1}
@@ -139,7 +139,7 @@ export default function Main() {
             </Paper>
           </Box>
 
-          <Box m={1} mt={5} width="100%">
+          <Box m={2} mt={5} width="100%">
             <Typography variant="h5" mb={1}>
               Favorite API
             </Typography>
@@ -150,7 +150,7 @@ export default function Main() {
             />
           </Box>
 
-          <Box m={1} mt={5} width="100%">
+          <Box m={2} mt={5} width="100%">
             <Typography variant="h5" mb={1}>
               All API
             </Typography>
