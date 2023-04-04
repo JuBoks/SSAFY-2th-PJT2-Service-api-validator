@@ -310,19 +310,19 @@ export default function PostPage() {
               <TabControl
                 json={
                   testData && testData[index2]
-                    ? diffString(
+                    ? JSON.stringify(
                         testData[index2].content.response,
-                        testData[index2].content.response,
-                        { full: true }
+                        null,
+                        "        "
                       )
                     : ""
                 }
                 schema={
                   testData && testData[index2]
-                    ? diffString(
+                    ? JSON.stringify(
                         testData[index2].content.schema,
-                        testData[index2].content.schema,
-                        { full: true }
+                        null,
+                        "  "
                       )
                     : ""
                 }

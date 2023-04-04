@@ -33,10 +33,6 @@ ChartJS.register(
 export function MetadataChart(props) {
   const { title, metaId } = props;
 
-  const labels = [];
-  const passData = [];
-  const failData = [];
-
   const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
   const [unit, setUnit] = useState("day");
@@ -45,7 +41,7 @@ export function MetadataChart(props) {
 
   const now = new Date().toISOString();
   const startTime = new Date(
-    new Date().setMonth(new Date().getMonth() - intervalTime)
+    new Date().setDate(new Date().getDate() - 7 * intervalTime)
   ).toISOString();
 
   const handleIntervalChange = (newValue) => setIntervalTime(newValue);
@@ -76,6 +72,10 @@ export function MetadataChart(props) {
       setLoading(true);
 
       const idToken = localStorage.getItem("idToken");
+
+      const labels = [];
+      const passData = [];
+      const failData = [];
 
       const response = await GetLogsGraphMetadatasId(
         idToken,
@@ -133,7 +133,7 @@ export function MetadataChart(props) {
           sx={{ width: 150 }}
           options={cycleList}
           value={intervalTime}
-          getOptionLabel={(option) => option + " month"}
+          getOptionLabel={(option) => option + " week"}
           id="intervalTime"
           disableClearable
           onChange={(event, newValue) => handleIntervalChange(newValue)}

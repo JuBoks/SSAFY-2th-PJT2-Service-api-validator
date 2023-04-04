@@ -1,12 +1,13 @@
-import React, { useRef, useLayoutEffect, useEffect, createRef } from 'react';
-import {createRoot} from 'react-dom/client';
-import styles from '@/styles/Diff.module.css'
+import React, { useRef, useLayoutEffect, useEffect, createRef } from "react";
+import { createRoot } from "react-dom/client";
+import styles from "@/styles/Diff.module.css";
+import { Typography } from "@mui/material";
 
 function JSONDiff(props) {
   const containerRef = useRef(null);
   const textRef = useRef(null);
   const text = props.json;
-  const lines = text && typeof(text) === 'string' ? text.split("\n") : [];
+  const lines = text && typeof text === "string" ? text.split("\n") : [];
   const elementsRef = useRef(lines.map(() => createRef()));
   const barRef = useRef(null);
   const rootRef = useRef(null);
@@ -64,14 +65,23 @@ function JSONDiff(props) {
         </p>
       );
     } else {
-      return <p key={index}>{line}</p>;
+      console.log(line);
+      return (
+        <Typography variant="body1" key={index}>
+          {line}
+        </Typography>
+      );
     }
   });
 
   return (
     <div className={styles.bigcontainer}>
       <div className={styles.container} ref={containerRef}>
-        <div className={styles.text} ref={textRef}>
+        <div
+          className={styles.text}
+          ref={textRef}
+          style={{ whiteSpace: "pre-wrap" }}
+        >
           {html}
         </div>
       </div>

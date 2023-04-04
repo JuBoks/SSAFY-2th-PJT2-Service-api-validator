@@ -33,21 +33,33 @@ ChartJS.register(
 export function AllMetadataChart(props) {
   const { title } = props;
 
-  const labels = [];
-  const passData = [];
-  const failData = [];
-  const notExecuteData = [];
-
   const [intervalTime, setIntervalTime] = useState(1);
   const [data, setData] = useState(apiTestSample);
   const [unit, setUnit] = useState("day");
 
   const [loading, setLoading] = useState(false);
 
-  const now = new Date().toISOString();
-  const startTime = new Date(
-    new Date().setMonth(new Date().getMonth() - intervalTime)
-  ).toISOString();
+  let now = new Date();
+  now.setHours(0);
+  now.setMinutes(0);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+
+  // let startTimeMonth = new Date(
+  //   new Date().setMonth(new Date().getMonth() - intervalTime)
+  // );
+  // startTimeMonth.setHours(0);
+  // startTimeMonth.setMinutes(0);
+  // startTimeMonth.setSeconds(0);
+  // startTimeMonth.setMilliseconds(0);
+
+  let startTime = new Date(
+    new Date().setDate(new Date().getDate() - 7 * intervalTime)
+  );
+  startTime.setHours(0);
+  startTime.setMinutes(0);
+  startTime.setSeconds(0);
+  startTime.setMilliseconds(0);
 
   const options = {
     plugins: {
@@ -71,18 +83,23 @@ export function AllMetadataChart(props) {
   };
 
   const handleIntervalChange = (newValue) => setIntervalTime(newValue);
+  // const handleWeekChang = (newValue) => setIntervalWeek(newValue);
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
 
       const idToken = localStorage.getItem("idToken");
+      const labels = [];
+      const passData = [];
+      const failData = [];
+      const notExecuteData = [];
 
       const datas = (
         await GetLogsGraphAction(
           idToken,
-          startTime,
-          now,
+          startTime.toISOString(),
+          now.toISOString(),
           unit === "month" ? 1 : null,
           unit === "week" ? 1 : null,
           unit === "day" ? 1 : null
@@ -124,7 +141,7 @@ export function AllMetadataChart(props) {
           {
             label: "Pass",
             data: passData,
-            backgroundColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgb(53, 162, 235)",
           },
           {
             label: "Fail",
@@ -134,7 +151,7 @@ export function AllMetadataChart(props) {
           {
             label: "N/E",
             data: notExecuteData,
-            backgroundColor: "rgb(53, 162, 235)",
+            backgroundColor: "lightgray",
           },
         ],
       };
@@ -148,16 +165,31 @@ export function AllMetadataChart(props) {
   return (
     <Box width="100%" height="100%" display="flex" flexDirection="column">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Autocomplete
-          sx={{ width: 150 }}
-          options={cycleList}
-          value={intervalTime}
-          getOptionLabel={(option) => option + " month"}
-          id="intervalTime"
-          disableClearable
-          onChange={(event, newValue) => handleIntervalChange(newValue)}
-          renderInput={(params) => <TextField {...params} variant="standard" />}
-        />
+        <Box display="flex">
+          <Autocomplete
+            sx={{ width: 150 }}
+            options={cycleList}
+            value={intervalTime}
+            getOptionLabel={(option) => option + " week"}
+            id="intervalTime"
+            onChange={(event, newValue) => handleIntervalChange(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} variant="standard" />
+            )}
+          />
+
+          {/* <Autocomplete
+            sx={{ width: 150 }}
+            options={cycleList}
+            value={intervalWeek}
+            getOptionLabel={(option) => option + " week"}
+            id="intervalTimeWeek"
+            onChange={(event, newValue) => handleWeekChang(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} variant="standard" />
+            )}
+          /> */}
+        </Box>
 
         <ToggleButtonGroup
           value={unit}
