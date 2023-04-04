@@ -134,14 +134,12 @@ export class AlertsService {
         to: user.email, // list of receivers
         from: 'noreply@nestjs.com', // sender address
         subject: 'Testing Nest MailerModule ✔', // Subject line
-        // text: 'welcome', // plaintext body
-        // html: '<b>welcome</b>', // HTML body content
         template: 'notification', // The `.pug`, `.ejs` or `.hbs` extension is appended automatically.
         
         context: {
           // Data to be sent to template engine.
           msg: `${emailDto.msg}`,
-          link: `https://sapiv.site/apis/${metadata.metadata_meta_id}?time=${emailDto.time}`,
+          link: `https://sapiv.site/apis/${metadata.metadata_meta_id}?result_id=${emailDto.result_id}`,
           time: `${emailDto.time}`,
           method: `${metadata.api_method == 0 ? 'GET' : metadata.api_method == 1 ? 'POST' : metadata.api_method == 2 ? 'PUT' : 'DELETE' }`,
           path: `${metadata.api_resources}`,
