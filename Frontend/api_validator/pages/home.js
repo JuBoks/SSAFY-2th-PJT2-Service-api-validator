@@ -43,12 +43,13 @@ export default function Main() {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const idToken = await auth.currentUser.getIdToken(true);
-        const res = await GetUsers(idToken);
-        localStorage.setItem("idToken", idToken);
+        setLoading(true);
 
         const getData = async () => {
-          setLoading(true);
+          const idToken = await auth.currentUser.getIdToken(true);
+          const res = await GetUsers(idToken);
+          localStorage.setItem("idToken", idToken);
+
           const allData = await GetApisAllTestcase(idToken);
           const favoritesData = await GetFavorites(idToken);
           const favoriteList = {};
@@ -64,6 +65,20 @@ export default function Main() {
             alertList[item.metadata_meta_id] = item;
           });
 
+          if (res.data.state === 0) {
+            setIsAuthorize(false);
+            alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+            Router.push("/");
+          } else if (res.data.state === 1) {
+            setIsAuthorize(true);
+          } else if (res.data.state === 2) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          } else if (res.data.state === 3) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          }
+
           setMetadatas(allData.data);
           setAlerts(alertList);
           setFavorites(response.data);
@@ -71,26 +86,12 @@ export default function Main() {
         };
 
         getData();
-
-        if (res.data.state === 0) {
-          setIsAuthorize(false);
-          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
-          Router.push("/");
-        } else if (res.data.state === 1) {
-          setIsAuthorize(true);
-        } else if (res.data.state === 2) {
-          setIsAuthorize(true);
-          setIsAdmin(true);
-        } else if (res.data.state === 3) {
-          setIsAuthorize(true);
-          setIsAdmin(true);
-        }
       } else {
         setIsAuthorize(false);
         Router.push("/");
       }
     });
-  }, [isAdmin]);
+  }, []);
 
   if (loading) return <Loading />;
 

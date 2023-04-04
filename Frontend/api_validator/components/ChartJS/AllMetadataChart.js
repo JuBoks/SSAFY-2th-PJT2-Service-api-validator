@@ -133,7 +133,7 @@ export function AllMetadataChart(props) {
               100
           );
         }
-      });
+      }, []);
 
       const result = {
         labels,
