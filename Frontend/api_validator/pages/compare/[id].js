@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,6 +11,7 @@ import Playground from "@/components/Playground";
 import {
   GetApisAllTestcaseId,
   GetLogs,
+  GetUsers,
   PostMetadatasExpectId,
 } from "@/util/api";
 import auth from "@/util/auth";
@@ -19,15 +20,21 @@ import Loading from "@/components/common/Loading";
 import { diffString } from "json-diff";
 import { ImageList } from "@/util/ImageList";
 import Swal from "sweetalert2";
+import { Divider } from "@mui/material";
+import { methodList } from "@/constants/methodList";
 
 export default function PostPage() {
   const router = useRouter();
   const id = router.query.id;
+
   const [testData, setTestData] = useState(null);
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(0);
   const [diff, setDiff] = useState("");
   const [schemaDiff, setSchemaDiff] = useState("");
+
+  const [isAuthorize, setIsAuthorize] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [metaData, setMetaData] = useState(null);
 
@@ -60,13 +67,16 @@ export default function PostPage() {
       );
     }
   };
-  
+
   useEffect(() => {
     if (!router.isReady) return;
     onAuthStateChanged(auth, async (user) => {
       // login in
       if (user) {
         const idToken = await auth.currentUser.getIdToken(true);
+        const res = await GetUsers(idToken);
+        localStorage.setItem("idToken", idToken);
+
         const getLogs = async () => {
           setLoading(true);
           try {
@@ -82,20 +92,30 @@ export default function PostPage() {
           } catch (error) {}
           setLoading(false);
         };
-        
+
         getLogs();
-      } 
+
+        if (res.data.state === 0) {
+          setIsAuthorize(false);
+          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+          Router.push("/");
+        } else if (res.data.state === 1) {
+          setIsAuthorize(true);
+        } else if (res.data.state === 2) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        } else if (res.data.state === 3) {
+          setIsAuthorize(true);
+          setIsAdmin(true);
+        }
+      }
       // login out
       else {
         router.push("/");
       }
     });
   }, [router.isReady]);
-  
-  if (loading) {
-    return <Loading />;
-  }
-  
+
   function setCriterion(index) {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -125,55 +145,107 @@ export default function PostPage() {
     });
   }
 
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!metaData) {
+    return <Loading />;
+  }
+
   return (
     <Box>
       <Header />
       <Box display="flex" width="100%">
-        <Nav />
+        <Nav isAdmin={isAdmin} />
         <Box component="main" m={5} width="100%">
           <Toolbar />
-          <Typography variant="h4">API Compare</Typography>
-          <Typography variant="body1">
-            Category : {metaData ? metaData.data.category_name : ""} | Service :{" "}
-            {metaData ? metaData.data.domain_domain : ""} | Path :{" "}
-            {metaData ? metaData.data.api_resources : ""} | Method :{" "}
-            {metaData
-              ? metaData.data.api_method == 0
-                ? "GET"
-                : metaData.data.api_method == 1
-                ? "POST"
-                : metaData.data.api_method == 2
-                ? "PUT"
-                : "DELETE"
-              : ""}
-          </Typography>
+          <Typography variant="h4">{metaData.data.metadata_name}</Typography>
+
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Category :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metaData.data.category_name}
+            </Typography>
+          </Box>
+
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              url :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metaData.data.domain_domain}
+              {metaData.data.api_resources}
+            </Typography>
+          </Box>
+
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Method :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {methodList[metaData.data.api_method]}
+            </Typography>
+          </Box>
+
+          <Divider />
+
           <Box display="flex" flexDirection="row" width="100%" mt={5}>
             <Box mr={4} width="50%">
-              <Box display="flex">
-                <Typography variant="h5">API {id} : </Typography>
-                <Typography ml={1} variant="h5" color={testData && testData[index1] && !testData[index1].content.result ? "red" : "green"} >{testData && testData[index1] ? !testData[index1].content.result? "FAIL" : "PASS" : ""}</Typography>
+              <Box display="flex" justifyContent="space-between">
+                <Box display="flex">
+                  <Typography variant="h5">Result : </Typography>
+                  <Typography
+                    ml={1}
+                    variant="h5"
+                    color={
+                      testData &&
+                      testData[index1] &&
+                      !testData[index1].content.result
+                        ? "red"
+                        : "green"
+                    }
+                  >
+                    {testData && testData[index1]
+                      ? !testData[index1].content.result
+                        ? "FAIL"
+                        : "PASS"
+                      : ""}
+                  </Typography>
+                </Box>
+
+                <Box display="flex">
+                  <Button
+                    variant="outlined"
+                    sx={{ marginRight: 1 }}
+                    onClick={() => setCriterion(index1)}
+                  >
+                    Set Criterion
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      let data = testData[index1].content.response;
+                      const data_encoded = window.btoa(
+                        encodeURI(JSON.stringify(data))
+                      );
+                      window.location.href = `https://j8s002.p.ssafy.io/hero/new?j=${data_encoded}`;
+                    }}
+                  >
+                    Visualize
+                  </Button>
+                </Box>
               </Box>
-              <Playground 
+
+              <Playground
                 testData={testData}
                 getDate={getDate1}
                 value={testData ? testData[0] : {}}
               />
-              <Button variant="outlined" onClick={() => setCriterion(index1)}>
-                Set Criterion
-              </Button>
+
               <TabControl json={diff} schema={schemaDiff} />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  let data = testData[index1].content.response;
-                  const data_encoded = window.btoa(
-                    encodeURI(JSON.stringify(data))
-                  );
-                  window.location.href = `https://j8s002.p.ssafy.io/hero/new?j=${data_encoded}`;
-                }}
-              >
-                Visualize
-              </Button>
               <Typography variant="h6">Artifacts</Typography>
               <ImageList
                 json={
@@ -183,20 +255,59 @@ export default function PostPage() {
                 }
               ></ImageList>
             </Box>
+
             <Box ml={4} width="50%">
-            <Box display="flex">
-                <Typography variant="h5">API {id} : </Typography>
-                <Typography ml={1} variant="h5" color={testData && testData[index2] && !testData[index2].content.result ? "red" : "green"} >{testData && testData[index2] ? !testData[index2].content.result? "FAIL" : "PASS" : ""}</Typography>
+              <Box display="flex" justifyContent="space-between">
+                <Box display="flex">
+                  <Typography variant="h5">Result : </Typography>
+                  <Typography
+                    ml={1}
+                    variant="h5"
+                    color={
+                      testData &&
+                      testData[index2] &&
+                      !testData[index2].content.result
+                        ? "red"
+                        : "green"
+                    }
+                  >
+                    {testData && testData[index2]
+                      ? !testData[index2].content.result
+                        ? "FAIL"
+                        : "PASS"
+                      : ""}
+                  </Typography>
+                </Box>
+                <Box display="flex">
+                  <Button
+                    variant="outlined"
+                    sx={{ marginRight: 1 }}
+                    onClick={() => setCriterion(index2)}
+                  >
+                    Set Criterion
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      let data = testData[index2].content.response;
+                      const data_encoded = window.btoa(
+                        encodeURI(JSON.stringify(data))
+                      );
+                      window.location.href = `https://j8s002.p.ssafy.io/hero/new?j=${data_encoded}`;
+                    }}
+                  >
+                    Visualize
+                  </Button>
+                </Box>
               </Box>
-              <Playground 
+              <Playground
                 testData={testData}
                 getDate={getDate2}
                 value={testData ? testData[0] : {}}
               />
-              <Button variant="outlined" onClick={() => setCriterion(index2)}>
-                Set Criterion
-              </Button>
-              <TabControl 
+
+              <TabControl
                 json={
                   testData && testData[index2]
                     ? diffString(
@@ -216,18 +327,6 @@ export default function PostPage() {
                     : ""
                 }
               />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  let data = testData[index2].content.response;
-                  const data_encoded = window.btoa(
-                    encodeURI(JSON.stringify(data))
-                  );
-                  window.location.href = `https://j8s002.p.ssafy.io/hero/new?j=${data_encoded}`;
-                }}
-              >
-                Visualize
-              </Button>
               <Typography variant="h6">Artifacts</Typography>
               <ImageList
                 json={

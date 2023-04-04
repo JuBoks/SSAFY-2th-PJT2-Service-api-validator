@@ -140,15 +140,14 @@ export default function FavoriteTable(props) {
     const testResults = response.data.data;
     let testResult = "";
     let testDate = "";
-    if (
-      testResults.length !== 0 &&
-      testResults[testResults.length - 1].content.result
-    ) {
-      testResult = "Pass";
-      testDate = testResults[testResults.length - 1].created_at;
-    } else {
-      testResult = "Fail";
-      testDate = testResults[testResults.length - 1].created_at;
+    if (testResults.length !== 0) {
+      if (testResults[testResults.length - 1].content.result) {
+        testResult = "Pass";
+        testDate = testResults[testResults.length - 1].created_at;
+      } else {
+        testResult = "Fail";
+        testDate = testResults[testResults.length - 1].created_at;
+      }
     }
 
     const metadataName = val.row.metadataName;
