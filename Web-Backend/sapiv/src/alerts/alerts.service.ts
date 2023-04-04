@@ -139,7 +139,7 @@ export class AlertsService {
         context: {
           // Data to be sent to template engine.
           msg: `${emailDto.msg}`,
-          link: `https://sapiv.site/apis/${metadata.metadata_meta_id}?result_id=${emailDto.result_id}`,
+          link: `https://sapiv.site/testcases/${metadata.metadata_meta_id}?result_id=${emailDto.result_id}`,
           time: `${emailDto.time}`,
           method: `${metadata.api_method == 0 ? 'GET' : metadata.api_method == 1 ? 'POST' : metadata.api_method == 2 ? 'PUT' : 'DELETE' }`,
           path: `${metadata.api_resources}`,

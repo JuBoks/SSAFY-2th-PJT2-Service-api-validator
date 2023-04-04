@@ -1,9 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNumber, IsString } from "class-validator";
+import { IsDateString, IsNumber } from "class-validator";
 
 export class EmailDto {
   @ApiProperty()
-  @IsString()
   msg: JSON;
 
   @ApiProperty()
