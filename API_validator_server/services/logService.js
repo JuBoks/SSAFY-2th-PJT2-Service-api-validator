@@ -19,13 +19,16 @@ const getLogsByMetaId = async (metaId, startTime, endTime) => {
     }
 
     const answer = [];
-
-    data.forEach(async (element) => {
+    for(const element of data) {
       let schema = "";
+      
       if (element.result_data_id !== element.expect_data_id) {
-        schema = await testLog.getDataById(conn, element.result_data_id)
-          .result_data;
-      } else schema = element.critic_schema;
+        schema = await testLog.getDataById(conn, element.result_data_id);
+        schema = schema.result_data;
+
+      } else{
+        schema = element.critic_schema;
+      } 
 
       answer.push({
         result_id: element.result_id,
@@ -38,9 +41,10 @@ const getLogsByMetaId = async (metaId, startTime, endTime) => {
         },
         created_at: element.created_at,
       });
-    });
+    }
 
     return answer;
+
   } catch (error) {
     throw error;
   } finally {
