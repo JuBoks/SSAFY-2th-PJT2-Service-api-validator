@@ -47,15 +47,8 @@ const getInferredSchema = (req, res) => {
   }
 };
 
-
-const getApiDiff = (req, res) => {
-  res.send("Get API Diff");
-};
-/* ========== */
-
 module.exports = {
   getInferredSchema,
   getApiList,
   createApiTestResult,
-  getApiDiff,
 };

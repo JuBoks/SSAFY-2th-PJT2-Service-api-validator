@@ -3,6 +3,8 @@ const pool = require("../database/utils");
 const extractRootSchema = require("../apiInference/extractRootSchema");
 const compareSchema = require("../apiInference/compareSchema");
 const axios = require("axios");
+const analyzeErrorMessage = require("../apiInference/analyzeErrorMessage");
+
 require("dotenv").config();
 
 const isEmpty = (object) => {
@@ -39,7 +41,7 @@ const createApiTestResult = async (meta_id, action_id, response) => {
         expect_response.data_id
       );
       
-      testMessage = compareSchema(schema, answer_schema);
+      testMessage = analyzeErrorMessage(compareSchema(schema, answer_schema));
 
       //메소드 호출
       result = isEmpty(testMessage);
@@ -77,7 +79,7 @@ const createApiTestResult = async (meta_id, action_id, response) => {
 
     //fail 이면 백엔드 서버에게 전송
     if(!result) {
-      const pass = await submitErrorToWebServer(meta_id, result_id, now_date, testMessage);
+      await submitErrorToWebServer(meta_id, result_id, now_date, testMessage);
     }
 
     await conn.commit();
