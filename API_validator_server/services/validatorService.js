@@ -41,10 +41,13 @@ const createApiTestResult = async (meta_id, action_id, response) => {
         expect_response.data_id
       );
       
-      testMessage = analyzeErrorMessage(compareSchema(schema, answer_schema));
+      testMessage = compareSchema(schema, answer_schema);
 
       //메소드 호출
       result = isEmpty(testMessage);
+      
+      testMessage = analyzeErrorMessage(testMessage);
+
 
       //만약 pass면,expect_response의 data_id 저장
       if (result) {
@@ -86,6 +89,8 @@ const createApiTestResult = async (meta_id, action_id, response) => {
 
     return { result_id: result_id, result: result };
   } catch (error) {
+    console.log(error);
+
     await conn.rollback();
     throw error;
   } finally {
