@@ -101,7 +101,7 @@ const createExpectResponse = async (req, res) => {
 
   try {
     const data = await metadataService.createExpectResponse(metaId, response);
-    res.status(200).send({ meta_id: metaId, response_id: data });
+    res.status(200).send({ meta_id: metaId*1, response_id: data });
   } catch (error) {
     res
       .status(error?.status || 500)

@@ -7,7 +7,7 @@ const analyzeErrorMessage = (errorMessage) => {
         let errorCode = -1;
 
         let nowKey = key;
-
+        
             if(Array.isArray(nowData)) {
                 //nowData 배열 안의 요소들이 객체일 때
                 if(typeof nowData[0] === "object" && nowData[0] !== null) {
