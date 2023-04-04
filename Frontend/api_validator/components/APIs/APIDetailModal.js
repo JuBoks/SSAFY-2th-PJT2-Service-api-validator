@@ -18,7 +18,7 @@ export default function APIDetailModal(props) {
   return (
     <Modal open={openDetail} onClose={() => setOpenDetail(false)}>
       <Box className={styles["detail-modal"]}>
-        <Box m={2}>
+        <Box m={4}>
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">API 상세정보</Typography>
             <Button onClick={() => Router.push("/testcases/" + datas.metaId)}>
@@ -101,7 +101,7 @@ export default function APIDetailModal(props) {
           </Typography>
           <Paper
             className={styles.paper}
-            sx={{ height: 200 }}
+            sx={{ height: 200, padding: 1 }}
             variant="outlined"
           >
             {JSON.stringify(datas.header, null, "\t")}
@@ -112,7 +112,7 @@ export default function APIDetailModal(props) {
           <Paper
             className={styles.paper}
             variant="outlined"
-            sx={{ height: 200 }}
+            sx={{ height: 200, padding: 1 }}
           >
             {JSON.stringify(datas.body, null, "\t")}
           </Paper>
@@ -122,7 +122,7 @@ export default function APIDetailModal(props) {
           <Paper
             className={styles.paper}
             variant="outlined"
-            sx={{ height: 200 }}
+            sx={{ height: 200, padding: 1 }}
           >
             {JSON.stringify(datas.params, null, "\t")}
           </Paper>

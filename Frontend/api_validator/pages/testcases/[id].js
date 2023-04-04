@@ -38,6 +38,7 @@ export default function PostPage() {
   const [expanded, setExpanded] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [index, setIndex] = useState(0);
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -190,6 +191,7 @@ export default function PostPage() {
                           sx={{
                             height: 150,
                             overflow: "scroll",
+                            padding: 1,
                           }}
                         >
                           {JSON.stringify(
@@ -213,6 +215,7 @@ export default function PostPage() {
                           sx={{
                             height: 150,
                             overflow: "scroll",
+                            padding: 1,
                           }}
                         >
                           {JSON.stringify(
@@ -236,6 +239,7 @@ export default function PostPage() {
                           sx={{
                             height: 150,
                             overflow: "scroll",
+                            padding: 1,
                           }}
                         >
                           {JSON.stringify(
