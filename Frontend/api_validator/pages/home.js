@@ -90,7 +90,7 @@ export default function Main() {
         Router.push("/");
       }
     });
-  }, []);
+  }, [isAdmin]);
 
   if (loading) return <Loading />;
 

@@ -9,9 +9,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function AllMetadataPieChart(props) {
   const now = new Date().toISOString();
-  const oneMonthAgo = new Date(
-    new Date().setDate(new Date().getMonth() - 1)
-  ).toISOString();
+  let oneMonthAgo = new Date(new Date().setDate(new Date().getMonth() - 1));
+  oneMonthAgo.setHours(0);
+  oneMonthAgo.setMinutes(0);
+  oneMonthAgo.setSeconds(0);
+  oneMonthAgo.setMilliseconds(0);
 
   const [data, setData] = useState(ResultDayData);
   const [title, setTitle] = useState("title");
@@ -38,7 +40,14 @@ export function AllMetadataPieChart(props) {
       const idToken = localStorage.getItem("idToken");
 
       const datas = (
-        await GetLogsGraphAction(idToken, oneMonthAgo, now, null, null, 1)
+        await GetLogsGraphAction(
+          idToken,
+          oneMonthAgo.toISOString(),
+          now,
+          null,
+          null,
+          1
+        )
       ).data.data;
 
       const item = datas[datas.length - 1];
@@ -55,14 +64,14 @@ export function AllMetadataPieChart(props) {
             label: "cnt",
             data: [passCnt, failCnt, notExecuteData],
             backgroundColor: [
-              "rgba(75, 192, 192, 0.5)",
-              "rgba(255, 99, 132, 0.5)",
               "rgba(54, 162, 235, 0.5)",
+              "rgba(255, 99, 132, 0.5)",
+              "lightgray",
             ],
             borderColor: [
-              "rgba(75, 192, 192, 1)",
-              "rgba(255, 99, 132, 1)",
               "rgba(54, 162, 235, 1)",
+              "rgba(255, 99, 132, 1)",
+              "lightgray",
             ],
             borderWidth: 1,
           },

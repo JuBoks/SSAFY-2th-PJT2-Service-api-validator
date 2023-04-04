@@ -45,7 +45,9 @@ export function FavoriteChart(props) {
 
   const now = Math.floor(new Date().getTime() / 1000.0);
   const startTime = Math.floor(
-    new Date(new Date().setMonth(new Date().getMonth() - intervalTime) / 1000.0)
+    new Date(
+      new Date().setDate(new Date().getDate() - 7 * intervalTime) / 1000.0
+    )
   );
 
   const options = {
@@ -103,7 +105,7 @@ export function FavoriteChart(props) {
           {
             label: "Pass",
             data: passData,
-            backgroundColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgb(54, 162, 235)",
           },
           {
             label: "Fail",
@@ -126,7 +128,7 @@ export function FavoriteChart(props) {
           sx={{ width: 150 }}
           options={cycleList}
           value={intervalTime}
-          getOptionLabel={(option) => option + " month"}
+          getOptionLabel={(option) => option + " week"}
           id="intervalTime"
           disableClearable
           onChange={(event, newValue) => handleIntervalChange(newValue)}
