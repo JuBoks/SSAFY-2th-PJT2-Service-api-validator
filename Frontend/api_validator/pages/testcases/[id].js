@@ -310,7 +310,7 @@ export default function PostPage() {
                       const data_encoded = window.btoa(
                         encodeURI(JSON.stringify(data))
                       );
-                      window.location.href = `https://j8s002.p.ssafy.io/hero/new?j=${data_encoded}`;
+                      window.location.href = `https://sapiv.site/hero/new?j=${data_encoded}`;
                     }}
                   >
                     Visualize
