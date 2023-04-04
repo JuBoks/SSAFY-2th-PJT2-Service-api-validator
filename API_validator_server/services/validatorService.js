@@ -89,8 +89,6 @@ const createApiTestResult = async (meta_id, action_id, response) => {
 
     return { result_id: result_id, result: result };
   } catch (error) {
-    console.log(error);
-
     await conn.rollback();
     throw error;
   } finally {
