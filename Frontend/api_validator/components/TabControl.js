@@ -15,22 +15,22 @@ export default function TabControl(props) {
 
   const tabListAPI = [
     {
-      label: "Response",
+      label: "Schema",
       value: "1",
     },
     {
-      label: "Schema",
+      label: "Response",
       value: "2",
     },
   ];
   const tabPanelListAPI = [
     {
       value: "1",
-      content: <OutlinedCard json={flatProps.json} />,
+      content: <OutlinedCard json={flatProps.schema} />,
     },
     {
       value: "2",
-      content: <OutlinedCard json={flatProps.schema} />,
+      content: <OutlinedCard json={flatProps.json} />,
     },
   ];
 
