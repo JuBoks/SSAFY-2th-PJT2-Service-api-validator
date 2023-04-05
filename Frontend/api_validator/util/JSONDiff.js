@@ -64,7 +64,15 @@ function JSONDiff(props) {
           {line}
         </p>
       );
-    } else {
+    } 
+    else if(line.startsWith("*")){
+      return (
+        <p key={index} className={styles.change} ref={elementsRef.current[index]}>
+          {line}
+        </p>
+      );
+    }
+    else {
       return (
         <Typography variant="body1" key={index}>
           {line}

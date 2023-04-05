@@ -14,11 +14,10 @@ export default function Playground(props) {
   };
   const [value, setValue] = React.useState("");
   // console.log(value);
-
+  console.log(props);
   return (
     <Autocomplete
       {...defaultProps}
-      defaultValue={props.value}
       value={props.value}
       onChange={(event, newValue) => {
         setValue(newValue);
