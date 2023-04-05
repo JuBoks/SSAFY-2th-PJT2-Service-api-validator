@@ -3,8 +3,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 export default function Playground(props) {
-
-  if(!props.testData) return;
+  if (!props.testData) return;
   const defaultProps = {
     options: props.testData ? props.testData : [],
     getOptionLabel: (option) => option.created_at,
@@ -13,7 +12,7 @@ export default function Playground(props) {
   const flatProps = {
     // options: props.dates.map((option) => option.date),
   };
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState("");
   // console.log(value);
 
   return (
@@ -21,9 +20,9 @@ export default function Playground(props) {
       {...defaultProps}
       defaultValue={props.value}
       value={props.value}
-      onChange={(event,newValue) => {
+      onChange={(event, newValue) => {
         setValue(newValue);
-        if(!newValue) return;
+        if (!newValue) return;
         props.getDate(newValue.created_at);
       }}
       id="disable-close-on-select"
@@ -34,9 +33,3 @@ export default function Playground(props) {
     />
   );
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { date: "2023.02.20 13:00:00" },
-  { date: "2023.01.02 11:30:00" },
-];

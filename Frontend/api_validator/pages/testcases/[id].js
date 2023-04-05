@@ -59,9 +59,10 @@ export default function PostPage() {
             const res = await GetLogs(
               idToken,
               new Date(0).toISOString(),
-              new Date().toISOString(),
+              new Date(Date.now() + 86400000).toISOString(),
               id
             );
+            console.log(res);
             setTestData(res.data.data);
             let idx = 0;
             for (const it of res.data.data) {
@@ -71,7 +72,6 @@ export default function PostPage() {
               idx += 1;
             }
             const metadata = await GetApisAllTestcaseId(idToken, id);
-            console.log(metadata);
             setMetaData(metadata);
           } catch (error) {
             console.log(error.message);
