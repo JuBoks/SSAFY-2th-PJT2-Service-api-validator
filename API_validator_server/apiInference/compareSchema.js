@@ -19,7 +19,8 @@ const compareRootSchema = (source, criteria) => {
         //기본 자료형일 때
         if(primitiveSet.has(el)) {
           if(!data_2.includes(el)) {
-            all_changes.push([el, null]);
+//            all_changes.push([el, null]);
+            all_changes.push({afterfekjweklfl : el, beforeklfalkwe : null});
             //changes[key] = [el, null];
           }
         }
@@ -55,7 +56,8 @@ const compareRootSchema = (source, criteria) => {
                 score = min_score;
                 let object= {};
                 object[el] = final_changes;
-
+                //console.log("changes", final_changes);
+                
                 all_changes.push(object);
               }
             }
@@ -79,11 +81,11 @@ const compareRootSchema = (source, criteria) => {
       for (const sub_key of keys) {
         if (!(sub_key in data_1)) {
           // 1. data_1에 키가 없을 때 (새로운 필드가 생성되었을 때)
-          sub_change[sub_key] = [null, data_2[sub_key]];
+          sub_change[sub_key] = {afterfekjweklfl : null, beforeklfalkwe : data_2[sub_key]};
           score += 5;
         } else if (!(sub_key in data_2)) {
           // 2. data_1에만 키가 있을 때 (필드가 삭제되었을 때)
-          sub_change[sub_key] = [data_1[sub_key], null];
+          sub_change[sub_key] = {afterfekjweklfl : data_1[sub_key], beforeklfalkwe : null };
           score += 5; 
         }
         //둘 중 하나라도 원시자료형일 때
@@ -91,7 +93,7 @@ const compareRootSchema = (source, criteria) => {
           //바로 비교
           if(data_1[sub_key] !== data_2[sub_key]) {
             score += 5; 
-            sub_change[sub_key]= [data_1[sub_key], data_2[sub_key]];
+            sub_change[sub_key]= {afterfekjweklfl : data_1[sub_key], beforeklfalkwe : data_2[sub_key]};
           }
         }
         //둘 다 object일 때
@@ -114,10 +116,10 @@ const compareRootSchema = (source, criteria) => {
     else if (typeof data_1 === "string" && typeof data_2 === "string") {
       if (data_1 === data_2) return [changes, score];
       score+=5;
-      changes[key] = [data_1, data_2];
+      changes[key] = {afterfekjweklfl : data_1, beforeklfalkwe: data_2};
     } else {
       score+=5;
-      changes[key] = [data_1, data_2];
+      changes[key] = {afterfekjweklfl: data_1, beforeklfalkwe: data_2};
     }
 
     return [changes, score];

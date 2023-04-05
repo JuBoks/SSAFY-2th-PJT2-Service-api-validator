@@ -39,6 +39,7 @@ const getLogsByMetaId = async (metaId, startTime, endTime) => {
           "critic-schema": element.critic_schema,
           result: element.result ? true : false,
         },
+        message: element.message,
         created_at: element.created_at,
       });
     }
