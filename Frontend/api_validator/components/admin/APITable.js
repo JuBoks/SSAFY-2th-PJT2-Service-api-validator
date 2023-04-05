@@ -79,12 +79,12 @@ export default function APITable(props) {
   const handleApiDelete = async (e, cellValues) => {
     try {
       const metaId = cellValues.row.id;
-      console.log(metaId);
+      //console.log(metaId);
       const idToken = await auth.currentUser.getIdToken(true);
       const response = await DeleteMetadatasId(idToken, metaId);
       location.reload();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

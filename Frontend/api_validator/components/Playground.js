@@ -17,9 +17,9 @@ export default function Playground(props) {
     });
     return acc;
   }, []);
-  console.log(testData);
+  //console.log(testData);
   const [value, setValue] = React.useState("");
-  console.log(testData.slice(-1));
+  //console.log(testData.slice(-1));
   return (
     <Autocomplete
       {...defaultProps}
@@ -30,7 +30,7 @@ export default function Playground(props) {
       // defaultValue={props.value}
       // value={props.value}
       onChange={(event, newValue) => {
-        console.log(newValue);
+        //console.log(newValue);
         setValue(newValue);
         if (!newValue) return;
         props.getDate(newValue.date);

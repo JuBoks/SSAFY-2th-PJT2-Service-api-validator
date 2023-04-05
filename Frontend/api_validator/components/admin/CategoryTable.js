@@ -83,7 +83,7 @@ export default function CategoryTable(props) {
       categoryName,
       categoryNote
     );
-    console.log(res);
+    //console.log(res);
     const response = await GetCategories(idToken);
     const categories = response.data.data;
     setData(categories);

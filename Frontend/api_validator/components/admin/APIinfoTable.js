@@ -56,7 +56,7 @@ export default function APIinfoTable(props) {
 
   const addRow = () => {
     dataRow.push({ key, value });
-    console.log(dataRow);
+    //console.log(dataRow);
     const json = rowToJson(dataRow);
     setData(json);
     setOpen(false);

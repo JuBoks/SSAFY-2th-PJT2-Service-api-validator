@@ -74,7 +74,7 @@ function Nav({ isAdmin, isAdminPage }) {
       alert("로그아웃 되었습니다.");
       Router.push("/");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert(error);
     }
   };

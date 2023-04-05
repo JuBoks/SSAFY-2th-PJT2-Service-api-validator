@@ -41,7 +41,7 @@ const SignUp = () => {
         setEmailMsg("");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       alert(err);
     }
   };
@@ -96,7 +96,7 @@ const SignUp = () => {
       router.push("/");
       setIsRegistering(false);
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       alert(err);
       setIsRegistering(false);
     }

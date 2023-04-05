@@ -87,11 +87,11 @@ export function MetadataChart(props) {
         unit === "day" ? 1 : null
       );
       const datas = response.data.data;
-      console.log(datas);
+      //console.log(datas);
       datas.map((item, index) => {
         labels.push(item.count_date);
 
-        console.log(datas.length);
+        //console.log(datas.length);
         if (item.pass_cnt === 0 && item.fail_cnt === 0) {
           passData.push(0);
           failData.push(0);
