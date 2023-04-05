@@ -155,7 +155,7 @@ export default function APIedit() {
         param,
         body
       );
-      setResponseJson(response);
+      setResponseJson(response.data);
       setOpenResponse("visible");
     } catch (error) {
       console.log(error);
