@@ -33,8 +33,13 @@ export class ApisService {
     let result;
     try{
       result = await axios.request(requestConfig);
+      return result.data;
     }
     catch(error){
+      console.log(error.reseponse);
+      if(error.response && error.response.status >= 400){
+        return error.response.data;
+      }
       throw new HttpException(
         "Fail",
         HttpStatus.FORBIDDEN
@@ -139,10 +144,6 @@ export class ApisService {
     .leftJoinAndSelect(Domain, "domain", "domain.domain_id = api.domain_id")
     .leftJoinAndSelect(Category, "category", "category.category_id = domain.category_id")
     .where("metadata.meta_id = :id")
-    .andWhere("metadata.state = 0")
-    .andWhere("category.state = 0")
-    .andWhere("domain.state = 0")
-    .andWhere("api.state = 0")
     .setParameter("id", id)
     .select(["metadata.meta_id",
     "category.name",

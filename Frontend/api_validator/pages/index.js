@@ -40,7 +40,7 @@ export default function Home() {
       } else {
         router.push("/home");
       }
-      isLoggingIn(false);
+      setIsLoggingIn(false);
     } catch (err) {
       setIsError(true);
       setErrorMsg("아이디 또는 비밀번호를 잘못 입력했습니다.");

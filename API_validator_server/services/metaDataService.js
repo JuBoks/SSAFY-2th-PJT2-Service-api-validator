@@ -1,9 +1,9 @@
 const metadata = require("../database/MetaData");
 const api = require("../database/Api");
 const domain = require("../database/Domain");
-const validatorService = require("./validatorService");
 const Validator = require("../database/Validator");
 const pool = require("../database/utils");
+const extractRootSchema = require("../apiInference/extractRootSchema");
 
 const axios = require("axios");
 
@@ -96,7 +96,7 @@ const testMetadata = async (metaId) => {
     }
     request.headers = metadata_data.header;
     request.params = metadata_data.params;
-    request.body = metadata_data.body;
+    request.data = metadata_data.body;
 
     await conn.commit();
   } catch (error) {
@@ -127,10 +127,7 @@ const createExpectResponse = async (metaId, response) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
-    const schema = validatorService.inferSchema(
-      response,
-      Array.isArray(response)
-    );
+    const schema = extractRootSchema(response);
 
     //자료형 추론 결과 우선 anayled data 테이블에 저장
     const dataId = await Validator.createAnalyzedData(conn, schema);

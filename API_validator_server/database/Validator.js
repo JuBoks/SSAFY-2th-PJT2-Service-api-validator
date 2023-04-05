@@ -47,7 +47,7 @@ const createTestResult = async (conn, data) => {
   try {
     //insert 한 데이터를 반환해준다고 함
     var sql =
-      "INSERT INTO tbl_test_result (meta_id, data_id, action_id, response_id, response, result) values (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO tbl_test_result (meta_id, data_id, action_id, response_id, response, result, message) values (?, ?, ?, ?, ?, ?, ?)";
     const [rows, fields] = await conn.query(sql, data);
     return rows.insertId;
   } catch (error) {
@@ -71,11 +71,11 @@ const getApiList = async (conn) => {
   }
 };
 
-const updateMetaRequestTime = async (conn, meta_id) => {
+const updateMetaRequestTime = async (conn, meta_id, now_date) => {
   try {
     let sql =
-      "UPDATE tbl_metadata SET last_req_time = UNIX_TIMESTAMP(NOW()) WHERE (meta_id = ?);";
-    let params = [meta_id];
+      "UPDATE tbl_metadata SET last_req_time = UNIX_TIMESTAMP(?) WHERE (meta_id = ?);";
+    let params = [now_date, meta_id];
     const [rows, _] = await conn.query(sql, params);
     return rows;
   } catch (error) {

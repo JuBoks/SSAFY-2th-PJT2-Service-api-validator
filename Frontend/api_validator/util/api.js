@@ -99,17 +99,27 @@ export const GetApis = async (idToken, domainId) => {
   return res;
 };
 
-export const PostApisTest = async (idToken, url, methods) => {
-  const headers = {
+export const PostApisTest = async (
+  idToken,
+  url,
+  method,
+  headers,
+  params,
+  data
+) => {
+  const reqHeaders = {
     headers: {
       idtoken: idToken,
     },
   };
   const reqData = {
     url,
-    methods,
+    headers,
+    params,
+    data,
+    method,
   };
-  const res = await api.post("/apis/test", reqData, headers);
+  const res = await api.post("/apis/test", reqData, reqHeaders);
   return res;
 };
 
@@ -161,6 +171,16 @@ export const GetApisAllTestcase = async (idToken) => {
     },
   };
   const res = await api.get(`/apis/all/testcase`, headers);
+  return res;
+};
+
+export const GetApisAllTestcaseId = async (idToken, id) => {
+  const headers = {
+    headers: {
+      idtoken: idToken,
+    },
+  };
+  const res = await api.get(`/apis/all/testcase` + `/${id}`, headers);
   return res;
 };
 
@@ -518,7 +538,24 @@ export const GetLogsId = async (idToken, id) => {
   return res;
 };
 
-export const GetLogsGraphAction = async (idToken, startTime, endTime) => {
+export const GetLogsGraphAction = async (
+  idToken,
+  startTime,
+  endTime,
+  month,
+  week,
+  day
+) => {
+  let query;
+  if (month) {
+    query = `month=${month}`;
+  } else if (week) {
+    query = `week=${week}`;
+  } else if (day) {
+    query = `day=${day}`;
+  } else {
+    query = `day=1`;
+  }
   const headers = {
     headers: {
       idtoken: idToken,
@@ -526,7 +563,7 @@ export const GetLogsGraphAction = async (idToken, startTime, endTime) => {
   };
 
   const res = await api.get(
-    `/logs/graph/action?startTime=${startTime}&endTime=${endTime}`,
+    `/logs/graph/action?startTime=${startTime}&endTime=${endTime}&${query}`,
     headers
   );
   return res;

@@ -5,43 +5,87 @@ import Nav from "@/components/Nav.js";
 import { Box, Typography, Toolbar, Grid, Paper } from "@mui/material";
 import auth from "../util/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { GetUsers } from "@/util/api";
+import {
+  GetAlerts,
+  GetApisAllTestcase,
+  GetFavorites,
+  GetLogsGraphAction,
+  GetUsers,
+} from "@/util/api";
 import { StackedBarChart } from "@/components/ChartJS/StackedBarChart";
 import { PieChart } from "@/components/ChartJS/PieChart";
 import styles from "@/styles/Home.module.css";
-import { sampleData } from "@/constants/apiTestSample.js";
 import { ResultDayData } from "@/constants/apiTestResultSampleDay";
-import StickyHeadTable from "@/components/MUI/StickyHeadTable";
-import { resultRows, resultColumns } from "@/constants/ResultListSample";
+import { MetadataChart } from "@/components/ChartJS/MetadataChart";
+import Loading from "@/components/common/Loading";
+import { AllMetadataChart } from "@/components/ChartJS/AllMetadataChart";
+import { AllMetadataPieChart } from "@/components/ChartJS/AllMetadataPieChart";
+import FavoriteTable from "@/components/favorite/FavoriteTable";
+import APIResultTable from "@/components/APIs/APIResultTable";
+import { FavoriteChart } from "@/components/ChartJS/FavoirteChart";
+import { FavoritePieChart } from "@/components/ChartJS/FavoritePieChart";
 
 export default function Main() {
+  const now = new Date().toISOString();
+  const oneMonthAgo = new Date(
+    new Date().setMonth(new Date().getMonth() - 1)
+  ).toISOString();
+
+  const [metadatas, setMetadatas] = useState();
+  const [favoriteList, setFavoriteList] = useState();
+  const [favorites, setFavorites] = useState();
+  const [alerts, setAlerts] = useState();
+
   const [isAuthorize, setIsAuthorize] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [state, setState] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // 사용자 권한 체크 이벤트
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const token = await auth.currentUser.getIdToken(true);
-        const res = await GetUsers(token);
+        setLoading(true);
 
-        setState(res.data.state);
-        console.log(token);
+        const getData = async () => {
+          const idToken = await auth.currentUser.getIdToken(true);
+          const res = await GetUsers(idToken);
+          localStorage.setItem("idToken", idToken);
 
-        if (res.data.state === 0) {
-          setIsAuthorize(false);
-          alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
-          Router.push("/");
-        } else if (res.data.state === 1) {
-          setIsAuthorize(true);
-        } else if (res.data.state === 2) {
-          setIsAuthorize(true);
-          setIsAdmin(true);
-        } else if (res.data.state === 3) {
-          setIsAuthorize(true);
-          setIsAdmin(true);
-        }
+          const allData = await GetApisAllTestcase(idToken);
+          const favoritesData = await GetFavorites(idToken);
+          const favoriteList = {};
+          favoritesData.data.forEach((item) => {
+            favoriteList[item.metadata_meta_id] = item;
+          });
+          setFavoriteList(favoriteList);
+
+          const response = await GetFavorites(idToken);
+          const alertData = (await GetAlerts(idToken)).data;
+          const alertList = {};
+          alertData.forEach((item) => {
+            alertList[item.metadata_meta_id] = item;
+          });
+
+          if (res.data.state === 0) {
+            setIsAuthorize(false);
+            alert("아직 준회원입니다. 관리자의 승인이 필요합니다.");
+            Router.push("/");
+          } else if (res.data.state === 1) {
+            setIsAuthorize(true);
+          } else if (res.data.state === 2) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          } else if (res.data.state === 3) {
+            setIsAuthorize(true);
+            setIsAdmin(true);
+          }
+
+          setMetadatas(allData.data);
+          setAlerts(alertList);
+          setFavorites(response.data);
+          setLoading(false);
+        };
+
+        getData();
       } else {
         setIsAuthorize(false);
         Router.push("/");
@@ -49,95 +93,73 @@ export default function Main() {
     });
   }, []);
 
+  if (loading) return <Loading />;
+
   return isAuthorize ? (
     <>
       <Header />
-      <Box display="flex" sx={{ backgroundColor: "#F9F9F9" }}>
+      <Box display="flex">
         <Nav isAdmin={isAdmin} />
-        <Box m={3}>
+        <Box width="80%">
           <Toolbar />
-          <Box className={styles["chart-box"]}>
-            <Typography variant="h6">Favorite API Chart</Typography>
-            <Box display="flex" mt={3}>
-              <Paper className={styles["stacked-chart-paper"]} elevation={1}>
-                <Box className={styles["stacked-chart"]}>
-                  <StackedBarChart data={sampleData} />
-                </Box>
-              </Paper>
-              <Paper className={styles["pie-chart-paper"]} elevation={1}>
-                <Box className={styles["pie-chart"]}>
-                  <PieChart data={ResultDayData} title="2023.02.30" />
-                </Box>
-              </Paper>
-            </Box>
+          <Box m={2} width="100%" display="flex">
+            <Paper
+              className={styles["stacked-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <AllMetadataChart title="All API" />
+            </Paper>
+            <Paper
+              className={styles["pie-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <Box className={styles["pie-chart"]}>
+                <AllMetadataPieChart />
+              </Box>
+            </Paper>
           </Box>
 
-          <Box className={styles["chart-box"]} mt={5}>
-            <Typography variant="h6">APIs Chart</Typography>
-            <Box display="flex" mt={3}>
-              <Paper className={styles["stacked-chart-paper"]} elevation={1}>
-                <Box className={styles["stacked-chart"]}>
-                  <StackedBarChart data={sampleData} />
-                </Box>
-              </Paper>
-              <Paper className={styles["pie-chart-paper"]} elevation={1}>
-                <Box className={styles["pie-chart"]}>
-                  <PieChart data={ResultDayData} title="2023.02.30" />
-                </Box>
-              </Paper>
-            </Box>
+          <Box m={2} width="100%" display="flex">
+            <Paper
+              className={styles["stacked-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <FavoriteChart title="Favoirte API" />
+            </Paper>
+            <Paper
+              className={styles["pie-chart-paper"]}
+              elevation={1}
+              variant="outlined"
+            >
+              <Box className={styles["pie-chart"]}>
+                <FavoritePieChart />
+              </Box>
+            </Paper>
           </Box>
 
-          <Box className={styles["chart-box"]} mt={5}>
-            <Typography variant="h6">Recent Favorite API Result</Typography>
-            <Box mt={3} mb={3}>
-              <Paper elevation={1} sx={{ padding: 2 }}>
-                <Box display="flex">
-                  <Typography variant="subtitle1" mr={3}>
-                    Date : 2023.02.28 13:00:00
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3}>
-                    Total : 100
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="green">
-                    Pass : 80
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="Red">
-                    Fail : 10
-                  </Typography>
-                  <Typography variant="subtitle1" color="blue">
-                    N/E : 10
-                  </Typography>
-                </Box>
-              </Paper>
-            </Box>
-            <StickyHeadTable columns={resultColumns} rows={resultRows} />
+          <Box m={2} mt={5} width="100%">
+            <Typography variant="h5" mb={1}>
+              Favorite API
+            </Typography>
+            <FavoriteTable
+              data={favorites}
+              alerts={alerts}
+              setAlerts={setAlerts}
+            />
           </Box>
 
-          <Box className={styles["chart-box"]} mt={5}>
-            <Typography variant="h6">Recent APIs Result</Typography>
-            <Box mt={3} mb={3}>
-              <Paper elevation={1} sx={{ padding: 2 }}>
-                <Box display="flex">
-                  <Typography variant="subtitle1" mr={3}>
-                    Date : 2023.02.28 13:00:00
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3}>
-                    Total : 100
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="green">
-                    Pass : 80
-                  </Typography>
-                  <Typography variant="subtitle1" mr={3} color="Red">
-                    Fail : 10
-                  </Typography>
-                  <Typography variant="subtitle1" color="blue">
-                    N/E : 10
-                  </Typography>
-                </Box>
-              </Paper>
-            </Box>
-            <StickyHeadTable columns={resultColumns} rows={resultRows} />
+          <Box m={2} mt={5} width="100%">
+            <Typography variant="h5" mb={1}>
+              All API
+            </Typography>
+            <APIResultTable
+              data={metadatas}
+              favorites={favoriteList}
+              setFavorites={setFavoriteList}
+            />
           </Box>
         </Box>
       </Box>

@@ -3,14 +3,16 @@
 }
 
 .stacked-chart-paper {
-  margin-right: 20px;
+  margin-right: 10px;
   border-radius: 10px;
+  width: 70%;
+  height: 500px;
+  padding: 10px;
 }
 
 .stacked-chart {
-  width: 700px;
+  width: 100%;
   height: 360px;
-  display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -23,10 +25,11 @@
 
 .pie-chart-paper {
   border-radius: 10px;
+  width: 30%;
 }
 
 .pie-chart {
-  width: 360px;
+  width: 100%;
   height: 360px;
   display: flex;
   align-items: center;

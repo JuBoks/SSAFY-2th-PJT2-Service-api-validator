@@ -1,57 +1,11 @@
 const Validator = require("../database/Validator");
 const pool = require("../database/utils");
+const extractRootSchema = require("../apiInference/extractRootSchema");
+const compareSchema = require("../apiInference/compareSchema");
+const axios = require("axios");
+const analyzeErrorMessage = require("../apiInference/analyzeErrorMessage");
 
-const inferSchema = (data, isArray) => {
-  let schema = null;
-  if (isArray) schema = [];
-  else schema = {};
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-      if (value === null) {
-        schema[key] = "null";
-      } else if (Array.isArray(value)) {
-        schema[key] = inferSchema(value.slice(0, 1), true);
-      } else if (typeof value === "object") {
-        schema[key] = inferSchema(value, Array.isArray(value)); // Recursively infer nested schema
-      } else if (typeof value === "string") {
-        schema[key] = "string";
-      } else if (typeof value === "number") {
-        schema[key] = "number";
-      } else if (typeof value === "boolean") {
-        schema[key] = "boolean";
-      }
-    }
-  }
-  return schema;
-};
-
-const compareJson = (data_1, data_2) => {
-  const changes = {}; // 결과를 담을 Object
-  const keys = new Set([...Object.keys(data_1), ...Object.keys(data_2)]); // 두 개의 JSON data에 있는 key를 추출
-  for (const key of keys) {
-    if (!(key in data_1)) {
-      // 1. data_1에 키가 없을 때 (새로운 필드가 생성되었을 때)
-      changes[key] = [null, data_2[key]];
-    } else if (!(key in data_2)) {
-      // 2. data_1에만 키가 있을 때 (필드가 삭제되었을 때)
-      changes[key] = [data_1[key], null];
-    } else if (data_1[key] !== data_2[key]) {
-      // 3. 값(또는 자료형)이 다를 때
-      if (typeof data_1[key] === "object" && typeof data_2[key] === "object") {
-        // 3-1. 둘 다 Object라면 재귀적으로 검사
-        const nested_changes = compareJson(data_1[key], data_2[key]);
-        if (Object.keys(nested_changes).length > 0) {
-          changes[key] = nested_changes;
-        }
-      } else {
-        // 3-2. 둘의 값이 다를 때, 각각을 changes에 기록
-        changes[key] = [data_1[key], data_2[key]];
-      }
-    }
-  }
-  return changes;
-};
+require("dotenv").config();
 
 const isEmpty = (object) => {
   return Object.keys(object).length === 0;
@@ -61,7 +15,8 @@ const createApiTestResult = async (meta_id, action_id, response) => {
   const conn = await pool.getConnection();
 
   //response 자료형 추론하기
-  const schema = inferSchema(response, Array.isArray(response));
+  const schema = extractRootSchema(response);
+  const now_date = new Date().toISOString().substring(0,10);
 
   try {
     //트랜잭션 시작
@@ -75,6 +30,9 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     //자료형 추론 결과 저장
     let data_id = null;
 
+    //에러 메시지
+    let testMessage = null;
+
     //기대하는 값이 있으면, 정답지와 diff 비교, pass/fail 판단
     if (expect_response !== null) {
       //정답 스키마
@@ -82,9 +40,14 @@ const createApiTestResult = async (meta_id, action_id, response) => {
         conn,
         expect_response.data_id
       );
+      
+      testMessage = compareSchema(schema, answer_schema);
 
       //메소드 호출
-      result = isEmpty(compareJson(schema, answer_schema));
+      result = isEmpty(testMessage);
+      
+      testMessage = analyzeErrorMessage(testMessage);
+
 
       //만약 pass면,expect_response의 data_id 저장
       if (result) {
@@ -97,12 +60,11 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       }
     } else {
       //정답지 없으면 예외처리
-      throw error;
-      //data_id = await Validator.createAnalyzedData(conn, schema);
+      throw new Error("No valid response answer.");
     }
 
     //las req time 업데이트
-    await Validator.updateMetaRequestTime(conn, meta_id);
+    await Validator.updateMetaRequestTime(conn, meta_id, now_date);
 
     const data = [
       meta_id,
@@ -111,10 +73,17 @@ const createApiTestResult = async (meta_id, action_id, response) => {
       expect_response.response_id,
       JSON.stringify(response),
       result,
+      (result)?null:JSON.stringify(testMessage)
     ];
+
 
     //테스트 테이블에 저장
     const result_id = await Validator.createTestResult(conn, data);
+
+    //fail 이면 백엔드 서버에게 전송
+    if(!result) {
+      await submitErrorToWebServer(meta_id, result_id, now_date, testMessage);
+    }
 
     await conn.commit();
 
@@ -126,6 +95,22 @@ const createApiTestResult = async (meta_id, action_id, response) => {
     conn.release();
   }
 };
+
+const submitErrorToWebServer = async (meta_id, result_id, now_date, errorMessage) => {
+  await axios({
+    url : process.env.BACKEND_SERVER+`/alerts/${meta_id}`,
+    method : "post",
+    headers : {chk : process.env.CHECK},
+    data: {
+      result_id : result_id,
+	    time: now_date,
+	    msg: JSON.stringify(errorMessage)
+    }
+  })
+  .catch(error => {
+    throw new Error("cannot post web backend server.");
+  })
+}
 
 const getApiList = async () => {
   const conn = await pool.getConnection();
@@ -160,4 +145,4 @@ const getApiList = async () => {
   }
 };
 
-module.exports = { getApiList, createApiTestResult, inferSchema };
+module.exports = { getApiList, createApiTestResult };

@@ -34,6 +34,9 @@ export class FavoritesService {
         return "metadata.meta_id IN " + subQuery
     })
     .andWhere("metadata.state = 0")
+    .andWhere("category.state = 0")
+    .andWhere("domain.state = 0")
+    .andWhere("api.state = 0")
     .setParameter("uid", req.user.uid)
     .select(["metadata.meta_id",
     "category.name",
@@ -101,6 +104,7 @@ export class FavoritesService {
   .setParameter("uid", req.user.uid)
   .setParameter("start", start)
   .setParameter("end", end)
+  .select("FROM_UNIXTIME(testresult.created_at)", "time")
   .addSelect("SUM(result = true)", "pass_cnt")
   .addSelect("SUM(result = false)", "fail_cnt")
   .groupBy('testresult.action_id DIV :term')

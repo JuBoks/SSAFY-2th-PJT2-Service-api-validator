@@ -106,11 +106,26 @@ const getResultByUser = async (req, res) => {
 }
 
 const getResultByAction = async (req, res) => {
-    const {startTime, endTime} = req.query;
+    const {month, week, day, startTime, endTime} = req.query;
+
+    let unit = "";
+    let cycle = 1;
+    if(month !== undefined ) {
+        unit = "month";
+        cycle = month;
+    }
+    else if(week !== undefined) {
+        unit = "week";
+        cycle = week;
+    }
+    else {
+       unit = "day";
+        if(day === undefined) cycle = 1; //아무 값도 안들어왔다면 기본 1시간 주기
+        else cycle = day;
+    }
 
     try {
-        const data = await actionService.getActionsByDate(startTime, endTime);
-        console.log(data);
+        const data = await actionService.getActionsByDate(unit, cycle, startTime, endTime);
 
         res.status(200).send({ status: "OK", "data": data });
     }

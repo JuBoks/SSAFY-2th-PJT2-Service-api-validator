@@ -27,3 +27,7 @@
 .paper {
   white-space: pre-wrap;
 }
+
+.rowHover:hover {
+  cursor: pointer;
+}

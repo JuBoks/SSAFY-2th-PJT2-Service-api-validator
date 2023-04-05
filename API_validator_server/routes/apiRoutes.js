@@ -126,6 +126,7 @@ metadataController.testMetadata);
 
 router.post("/metadatas/:metaId/expect",
   param('metaId').exists().isInt(),
+  body('response').exists(),
   validationCheck,
   metadataController.createExpectResponse
 );
@@ -154,6 +155,7 @@ router.get("/logs/graph/user",
 router.get("/logs/graph/action",
   query('startTime').exists(),
   query('endTime').exists(),
+  validationCheck,
  logController.getResultByAction);
 
 router.get("/logs/graph/metadatas/:metaId", 
@@ -162,5 +164,6 @@ router.get("/logs/graph/metadatas/:metaId",
   query('endTime').exists(),
   validationCheck,
 logController.getResultByMetaId);
+
 
 module.exports = router;

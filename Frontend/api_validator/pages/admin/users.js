@@ -61,7 +61,7 @@ export default function AdminUsers() {
     <>
       <Header />
       <Box display="flex">
-        <Nav isAdmin={true} isAdminPage={true} />
+        <Nav isAdmin={isAdmin} isAdminPage={true} />
         <Box display="flex" flexDirection="column">
           <Toolbar />
           <Box className={styles.main}>

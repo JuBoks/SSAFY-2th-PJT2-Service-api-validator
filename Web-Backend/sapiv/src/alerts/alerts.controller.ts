@@ -8,6 +8,7 @@ import { Alert } from './entities/alert.entity';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { AlertsService } from './alerts.service';
 import { AllowUnauthorizedRequest } from 'src/common/guard/allow-unauthorized-request';
+import { EmailDto } from './dto/email-dto';
 
 @Controller('alerts')
 @ApiHeader({
@@ -29,10 +30,10 @@ export class AlertsController {
     return await this.alertsService.findAll(req);
   }
 
-  @Get(':id')
+  @Post(':id')
   @AllowUnauthorizedRequest()
-  async notice(@Param('id') id: number) {
-    return await this.alertsService.notice(id);
+  async notice(@Param('id') id: number, @Body() emailDto: EmailDto) {
+    return await this.alertsService.notice(id, emailDto );
   }
 
   @Delete(':id')

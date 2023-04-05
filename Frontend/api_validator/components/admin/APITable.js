@@ -7,17 +7,24 @@ import {
   Modal,
   Divider,
   Paper,
-  Link,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import styles from "@/styles/Admin.module.css";
 import { methodList } from "@/constants/methodList";
-import { DeleteMetadatasId, GetCategories } from "@/util/api";
+import {
+  DeleteMetadatasId,
+  GetApis,
+  GetCategories,
+  GetDomains,
+} from "@/util/api";
 import CategoryTable from "./CategoryTable";
 import auth from "@/util/auth";
+import DomainTable from "./DomainTable";
+import PathTable from "./PathTable";
 
 const style = {
   position: "absolute",
@@ -29,6 +36,7 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  overflow: "scroll",
 };
 
 function createdRow(index, id, name, category, domain, path, method, interval) {
@@ -43,7 +51,9 @@ export default function APITable(props) {
   const { data } = props;
 
   const [openDetail, setOpenDetail] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openDomain, setOpenDomain] = useState(false);
+  const [openPath, setOpenPath] = useState(false);
 
   const [metadataName, setMetadataName] = useState(null);
   const [metadataCategory, setMetadataCategory] = useState(null);
@@ -56,6 +66,15 @@ export default function APITable(props) {
   const [metadataInterval, setMetadataInterval] = useState(null);
 
   const [categories, setCategories] = useState(null);
+  const [domains, setDomains] = useState(null);
+  const [paths, setPaths] = useState();
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedDomain, setSelectedDomain] = useState();
+
+  const getRowClassName = (params) => {
+    return styles.rowHover; // CSS 클래스 이름
+  };
 
   const handleApiDelete = async (e, cellValues) => {
     try {
@@ -74,7 +93,7 @@ export default function APITable(props) {
     return response.data.data;
   };
 
-  const handleOpenDetail = (e, cellValues) => {
+  const handleOpenDetail = (cellValues) => {
     const metadata = data[cellValues.row.index];
     const header = JSON.stringify(metadata.metadata_header, null, "\t");
     const body = JSON.stringify(metadata.metadata_body, null, "\t");
@@ -90,13 +109,14 @@ export default function APITable(props) {
     setMetadataInterval(metadata.metadata_cycle_time);
     setOpenDetail(true);
   };
+
   const handleCloseDetail = () => setOpenDetail(false);
 
-  const handleOpenEdit = async () => {
+  const handleCategoryModalOpen = async () => {
     const idToken = localStorage.getItem("idToken");
     const response = await handleGetCategories(idToken);
     setCategories(response);
-    setOpenEdit(true);
+    setOpenCategory(true);
   };
 
   const handleEditClick = (e, cellValues) => {
@@ -106,8 +126,42 @@ export default function APITable(props) {
     });
   };
 
-  const handleCloseEdit = () => {
-    setOpenEdit(false);
+  const handleCategoryModalClose = () => {
+    setOpenCategory(false);
+  };
+
+  const handleDomainModalOpen = async () => {
+    const idToken = localStorage.getItem("idToken");
+    const response = await handleGetCategories(idToken);
+    setCategories(response);
+    setDomains(null);
+    setOpenDomain(true);
+  };
+  const handleDomainModalClose = () => setOpenDomain(false);
+
+  const handlePathModalOpen = async () => {
+    const idToken = localStorage.getItem("idToken");
+    const response = await handleGetCategories(idToken);
+    setCategories(response);
+    setPaths(null);
+    setOpenPath(true);
+  };
+
+  const handlePathModalClose = () => setOpenPath(false);
+
+  const handleCategoryChange = async (newValue) => {
+    const idToken = localStorage.getItem("idToken");
+    const response = await GetDomains(idToken, newValue.category_id);
+    setSelectedCategory(newValue);
+    setDomains(response.data.data);
+  };
+
+  const handleDomainChange = async (newValue) => {
+    const idToken = localStorage.getItem("idToken");
+    const domainId = newValue.domain_id;
+    const response = await GetApis(idToken, domainId);
+    setSelectedDomain(newValue);
+    setPaths(response.data.data);
   };
 
   let rows = [];
@@ -150,13 +204,6 @@ export default function APITable(props) {
           <Box>
             <Button
               onClick={(e) => {
-                handleOpenDetail(e, cellValues);
-              }}
-            >
-              <ViewListIcon color="disabled" />
-            </Button>
-            <Button
-              onClick={(e) => {
                 handleEditClick(e, cellValues);
               }}
             >
@@ -193,10 +240,10 @@ export default function APITable(props) {
   function CustomToolbar() {
     return (
       <Box>
-        <Button onClick={handleOpenEdit}>Category Edit</Button>
-        <Button>Service Edit</Button>
-        <Button>Path Edit</Button>
-        <Button onClick={handleNewClick}>+ New</Button>
+        <Button onClick={handleCategoryModalOpen}>Category Edit</Button>
+        <Button onClick={handleDomainModalOpen}>Domain Edit</Button>
+        <Button onClick={handlePathModalOpen}>Path Edit</Button>
+        <Button onClick={handleNewClick}>+ New API</Button>
       </Box>
     );
   }
@@ -217,50 +264,163 @@ export default function APITable(props) {
           toolbar: CustomToolbar,
         }}
         pageSizeOptions={[10]}
-        disableRowSelectionOnClick
+        onRowClick={(val) => handleOpenDetail(val)}
         autoHeight
+        getRowClassName={getRowClassName}
       />
 
       <Modal open={openDetail} onClose={handleCloseDetail}>
         <Box sx={style}>
-          <Typography variant="h6">{metadataName}</Typography>
-          <Typography variant="subtitle1" mt={2}>
-            Category : {metadataCategory}
-          </Typography>
-          <Box display="flex" mt={2}>
-            <Typography variant="subtitle1" mr={2}>
-              {metadataMethod}
+          <Typography variant="h5">API 상세정보</Typography>
+          <Divider />
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Name :
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" ml={1}>
+              {metadataName}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Category :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataCategory}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              url :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
               {metadataDomain}
               {metadataResource}
             </Typography>
           </Box>
-          <Typography variant="subtitle1" mt={2}>
-            Interval : {metadataInterval}
-          </Typography>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Method :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataMethod}
+            </Typography>
+          </Box>
+          <Box mt={1} mb={1} display="flex">
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              Interval :
+            </Typography>
+            <Typography variant="subtitle1" ml={1}>
+              {metadataInterval}
+            </Typography>
+          </Box>
           <Divider />
-          <Typography variant="h5" mt={2}>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
             Header
           </Typography>
-          <Paper className={styles.paper}>{metadataHeader}</Paper>
-          <Typography variant="h5" mt={2}>
+          <Paper
+            className={styles.paper}
+            sx={{ height: 200 }}
+            variant="outlined"
+          >
+            {metadataHeader}
+          </Paper>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
             Body
           </Typography>
-          <Paper className={styles.paper}>{metadataBody}</Paper>
-          <Typography variant="h5" mt={2}>
-            Param
+          <Paper
+            className={styles.paper}
+            variant="outlined"
+            sx={{ height: 200 }}
+          >
+            {metadataBody}
+          </Paper>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+            Params
           </Typography>
-          <Paper className={styles.paper}>{metadataParam}</Paper>
+          <Paper
+            className={styles.paper}
+            variant="outlined"
+            sx={{ height: 200 }}
+          >
+            {metadataParam}
+          </Paper>
         </Box>
       </Modal>
 
-      <Modal open={openEdit} onClose={handleCloseEdit}>
+      <Modal open={openCategory} onClose={handleCategoryModalClose}>
         <Box sx={style}>
           <Box>
             <Typography variant="h6">Category 변경</Typography>
             <Divider sx={{ marginBottom: 3 }} />
             <CategoryTable data={categories} setData={setCategories} />
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={openDomain} onClose={handleDomainModalClose}>
+        <Box sx={style}>
+          <Box>
+            <Typography variant="h6">Domain 변경</Typography>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Box display="flex">
+              <Typography vairant="subtitle1">Category : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                onChange={(event, newValue) => handleCategoryChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" variant="standard" />
+                )}
+              />
+            </Box>
+            <DomainTable
+              data={domains}
+              setData={setDomains}
+              selectedCategory={selectedCategory}
+            />
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={openPath} onClose={handlePathModalClose}>
+        <Box sx={style}>
+          <Box>
+            <Typography variant="h6">Path 변경</Typography>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Box display="flex">
+              <Typography vairant="subtitle1">Category : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                disableClearable
+                onChange={(event, newValue) => handleCategoryChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" variant="standard" />
+                )}
+              />
+            </Box>
+            <Box display="flex">
+              <Typography vairant="subtitle1">Domain : </Typography>
+              <Autocomplete
+                sx={{ width: 300 }}
+                options={domains}
+                getOptionLabel={(option) => option.domain}
+                disableClearable
+                onChange={(event, newValue) => handleDomainChange(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Domain" variant="standard" />
+                )}
+              />
+            </Box>
+            <PathTable
+              data={paths}
+              setData={setPaths}
+              selectedDomain={selectedDomain}
+            />
           </Box>
         </Box>
       </Modal>

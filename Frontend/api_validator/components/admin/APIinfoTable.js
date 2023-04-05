@@ -35,10 +35,12 @@ export default function APIinfoTable(props) {
     },
   ];
 
-  const dataRow = jsonToRow(data);
-  const rows = dataRow.map((item, index) =>
-    createRow(index, item.key, item.value)
-  );
+  let dataRow = [];
+  let rows = [];
+  if (data !== null) {
+    dataRow = jsonToRow(data);
+    rows = dataRow.map((item, index) => createRow(index, item.key, item.value));
+  }
 
   const handleKeyChange = (e) => setKey(e.target.value);
   const handleValueChange = (e) => setValue(e.target.value);
