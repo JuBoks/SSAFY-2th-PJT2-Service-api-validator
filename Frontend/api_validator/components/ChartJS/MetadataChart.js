@@ -87,7 +87,7 @@ export function MetadataChart(props) {
         unit === "day" ? 1 : null
       );
       const datas = response.data.data;
-
+      console.log(datas);
       datas.map((item) => {
         labels.push(item.count_date);
 
@@ -110,7 +110,7 @@ export function MetadataChart(props) {
           {
             label: "Pass",
             data: passData,
-            backgroundColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgb(53, 162, 235)",
           },
           {
             label: "Fail",
