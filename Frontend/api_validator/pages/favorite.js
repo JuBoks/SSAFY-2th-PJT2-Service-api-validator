@@ -32,7 +32,7 @@ export default function Favorite() {
           alertData.forEach((item) => {
             alertList[item.metadata_meta_id] = item;
           });
-          console.log(response);
+          //console.log(response);
           setAlerts(alertList);
           setFavorites(response.data);
           setLoading(false);

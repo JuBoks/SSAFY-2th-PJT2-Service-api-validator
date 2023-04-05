@@ -17,13 +17,13 @@ const findPwd = () => {
   const handleResetPwd = async () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        console.log(email);
+        //console.log(email);
         alert("비밀번호 재설정 이메일을 보냈습니다.");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorCode);
+        //console.log(errorCode);
         if (errorCode === "auth/invalid-email") {
           alert("유효하지 않은 이메일입니다.");
         } else if (errorCode === "auth/user-not-found") {

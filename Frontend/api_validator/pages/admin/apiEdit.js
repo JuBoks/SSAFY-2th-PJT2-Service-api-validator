@@ -158,7 +158,7 @@ export default function APIedit() {
       setResponseJson(response.data);
       setOpenResponse("visible");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setOpenResponse("hidden");
       alert(error);
     }
@@ -185,7 +185,7 @@ export default function APIedit() {
       alert("API 추가 등록이 되었습니다.");
       Router.push("/admin/api");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert(error);
     }
   };
@@ -206,7 +206,7 @@ export default function APIedit() {
       alert("API 수정이 완료되었습니다.");
       Router.push("/admin/api");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert(error);
     }
   };
@@ -248,7 +248,7 @@ export default function APIedit() {
             setMetaId(responseData.meta_id);
             setApiName(responseData.name);
             setInterval(responseData.cycle_time);
-            console.log(responseData);
+            // console.log(responseData);
           }
 
           if (res.data.state === 0) {
@@ -265,7 +265,7 @@ export default function APIedit() {
             setIsAdmin(true);
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           alert(error);
         }
         setLoading(false);
@@ -343,9 +343,11 @@ export default function APIedit() {
             <Box mt={3} mb={3} display="flex">
               <Autocomplete
                 sx={{ width: 100, marginRight: 3 }}
-                options={apis.filter(
-                  (option) => option.resources === resources
-                )}
+                options={
+                  apis
+                    ? apis.filter((option) => option.resources === resources)
+                    : []
+                }
                 value={api}
                 getOptionLabel={(option) => methodList[option.method]}
                 disableClearable
