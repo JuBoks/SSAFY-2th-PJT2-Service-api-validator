@@ -2,7 +2,7 @@
 
 const getLogsByMetaId = async(conn, metaId ) => {
     try {
-        let sql = `SELECT result.result_id as 'result_id', result.data_id as 'result_data_id', expect_response.data_id as 'expect_data_id', data.result_data as 'critic_schema', result.response as 'response', expect_response.response as 'critic_response', DATE_FORMAT(from_unixtime(result.created_at), '%Y-%m-%d %H:%i:%s') as 'created_at', result.result as 'result'
+        let sql = `SELECT result.result_id as 'result_id', result.data_id as 'result_data_id', expect_response.data_id as 'expect_data_id', data.result_data as 'critic_schema', result.response as 'response', expect_response.response as 'critic_response', result.message as 'message', DATE_FORMAT(from_unixtime(result.created_at), '%Y-%m-%d %H:%i:%s') as 'created_at', result.result as 'result'
         FROM tbl_test_result as result 
         INNER JOIN tbl_expect_response_log as expect_response 
         ON result.response_id = expect_response.response_id
@@ -21,7 +21,7 @@ const getLogsByMetaId = async(conn, metaId ) => {
 
 const getLogsByMetaIdAndDate = async(conn, metaId, startTime, endTime ) => {
     try {
-        let sql = `SELECT result.result_id as 'result_id', result.data_id as 'result_data_id', expect_response.data_id as 'expect_data_id', data.result_data as 'critic_schema', result.response as 'response', expect_response.response as 'critic_response', DATE_FORMAT(from_unixtime(result.created_at), '%Y-%m-%d %H:%i:%s') as 'created_at', result.result as 'result'
+        let sql = `SELECT result.result_id as 'result_id', result.data_id as 'result_data_id', expect_response.data_id as 'expect_data_id', data.result_data as 'critic_schema', result.response as 'response', expect_response.response as 'critic_response', result.message as 'message', DATE_FORMAT(from_unixtime(result.created_at), '%Y-%m-%d %H:%i:%s') as 'created_at', result.result as 'result'
         FROM tbl_test_result as result 
         INNER JOIN tbl_expect_response_log as expect_response 
         ON result.response_id = expect_response.response_id
