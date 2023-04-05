@@ -91,7 +91,7 @@ export function MetadataChart(props) {
       datas.map((item) => {
         labels.push(item.count_date);
 
-        if (item.pass_cnt === 0 && item.fail_cnt) {
+        if (item.pass_cnt === 0 && item.fail_cnt === 0) {
           passData.push(0);
           failData.push(0);
         } else {
