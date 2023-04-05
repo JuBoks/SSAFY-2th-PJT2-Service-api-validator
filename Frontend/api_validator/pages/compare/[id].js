@@ -83,7 +83,7 @@ export default function PostPage() {
             const res = await GetLogs(
               idToken,
               new Date(0).toISOString(),
-              new Date().toISOString(),
+              new Date(Date.now() + 86400000).toISOString(),
               id
             );
             setTestData(res.data.data);
