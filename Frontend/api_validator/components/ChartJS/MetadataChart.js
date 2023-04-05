@@ -39,7 +39,7 @@ export function MetadataChart(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const now = new Date().toISOString();
+  const now = new Date(Date.now() + 86400000).toISOString();
   const startTime = new Date(
     new Date().setDate(new Date().getDate() - 7 * intervalTime)
   ).toISOString();
@@ -88,9 +88,10 @@ export function MetadataChart(props) {
       );
       const datas = response.data.data;
       console.log(datas);
-      datas.map((item) => {
+      datas.map((item, index) => {
         labels.push(item.count_date);
 
+        console.log(datas.length);
         if (item.pass_cnt === 0 && item.fail_cnt === 0) {
           passData.push(0);
           failData.push(0);

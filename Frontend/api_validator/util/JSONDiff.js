@@ -65,7 +65,6 @@ function JSONDiff(props) {
         </p>
       );
     } else {
-      console.log(line);
       return (
         <Typography variant="body1" key={index}>
           {line}
