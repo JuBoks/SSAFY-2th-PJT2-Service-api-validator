@@ -39,7 +39,7 @@ export function MetadataChart(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const now = new Date(Date.now() + 86400000).toISOString();
+  const now = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString();
   const startTime = new Date(
     new Date().setDate(new Date().getDate() - 7 * intervalTime)
   ).toISOString();
