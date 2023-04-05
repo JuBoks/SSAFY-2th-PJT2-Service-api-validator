@@ -89,7 +89,7 @@ export default function Main() {
       alert("정상적으로 변경되었습니다.");
       Router.push("/profile");
     } catch (error) {
-      console.log(error.code);
+      // console.log(error.code);
       alert(error.code);
     }
   };
@@ -109,7 +109,7 @@ export default function Main() {
       alert("비밀번호가 정상적으로 변경되었습니다. 다시 로그인해주세요.");
       Router.push("/");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.code === "auth/wrong-password") {
         setIsPwError(true);
         setPwMsg("비밀번호가 맞지 않습니다.");

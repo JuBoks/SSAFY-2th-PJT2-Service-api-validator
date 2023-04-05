@@ -76,6 +76,8 @@ const getActionsByDate = async (unit, cycle, startTime, endTime) => {
 
       data.forEach((log) => {
           let date = new Date(log.created_at);
+          date.setHours(date.getHours() + 9);
+          
           let now_idx_date = new Date(Object.keys(result)[idx]);
           let next_idx_date = new Date(Object.keys(result)[idx+1]);
 

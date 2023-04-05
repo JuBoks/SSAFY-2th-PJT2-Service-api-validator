@@ -69,7 +69,7 @@ const ProfileInfoUI = (props) => {
       await DeleteUsersUid(idToken, uid);
       Router.push("/");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert(error);
     }
   };

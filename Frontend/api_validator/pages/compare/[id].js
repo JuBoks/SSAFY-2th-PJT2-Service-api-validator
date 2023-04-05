@@ -83,7 +83,7 @@ export default function PostPage() {
             const res = await GetLogs(
               idToken,
               new Date(0).toISOString(),
-              new Date(Date.now() + 86400000).toISOString(),
+              new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString(),
               id
             );
             setTestData(res.data.data);
@@ -242,7 +242,7 @@ export default function PostPage() {
               <Playground
                 testData={testData}
                 getDate={getDate1}
-                value={testData ? testData[0] : {}}
+                value={testData ? testData[index1] : {}}
               />
 
               <TabControl json={diff} schema={schemaDiff} />
@@ -304,7 +304,7 @@ export default function PostPage() {
               <Playground
                 testData={testData}
                 getDate={getDate2}
-                value={testData ? testData[0] : {}}
+                value={testData ? testData[index2] : {}}
               />
 
               <TabControl

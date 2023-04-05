@@ -138,7 +138,7 @@ export default function UserTable(props) {
       location.reload();
       alert("타입이 정상적으로 변경되었습니다.");
     } catch (error) {
-      console.log(error.code);
+      //console.log(error.code);
       alert(error.code);
     }
   };
@@ -151,7 +151,7 @@ export default function UserTable(props) {
       location.reload();
       alert("상태가 정상적으로 변경되었습니다.");
     } catch (error) {
-      console.log(error.code);
+      //console.log(error.code);
       alert(error.code);
     }
   };
@@ -165,7 +165,7 @@ export default function UserTable(props) {
       location.reload();
       alert("계정 삭제가 완료되었습니다.");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert(error);
     }
   };
@@ -173,7 +173,7 @@ export default function UserTable(props) {
   const handleOpen = (uid, event) => {
     setOpen(true);
     setUid(uid);
-    console.log(uid);
+    //console.log(uid);
   };
   const handleClose = () => setOpen(false);
 

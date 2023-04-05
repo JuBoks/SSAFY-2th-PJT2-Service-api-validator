@@ -29,7 +29,7 @@ export default function adminAPI() {
             const response = await GetApisAllTestcase(idToken);
             setApis(response.data);
           } catch (error) {
-            console.log(error);
+            //console.log(error);
           }
           setLoading(false);
         };

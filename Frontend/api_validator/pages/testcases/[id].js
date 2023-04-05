@@ -21,6 +21,7 @@ import {
   GetApisAllTestcaseId,
   GetLogs,
   PostMetadatasExpectId,
+  GetLogsId,
 } from "@/util/api";
 import Loading from "@/components/common/Loading";
 import { diffString } from "json-diff";
@@ -62,7 +63,7 @@ export default function PostPage() {
               new Date(Date.now() + 86400000).toISOString(),
               id
             );
-            console.log(res);
+            // console.log(res);
             setTestData(res.data.data);
             let idx = 0;
             for (const it of res.data.data) {
@@ -74,7 +75,7 @@ export default function PostPage() {
             const metadata = await GetApisAllTestcaseId(idToken, id);
             setMetaData(metadata);
           } catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
           }
           setLoading(false);
         };
@@ -102,6 +103,47 @@ export default function PostPage() {
         setIndex(index);
       }
     }
+  };
+
+  const getText = (json, sch) => {
+    const str_obj = JSON.stringify(sch);
+    const schema = JSON.parse(str_obj);
+
+    if (json && typeof json[Symbol.iterator] === "function") {
+      for (const iterator of json) {
+        const loc = iterator.location;
+        const map = loc.split("->");
+        const key1 = map[map.length - 1].trim();
+        const key2 = map.length > 1 ? map[map.length - 2].trim() : null;
+        const marker =
+          iterator.errorCode == 0 ? "+" : iterator.errorCode == 1 ? "-" : "*";
+
+        if (key2 in schema && schema[key2][key1]) {
+          schema[key2][key1] = schema[key2][key1] + marker;
+        } else if (key1 in schema) {
+          schema[key1] = schema[key1] + marker;
+        }
+      }
+    }
+    const lines = JSON.stringify(schema, null, "  ");
+    const temp = lines.split("\n").map((data) => {
+      if (["+", "-", "*"].indexOf(data.charAt(data.length - 3)) > -1) {
+        const new_data =
+          data.charAt(data.length - 3) +
+          data.substring(0, data.length - 3) +
+          data.substring(data.length - 2, data.length);
+        return new_data;
+      } else if (["+", "-", "*"].indexOf(data.charAt(data.length - 2)) > -1) {
+        const new_data =
+          data.charAt(data.length - 2) +
+          data.substring(0, data.length - 2) +
+          data.substring(data.length - 1, data.length);
+        return new_data;
+      } else {
+        return data;
+      }
+    });
+    return temp.join("\n");
   };
 
   return (
@@ -273,7 +315,25 @@ export default function PostPage() {
                 >
                   <Typography>Error Message</Typography>
                 </AccordionSummary>
-                <AccordionDetails></AccordionDetails>
+                <AccordionDetails>
+                  <Box m={1}>
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        marginTop: 5,
+                        height: 500,
+                        padding: 2,
+                        overflow: "scroll",
+                      }}
+                    >
+                      <Typography variant="h5" sx={{ whiteSpace: "pre-wrap" }}>
+                        {testData && testData[index]
+                          ? JSON.stringify(testData[index].message, null, "  ")
+                          : ""}
+                      </Typography>
+                    </Paper>
+                  </Box>
+                </AccordionDetails>
               </Accordion>
             </Box>
 
@@ -319,19 +379,18 @@ export default function PostPage() {
                 <TabControl
                   json={
                     testData && testData[index]
-                      ? diffString(
+                      ? JSON.stringify(
                           testData[index].content.response,
-                          testData[index].content.response,
-                          { full: true }
+                          null,
+                          "  "
                         )
                       : ""
                   }
                   schema={
                     testData && testData[index]
-                      ? diffString(
-                          testData[index].content.schema,
-                          testData[index].content.schema,
-                          { full: true }
+                      ? getText(
+                          testData[index].message,
+                          testData[index].content.schema
                         )
                       : ""
                   }
@@ -340,7 +399,7 @@ export default function PostPage() {
                 <ImageList
                   json={
                     testData && testData[index]
-                      ? testData[index].content.response
+                      ? testData[index].content["response"]
                       : {}
                   }
                 ></ImageList>
@@ -351,19 +410,19 @@ export default function PostPage() {
                 <TabControl
                   json={
                     testData && testData[index]
-                      ? diffString(
+                      ? JSON.stringify(
                           testData[index].content["critic-response"],
-                          testData[index].content["critic-response"],
-                          { full: true }
+                          null,
+                          "  "
                         )
                       : ""
                   }
                   schema={
                     testData && testData[index]
-                      ? diffString(
+                      ? JSON.stringify(
                           testData[index].content["critic-schema"],
-                          testData[index].content["critic-schema"],
-                          { full: true }
+                          null,
+                          "  "
                         )
                       : ""
                   }

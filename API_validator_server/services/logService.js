@@ -124,6 +124,8 @@ const getResultByUser = async (userId, unit, cycle, startTime, endTime) => {
 
     data.forEach((log) => {
       let date = new Date(log.created_at);
+      date.setHours(date.getHours() + 9);
+
       let now_idx_date = new Date(Object.keys(result)[idx]);
       let next_idx_date = new Date(Object.keys(result)[idx + 1]);
 
@@ -160,6 +162,7 @@ const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
 
   while (nowDate <= endDate) {
     let date = new Date(nowDate).toISOString().substring(0, 10);
+
     result[date] = {
       count_date: new Date(nowDate).toISOString().substring(0, 10),
       pass_cnt: 0,
@@ -186,6 +189,8 @@ const getResultByMetaId = async (metaId, unit, cycle, startTime, endTime) => {
 
     data.forEach((log) => {
       let date = new Date(log.created_at);
+      date.setHours(date.getHours() + 9);
+
       let now_idx_date = new Date(Object.keys(result)[idx]);
       let next_idx_date = new Date(Object.keys(result)[idx + 1]);
 
