@@ -343,9 +343,11 @@ export default function APIedit() {
             <Box mt={3} mb={3} display="flex">
               <Autocomplete
                 sx={{ width: 100, marginRight: 3 }}
-                options={apis.filter(
-                  (option) => option.resources === resources
-                )}
+                options={
+                  apis
+                    ? apis.filter((option) => option.resources === resources)
+                    : []
+                }
                 value={api}
                 getOptionLabel={(option) => methodList[option.method]}
                 disableClearable
